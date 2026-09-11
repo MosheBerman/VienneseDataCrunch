@@ -95,7 +95,11 @@ const shardCache = {};
 const qCode = m => m === 'exact' ? 0 : (m && m.indexOf('fuzzy_street') === 0 ? 2 : 1);
 let searchIdx = null;
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
-const foldUmlaut = s => s.replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's');
+const foldUmlaut = s => s.replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's');
+// Given-name spelling variants: the book's spelling isn't always the family's
+// (e.g. Josef Bermann is listed as "Jossel Bermann" in 1938). Variant tokens
+// match at half weight so exact spellings still rank first.
+const NAME_VAR = {josef: ['jossel', 'josel'], jossel: ['josef', 'josel'], josel: ['josef', 'jossel']};
 function levLim(a, b, lim) {
   if (a === b) return 0;
   let n = a.length, m = b.length;
@@ -262,10 +266,15 @@ $('q').addEventListener('input', e => {
       try { searchIdx = await (await fetch('data/search.idx.json')).json(); }
       catch (err) { box.style.display = 'none'; return; }
     }
-    const toks = q.split(/[^a-zäöüß]+/).filter(t => t.length >= 2).map(foldUmlaut);
+    const toks = q.split(/[^a-zäöüßſ]+/).filter(t => t.length >= 2).map(foldUmlaut);
+    const xtoks = [];
+    for (const t of toks) {
+      xtoks.push([t, 1]);
+      for (const v of (NAME_VAR[t] || [])) xtoks.push([v, 0.5]);
+    }
     if (!searchKeys) searchKeys = Object.keys(searchIdx).map(k => [k, foldUmlaut(k)]);
     const hits = {};
-    for (const t of toks) {
+    for (const [t, mul] of xtoks) {
       const thr = t.length <= 5 ? 1 : 2;
       for (let ki = 0; ki < searchKeys.length; ki++) {
         const key = searchKeys[ki][0], fk = searchKeys[ki][1];
@@ -279,7 +288,7 @@ $('q').addEventListener('input', e => {
         const ids = searchIdx[key];
         for (let i = 0; i < ids.length; i++) {
           const id = ids[i];
-          hits[id] = (hits[id] || 0) + w;
+          hits[id] = (hits[id] || 0) + w * mul;
         }
       }
     }
