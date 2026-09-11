@@ -3,26 +3,66 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Lehmann 1938 — Vienna Address Map</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="style.css">
+<title>Lehmann 1938 · Vienna Address Map</title>
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.css" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+#map{position:absolute;top:0;bottom:0;width:100%;}
+header{position:absolute;top:10px;left:10px;right:10px;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none;}
+header>*{pointer-events:auto;}
+.brand{background:#111827;color:#fff;padding:8px 14px;border-radius:10px;font-weight:700;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,.25);white-space:nowrap;}
+.brand small{font-weight:400;color:#9ca3af;}
+#q{flex:1;min-width:140px;max-width:340px;padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,.18);}
+#flt,#aboutBtn{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+#aboutBtn{font-weight:600;}
+#results{position:absolute;top:56px;left:10px;z-index:6;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:360px;max-height:50vh;overflow:auto;display:none;}
+#results div{padding:9px 12px;border-bottom:1px solid #f3f4f6;cursor:pointer;font-size:14px;}
+#results div:last-child{border-bottom:none;}
+#results div:hover{background:#f9fafb;}
+#results .r-sub{color:#6b7280;font-size:12px;}
+footer{position:absolute;left:10px;bottom:10px;z-index:5;background:rgba(17,24,39,.85);color:#e5e7eb;padding:6px 12px;border-radius:8px;font-size:12px;}
+footer b{color:#fff;}
+.pp{font-size:14px;line-height:1.45;min-width:180px;}
+.pp-name{font-weight:700;font-size:15px;}
+.pp-occ{color:#4b5563;font-style:italic;}
+.pp-addr{margin-top:2px;}
+.pp-meta{color:#6b7280;font-size:12px;margin-top:4px;}
+#aboutOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:none;align-items:center;justify-content:center;padding:18px;}
+#aboutBox{background:#fff;border-radius:14px;max-width:620px;max-height:85vh;overflow:auto;padding:24px 26px;box-shadow:0 8px 40px rgba(0,0,0,.35);}
+#aboutBox h2{margin:0 0 4px;font-size:20px;}
+#aboutBox h3{margin:16px 0 6px;font-size:15px;}
+#aboutBox p{font-size:14px;line-height:1.6;color:#1f2937;margin:8px 0;}
+#aboutClose{float:right;border:none;background:#f3f4f6;border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer;}
+@media (max-width:640px){.brand{font-size:13px;}#q{font-size:14px;}}
+</style>
 </head>
 <body>
 <div id="map"></div>
-<header id="bar">
-  <div id="title">Lehmann <b>1938</b> · Vienna</div>
-  <div id="searchwrap">
-    <input id="search" type="search" placeholder="Surname, street, occupation…" autocomplete="off">
-    <div id="results"></div>
-  </div>
-  <select id="quality" title="Geocoding match quality">
-    <option value="2">All pins</option>
-    <option value="1">Registry or better</option>
-    <option value="0">Exact only</option>
+<header>
+  <div class="brand">Lehmann <b>1938</b> <small>· Vienna</small></div>
+  <input id="q" type="search" placeholder="Surname, street, occupation…" autocomplete="off">
+  <select id="flt">
+    <option value="all">All pins</option>
+    <option value="reg">Registry or better</option>
+    <option value="exact">Exact only</option>
   </select>
+  <button id="aboutBtn">About</button>
 </header>
-<div id="status"><span id="count"></span></div>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<div id="results"></div>
+<footer><b id="count">—</b> addresses · blue exact · purple registry · amber fuzzy</footer>
+<div id="aboutOverlay"><div id="aboutBox">
+<button id="aboutClose">Close</button>
+<h2>About this map</h2>
+<p>Every pin is a person or business listed in the alphabetical residents' directory (Band&nbsp;1) of <i>Lehmann's Wohnungsanzeiger</i> for 1938 — Vienna's address book on the eve of World War&nbsp;II. Of 490,781 entries, 127,308 could be matched to a street address and placed on the modern map.</p>
+<h3>How it was built</h3>
+<p>The 1,644-page scan was rendered page by page, split into columns, and OCR'd (Tesseract with a Fraktur model). A parsing pipeline extracted names, occupations and addresses, stripped page headers, footers and advertisements, and normalized historical street abbreviations. Each address was then joined against the City of Vienna's official address registry (“Adressen Standorte Wien”, CC&nbsp;BY&nbsp;4.0). Exact matches are blue, registry matches with a number fallback are purple, fuzzy street matches are amber.</p>
+<h3>The AI part</h3>
+<p>This pipeline was built by Pikachu, an AI research assistant (Muse by Meta), working with Moshe Berman. The agent wrote the OCR, parsing and geocoding code, ran the batches, validated samples against the page scans, and built this site. Every stage reported measured numbers — match rates, not adjectives — and uncertain matches are flagged on the map rather than hidden.</p>
+<h3>Caveats</h3>
+<p>OCR misreads names; some 1938 streets were renamed or no longer exist; amber pins are approximate. Absence of a pin doesn't mean absence from the book — only 48.7% of addressed entries matched the modern registry.</p>
+</div></div>
+<script>window.MAPBOX_TOKEN="pk.eyJ1IjoibW9zaGViZXJtYW5uIiwiYSI6ImNsdnR1dmE4MDFhemcya3A2cWU0YnBhZ3EifQ.KnxaGkNB76_1zmRz1QxSZA";</script>
 <script src="app.js"></script>
 </body>
 </html>
