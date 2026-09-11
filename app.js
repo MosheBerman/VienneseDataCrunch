@@ -46,12 +46,13 @@ map.on('load', async () => {
       'circle-color': ['match', ['get', 'q'], 0, '#2563eb', 1, '#7c3aed', 2, '#d97706', '#2563eb'],
       'circle-radius': 4.5, 'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
 
+  const TAP_R = window.matchMedia && matchMedia('(pointer: coarse)').matches ? 26 : 14;
   function near(point, layer, r) {
     const b = [[point.x - r, point.y - r], [point.x + r, point.y + r]];
     return map.queryRenderedFeatures(b, {layers: [layer]});
   }
   map.on('click', async e => {
-    const c = near(e.point, 'clusters', 14)[0];
+    const c = near(e.point, 'clusters', TAP_R)[0];
     if (c) {
       map.getSource('places').getClusterExpansionZoom(c.properties.cluster_id, (err, zoom) => {
         if (err) return;
@@ -59,7 +60,7 @@ map.on('load', async () => {
       });
       return;
     }
-    const f = near(e.point, 'unclustered-point', 14)[0];
+    const f = near(e.point, 'unclustered-point', TAP_R)[0];
     if (!f) return;
     openGroupPopup(f, null);
   });
