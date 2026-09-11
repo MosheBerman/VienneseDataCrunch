@@ -29,6 +29,11 @@ footer b{color:#fff;}
 .pp-occ{color:#4b5563;font-style:italic;}
 .pp-addr{margin-top:2px;}
 .pp-meta{color:#6b7280;font-size:12px;margin-top:4px;}
+.pp-list{max-height:230px;overflow:auto;margin-top:6px;border-top:1px solid #f3f4f6;}
+.pp-row{padding:6px 2px;border-bottom:1px solid #f3f4f6;}
+.pp-row:last-child{border-bottom:none;}
+.pp-row.hl{background:#eff6ff;border-radius:6px;padding:6px;}
+.pp-more{color:#6b7280;font-size:12px;margin-top:4px;}
 #aboutOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:none;align-items:center;justify-content:center;padding:18px;}
 #aboutBox{background:#fff;border-radius:14px;max-width:620px;max-height:85vh;overflow:auto;padding:24px 26px;box-shadow:0 8px 40px rgba(0,0,0,.35);}
 #aboutBox h2{margin:0 0 4px;font-size:20px;}
@@ -51,11 +56,11 @@ footer b{color:#fff;}
   <button id="aboutBtn">About</button>
 </header>
 <div id="results"></div>
-<footer><b id="count">—</b> addresses · blue exact · purple registry · amber fuzzy</footer>
+<footer><b id="count">—</b> people · <b id="acount">—</b> addresses · blue exact · purple registry · amber fuzzy</footer>
 <div id="aboutOverlay"><div id="aboutBox">
 <button id="aboutClose">Close</button>
 <h2>About this map</h2>
-<p>Every pin is a person or business listed in the alphabetical residents' directory (Band&nbsp;1) of <i>Lehmann's Wohnungsanzeiger</i> for 1938 — Vienna's address book on the eve of World War&nbsp;II. Of 490,781 entries, 127,308 could be matched to a street address and placed on the modern map.</p>
+<p>Every pin is a Vienna address with one or more people or businesses listed in the alphabetical residents' directory (Band&nbsp;1) of <i>Lehmann's Wohnungsanzeiger</i> for 1938 — Vienna's address book on the eve of World War&nbsp;II. Of 490,781 entries, 127,308 could be matched to a street address and placed on the modern map as 30,082 pins.</p>
 <h3>How it was built</h3>
 <p>The 1,644-page scan was rendered page by page, split into columns, and OCR'd (Tesseract with a Fraktur model). A parsing pipeline extracted names, occupations and addresses, stripped page headers, footers and advertisements, and normalized historical street abbreviations. Each address was then joined against the City of Vienna's official address registry (“Adressen Standorte Wien”, CC&nbsp;BY&nbsp;4.0). Exact matches are blue, registry matches with a number fallback are purple, fuzzy street matches are amber.</p>
 <h3>The AI part</h3>

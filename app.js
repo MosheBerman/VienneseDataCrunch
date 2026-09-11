@@ -10,7 +10,10 @@ const map = new mapboxgl.Map({
 map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 let allFeatures = [];
+let featByRec = new Map();
+let keepIdx = [0, 1, 2];
 const shardCache = {};
+const qCode = m => m === 'exact' ? 0 : (m && m.indexOf('fuzzy_street') === 0 ? 2 : 1);
 let searchIdx = null;
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -26,6 +29,7 @@ const qLabel = m => {
 map.on('load', async () => {
   const gj = await (await fetch('data/points.geojson')).json();
   allFeatures = gj.features;
+  for (const f of allFeatures) for (const id of f.properties.m) featByRec.set(id, f);
   map.addSource('places', {type: 'geojson', data: gj, cluster: true, clusterMaxZoom: 14, clusterRadius: 55});
 
   map.addLayer({id: 'clusters', type: 'circle', source: 'places', filter: ['has', 'point_count'],
@@ -57,26 +61,28 @@ map.on('load', async () => {
     }
     const f = near(e.point, 'unclustered-point', 14)[0];
     if (!f) return;
-    const rec = await getRecord(f.properties.i);
-    if (!rec) return;
-    new mapboxgl.Popup({offset: 14, maxWidth: '280px'})
-      .setLngLat(f.geometry.coordinates).setHTML(popupHTML(rec)).addTo(map);
+    openGroupPopup(f, null);
   });
   for (const lyr of ['clusters', 'unclustered-point']) {
     map.on('mouseenter', lyr, () => map.getCanvas().style.cursor = 'pointer');
     map.on('mouseleave', lyr, () => map.getCanvas().style.cursor = '');
   }
-  updateCount(allFeatures.length);
+  updateCount(allFeatures);
 });
 
-function updateCount(n){ $('count').textContent = n.toLocaleString('en-US'); }
+function updateCount(feats){
+  let n = 0;
+  for (const f of feats) { const qc = f.properties.qc; for (const k of keepIdx) n += qc[k]; }
+  $('count').textContent = n.toLocaleString('en-US');
+  $('acount').textContent = feats.length.toLocaleString('en-US');
+}
 
 $('flt').addEventListener('change', e => {
   const v = e.target.value;
-  const keep = v === 'all' ? null : v === 'reg' ? [0, 1] : [0];
-  const feats = keep ? allFeatures.filter(f => keep.includes(f.properties.q)) : allFeatures;
+  keepIdx = v === 'all' ? [0, 1, 2] : v === 'reg' ? [0, 1] : [0];
+  const feats = allFeatures.filter(f => { const qc = f.properties.qc; return keepIdx.some(k => qc[k] > 0); });
   map.getSource('places').setData({type: 'FeatureCollection', features: feats});
-  updateCount(feats.length);
+  updateCount(feats);
 });
 
 function popupHTML(r){
@@ -87,6 +93,34 @@ function popupHTML(r){
        (r.u ? ' \u00b7 ' + esc(r.u) : '') + ', ' + esc(r.d || '') + '. Bezirk</div>';
   h += '<div class="pp-meta">1938 \u00b7 ' + esc(q) + '</div></div>';
   return h;
+}
+
+async function openGroupPopup(f, highlightId){
+  const ids = f.properties.m;
+  const recs = (await Promise.all(ids.map(async id => {
+    const r = await getRecord(id);
+    if (r) r._id = id;
+    return r;
+  }))).filter(Boolean);
+  if (!recs.length) return;
+  const shown = recs.filter(r => keepIdx.includes(qCode(r.m)));
+  const list = (shown.length ? shown : recs).slice()
+    .sort((a, b) => qCode(a.m) - qCode(b.m) || String(a.s).localeCompare(String(b.s)));
+  const hidden = recs.length - list.length;
+  const r0 = list[0];
+  let h = '<div class="pp"><div class="pp-addr"><b>' + esc(r0.st || '') + ' ' + esc(r0.hn || '') +
+          ', ' + esc(r0.d || '') + '. Bezirk</b></div><div class="pp-list">';
+  for (const r of list) {
+    h += '<div class="pp-row' + (highlightId !== null && r._id === highlightId ? ' hl' : '') + '">' +
+      '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + '</div>' +
+      (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') +
+      '<div class="pp-meta">' + (r.u ? esc(r.u) + ' \u00b7 ' : '') + '1938 \u00b7 ' + esc(qLabel(r.m)) + '</div></div>';
+  }
+  h += '</div>';
+  if (hidden > 0) h += '<div class="pp-more">' + hidden + ' more resident' + (hidden > 1 ? 's' : '') + ' hidden by filter</div>';
+  h += '</div>';
+  new mapboxgl.Popup({offset: 14, maxWidth: '300px'})
+    .setLngLat(f.geometry.coordinates).setHTML(h).addTo(map);
 }
 
 async function getRecord(id){
@@ -129,9 +163,12 @@ $('q').addEventListener('input', e => {
         (rec.d ? ' \u00b7 ' + esc(rec.d) + '. Bez.' : '') + (rec.o ? ' \u00b7 ' + esc(rec.o) : '') + '</div>';
       d.addEventListener('click', () => {
         box.style.display = 'none';
+        const rid = +id;
         map.flyTo({center: [+rec.lo, +rec.la], zoom: 16, duration: 1400});
         map.once('moveend', () => {
-          new mapboxgl.Popup({offset: 14, maxWidth: '280px'})
+          const f = featByRec.get(rid);
+          if (f) openGroupPopup(f, rid);
+          else new mapboxgl.Popup({offset: 14, maxWidth: '280px'})
             .setLngLat([+rec.lo, +rec.la]).setHTML(popupHTML(rec)).addTo(map);
         });
       });
