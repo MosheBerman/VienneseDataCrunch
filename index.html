@@ -168,7 +168,12 @@ function popupHTML(r){
 }
 
 async function openGroupPopup(f, highlightId){
-  const ids = f.properties.m || (f.properties.i != null ? [f.properties.i] : []);
+  // NOTE: Mapbox encodes features to vector tiles internally, and non-scalar
+  // properties (like our member-id array) come back JSON-stringified from
+  // queryRenderedFeatures. Parse them back before use.
+  let ids = f.properties.m;
+  if (typeof ids === 'string') { try { ids = JSON.parse(ids); } catch (e) { ids = null; } }
+  if (!Array.isArray(ids)) ids = (f.properties.i != null ? [f.properties.i] : []);
   const recs = (await Promise.all(ids.map(async id => {
     const r = await getRecord(id);
     if (r) r._id = id;
