@@ -86,6 +86,31 @@ let keepIdx = [0, 1, 2];
 const shardCache = {};
 const qCode = m => m === 'exact' ? 0 : (m && m.indexOf('fuzzy_street') === 0 ? 2 : 1);
 let searchIdx = null;
+let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
+const foldUmlaut = s => s.replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 'ss');
+function levLim(a, b, lim) {
+  if (a === b) return 0;
+  let n = a.length, m = b.length;
+  if (Math.abs(n - m) > lim) return lim + 1;
+  if (n > m) { const t = a; a = b; b = t; const u = n; n = m; m = u; }
+  let prev = new Array(n + 1);
+  for (let i = 0; i <= n; i++) prev[i] = i;
+  for (let j = 1; j <= m; j++) {
+    const cur = new Array(n + 1);
+    cur[0] = j;
+    let rowMin = j;
+    const bj = b.charCodeAt(j - 1);
+    for (let i = 1; i <= n; i++) {
+      const cost = a.charCodeAt(i - 1) === bj ? 0 : 1;
+      const v = Math.min(prev[i] + 1, cur[i - 1] + 1, prev[i - 1] + cost);
+      cur[i] = v;
+      if (v < rowMin) rowMin = v;
+    }
+    if (rowMin > lim) return lim + 1;
+    prev = cur;
+  }
+  return prev[n];
+}
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const qLabel = m => {
@@ -221,12 +246,26 @@ $('q').addEventListener('input', e => {
       try { searchIdx = await (await fetch('data/search.idx.json')).json(); }
       catch (err) { return; }
     }
-    const toks = q.split(/[^a-z\xe4\xf6\xfc\xdf\xc4\xd6\xdc\xdf]+/).filter(t => t.length >= 2);
+    const toks = q.split(/[^a-zäöüß]+/).filter(t => t.length >= 2).map(foldUmlaut);
+    if (!searchKeys) searchKeys = Object.keys(searchIdx).map(k => [k, foldUmlaut(k)]);
     const hits = {};
     for (const t of toks) {
-      const ids = searchIdx[t];
-      if (!ids) continue;
-      for (const id of ids) hits[id] = (hits[id] || 0) + 1;
+      const thr = t.length <= 5 ? 1 : 2;
+      for (let ki = 0; ki < searchKeys.length; ki++) {
+        const key = searchKeys[ki][0], fk = searchKeys[ki][1];
+        let w = 0;
+        if (key === t) w = 8;
+        else if (fk === t) w = 6;
+        else if (fk.startsWith(t)) w = 4;
+        else if (fk.indexOf(t) >= 0) w = 2;
+        else if (Math.abs(fk.length - t.length) <= thr && levLim(fk, t, thr) <= thr) w = 1;
+        if (!w) continue;
+        const ids = searchIdx[key];
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i];
+          hits[id] = (hits[id] || 0) + w;
+        }
+      }
     }
     const top = Object.entries(hits).sort((a, b) => b[1] - a[1]).slice(0, 8);
     if (!top.length) { box.innerHTML = '<div>No matches</div>'; box.style.display = 'block'; return; }
