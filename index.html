@@ -13,6 +13,7 @@ header{position:absolute;top:10px;left:10px;right:10px;z-index:5;display:flex;ga
 header>*{pointer-events:auto;}
 .brand{background:#111827;color:#fff;padding:8px 14px;border-radius:10px;font-weight:700;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,.25);white-space:nowrap;}
 .brand small{font-weight:400;color:#9ca3af;}
+.brand b{color:#ffd97a;}
 #q{flex:1;min-width:140px;max-width:340px;padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,.18);}
 #flt,#aboutBtn{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
 #aboutBtn{font-weight:600;}
@@ -58,7 +59,7 @@ footer b{color:#fff;}
 <h3>How it was built</h3>
 <p>The 1,644-page scan was rendered page by page, split into columns, and OCR'd (Tesseract with a Fraktur model). A parsing pipeline extracted names, occupations and addresses, stripped page headers, footers and advertisements, and normalized historical street abbreviations. Each address was then joined against the City of Vienna's official address registry (“Adressen Standorte Wien”, CC&nbsp;BY&nbsp;4.0). Exact matches are blue, registry matches with a number fallback are purple, fuzzy street matches are amber.</p>
 <h3>The AI part</h3>
-<p>This pipeline was built by Pikachu, an AI research assistant (Muse by Meta), working with Moshe Berman. The agent wrote the OCR, parsing and geocoding code, ran the batches, validated samples against the page scans, and built this site. Every stage reported measured numbers — match rates, not adjectives — and uncertain matches are flagged on the map rather than hidden.</p>
+<p>This pipeline was built by Muse by Meta, an AI research assistant, working with Moshe Berman. The agent wrote the OCR, parsing and geocoding code, ran the batches, validated samples against the page scans, and built this site. Every stage reported measured numbers — match rates, not adjectives — and uncertain matches are flagged on the map rather than hidden.</p>
 <h3>Caveats</h3>
 <p>OCR misreads names; some 1938 streets were renamed or no longer exist; amber pins are approximate. Absence of a pin doesn't mean absence from the book — only 48.7% of addressed entries matched the modern registry.</p>
 </div></div>

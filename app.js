@@ -42,16 +42,20 @@ map.on('load', async () => {
       'circle-color': ['match', ['get', 'q'], 0, '#2563eb', 1, '#7c3aed', 2, '#d97706', '#2563eb'],
       'circle-radius': 4.5, 'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
 
-  map.on('click', 'clusters', e => {
-    const f = map.queryRenderedFeatures(e.point, {layers: ['clusters']})[0];
-    if (!f) return;
-    map.getSource('places').getClusterExpansionZoom(f.properties.cluster_id, (err, zoom) => {
-      if (err) return;
-      map.easeTo({center: f.geometry.coordinates, zoom: zoom, duration: 550});
-    });
-  });
-  map.on('click', 'unclustered-point', async e => {
-    const f = e.features && e.features[0];
+  function near(point, layer, r) {
+    const b = [[point.x - r, point.y - r], [point.x + r, point.y + r]];
+    return map.queryRenderedFeatures(b, {layers: [layer]});
+  }
+  map.on('click', async e => {
+    const c = near(e.point, 'clusters', 14)[0];
+    if (c) {
+      map.getSource('places').getClusterExpansionZoom(c.properties.cluster_id, (err, zoom) => {
+        if (err) return;
+        map.easeTo({center: c.geometry.coordinates, zoom: zoom, duration: 550});
+      });
+      return;
+    }
+    const f = near(e.point, 'unclustered-point', 14)[0];
     if (!f) return;
     const rec = await getRecord(f.properties.i);
     if (!rec) return;
@@ -146,3 +150,8 @@ $('aboutClose').addEventListener('click', () => $('aboutOverlay').style.display 
 $('aboutOverlay').addEventListener('click', e => {
   if (e.target.id === 'aboutOverlay') $('aboutOverlay').style.display = 'none';
 });
+
+// ---- service worker -----------------------------------------------------
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
