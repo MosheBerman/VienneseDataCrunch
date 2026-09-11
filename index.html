@@ -41,10 +41,18 @@ footer b{color:#fff;}
 #aboutBox p{font-size:14px;line-height:1.6;color:#1f2937;margin:8px 0;}
 #aboutClose{float:right;border:none;background:#f3f4f6;border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer;}
 @media (max-width:640px){.brand{font-size:13px;}#q{font-size:14px;}}
+.spin{width:34px;height:34px;border-radius:50%;border:4px solid rgba(0,0,0,.12);border-top-color:#1a73e8;animation:spn .8s linear infinite;}
+.spin.sm{width:20px;height:20px;border-width:3px;}
+@keyframes spn{to{transform:rotate(360deg);}}
+#boot{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#e9e5d9;color:#4b5563;font-size:14px;transition:opacity .4s;}
+#boot.gone{opacity:0;pointer-events:none;}
+.r-load{display:flex;justify-content:center;padding:14px !important;cursor:default !important;}
+.pp-load{display:flex;justify-content:center;padding:18px 34px;}
 </style>
 </head>
 <body>
 <div id="map"></div>
+<div id="boot"><div class="spin"></div><div>Loading 127,308 people at 30,082 addresses…</div></div>
 <header>
   <div class="brand">Lehmann <b>1938</b> <small>· Vienna</small></div>
   <input id="q" type="search" placeholder="Surname, street, occupation…" autocomplete="off">
@@ -165,6 +173,9 @@ map.on('load', async () => {
     map.on('mouseleave', lyr, () => map.getCanvas().style.cursor = '');
   }
   updateCount(allFeatures);
+  const hideBoot = () => $('boot').classList.add('gone');
+  map.once('idle', hideBoot);
+  setTimeout(hideBoot, 12000);
 });
 
 function updateCount(feats){
@@ -193,6 +204,10 @@ function popupHTML(r){
 }
 
 async function openGroupPopup(f, highlightId){
+  const pop = new mapboxgl.Popup({offset: 14, maxWidth: '300px'})
+    .setLngLat(f.geometry.coordinates)
+    .setHTML('<div class="pp"><div class="pp-load"><div class="spin sm"></div></div></div>')
+    .addTo(map);
   // NOTE: Mapbox encodes features to vector tiles internally, and non-scalar
   // properties (like our member-id array) come back JSON-stringified from
   // queryRenderedFeatures. Parse them back before use.
@@ -204,7 +219,7 @@ async function openGroupPopup(f, highlightId){
     if (r) r._id = id;
     return r;
   }))).filter(Boolean);
-  if (!recs.length) return;
+  if (!recs.length) { pop.remove(); return; }
   const shown = recs.filter(r => keepIdx.includes(qCode(r.m)));
   const list = (shown.length ? shown : recs).slice()
     .sort((a, b) => qCode(a.m) - qCode(b.m) || String(a.s).localeCompare(String(b.s)));
@@ -221,8 +236,7 @@ async function openGroupPopup(f, highlightId){
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + hidden + ' more resident' + (hidden > 1 ? 's' : '') + ' hidden by filter</div>';
   h += '</div>';
-  new mapboxgl.Popup({offset: 14, maxWidth: '300px'})
-    .setLngLat(f.geometry.coordinates).setHTML(h).addTo(map);
+  pop.setHTML(h);
 }
 
 async function getRecord(id){
@@ -243,8 +257,10 @@ $('q').addEventListener('input', e => {
     const q = e.target.value.trim().toLowerCase();
     if (q.length < 2) { box.style.display = 'none'; return; }
     if (!searchIdx) {
+      box.innerHTML = '<div class="r-load"><div class="spin sm"></div></div>';
+      box.style.display = 'block';
       try { searchIdx = await (await fetch('data/search.idx.json')).json(); }
-      catch (err) { return; }
+      catch (err) { box.style.display = 'none'; return; }
     }
     const toks = q.split(/[^a-zäöüß]+/).filter(t => t.length >= 2).map(foldUmlaut);
     if (!searchKeys) searchKeys = Object.keys(searchIdx).map(k => [k, foldUmlaut(k)]);
