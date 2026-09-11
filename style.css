@@ -1,0 +1,44 @@
+/* Lehmann 1938 map */
+html, body { margin: 0; height: 100%; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+#map { position: absolute; inset: 0; background: #e8e4dc; }
+#bar {
+  position: absolute; top: 10px; left: 10px; right: 10px; z-index: 1000;
+  display: flex; gap: 8px; align-items: center; pointer-events: none;
+}
+#bar > * { pointer-events: auto; }
+#title {
+  background: rgba(20, 20, 22, 0.85); color: #f5f2ea; font-size: 14px;
+  padding: 8px 12px; border-radius: 8px; white-space: nowrap;
+}
+#title b { color: #ffd97a; }
+#searchwrap { position: relative; flex: 1; max-width: 420px; }
+#search {
+  width: 100%; box-sizing: border-box; font-size: 15px; padding: 9px 12px;
+  border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+#results {
+  position: absolute; top: 110%; left: 0; right: 0; background: #fff;
+  border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  max-height: 50vh; overflow-y: auto; display: none;
+}
+#results .hit { padding: 8px 12px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 14px; }
+#results .hit:last-child { border-bottom: none; }
+#results .hit:hover, #results .hit.active { background: #f0f4ff; }
+#results .hit .sub { color: #666; font-size: 12px; }
+#quality {
+  font-size: 14px; padding: 8px; border: 1px solid #ccc; border-radius: 8px;
+  background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+#status {
+  position: absolute; bottom: 24px; left: 10px; z-index: 1000;
+  background: rgba(20, 20, 22, 0.75); color: #eee; font-size: 12px;
+  padding: 5px 10px; border-radius: 6px; pointer-events: none;
+}
+.leaflet-popup-content { font-size: 14px; line-height: 1.45; }
+.leaflet-popup-content .nm { font-weight: 700; font-size: 15px; }
+.leaflet-popup-content .occ { color: #555; font-style: italic; }
+.leaflet-popup-content .addr { margin-top: 4px; }
+.leaflet-popup-content .meta { color: #888; font-size: 12px; margin-top: 4px; }
+@media (max-width: 640px) {
+  #title { display: none; }
+}
