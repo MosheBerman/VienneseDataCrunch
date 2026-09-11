@@ -17,6 +17,9 @@ header>*{pointer-events:auto;}
 #q{flex:1;min-width:140px;max-width:340px;padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,.18);}
 #flt,#aboutBtn{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
 #aboutBtn{font-weight:600;}
+#srcBtn{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;color:#111;text-decoration:none;}
+.pp-links{margin-top:4px;font-size:12px;color:#6b7280;}
+.pp-links a{color:#2563eb;text-decoration:none;}
 #results{position:absolute;top:56px;left:10px;z-index:6;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:360px;max-height:50vh;overflow:auto;display:none;}
 #results div{padding:9px 12px;border-bottom:1px solid #f3f4f6;cursor:pointer;font-size:14px;}
 #results div:last-child{border-bottom:none;}
@@ -62,6 +65,7 @@ footer b{color:#fff;}
     <option value="exact">Exact only</option>
   </select>
   <button id="aboutBtn">About</button>
+  
 </header>
 <div id="results"></div>
 <footer><b id="count">—</b> people · <b id="acount">—</b> addresses · blue exact · purple registry · amber fuzzy</footer>
@@ -75,6 +79,7 @@ footer b{color:#fff;}
 <p>This pipeline was built by Muse by Meta, an AI research assistant, working with Moshe Berman. The agent wrote the OCR, parsing and geocoding code, ran the batches, validated samples against the page scans, and built this site. Every stage reported measured numbers — match rates, not adjectives — and uncertain matches are flagged on the map rather than hidden.</p>
 <h3>Caveats</h3>
 <p>OCR misreads names; some 1938 streets were renamed or no longer exist; amber pins are approximate. Absence of a pin doesn't mean absence from the book — only 48.7% of addressed entries matched the modern registry.</p>
+
 </div></div>
 <script>window.MAPBOX_TOKEN="pk.eyJ1IjoibW9zaGViZXJtYW5uIiwiYSI6ImNtdHc5a21odDA0aGMzNG9vNnF6Z3Z6cjAifQ.iO_N_QmWcIANN2aRrfXl_Q";</script>
 <script>'use strict';
@@ -93,6 +98,18 @@ let featByRec = new Map();
 let keepIdx = [0, 1, 2];
 const shardCache = {};
 const qCode = m => m === 'exact' ? 0 : (m && m.indexOf('fuzzy_street') === 0 ? 2 : 1);
+// Per-record links: scan viewer page template (with {page}) and correction
+// form prefill base (entry id appended URL-encoded). Empty when unconfigured.
+const VIEWER_URL = "";
+const CORRECT_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdgEccfA7bLMKZwW476PKUBRFrkE5JhxunY8SjrcW_RQ8KIrQ/viewform?usp=pp_url&entry.4c57d776=";
+function recLinks(r){
+  let links = '';
+  if (VIEWER_URL && r.pg != null)
+    links += '<a href="' + VIEWER_URL.split('{page}').join(r.pg + 1) + '" target="_blank" rel="noopener">View in original</a>';
+  if (CORRECT_URL && r._id != null)
+    links += (links ? ' \u00b7 ' : '') + '<a href="' + CORRECT_URL + encodeURIComponent('1938:' + r._id) + '" target="_blank" rel="noopener">Suggest correction</a>';
+  return links ? '<div class="pp-links">' + links + '</div>' : '';
+}
 let searchIdx = null;
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
 const foldUmlaut = s => s.replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's');
@@ -235,7 +252,8 @@ async function openGroupPopup(f, highlightId){
     h += '<div class="pp-row' + (highlightId !== null && r._id === highlightId ? ' hl' : '') + '">' +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') +
-      '<div class="pp-meta">' + (r.u ? esc(r.u) + ' \u00b7 ' : '') + '1938 \u00b7 ' + esc(qLabel(r.m)) + '</div></div>';
+      '<div class="pp-meta">' + (r.u ? esc(r.u) + ' \u00b7 ' : '') + '1938 \u00b7 ' + esc(qLabel(r.m)) + '</div>' +
+      recLinks(r) + '</div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + hidden + ' more resident' + (hidden > 1 ? 's' : '') + ' hidden by filter</div>';
