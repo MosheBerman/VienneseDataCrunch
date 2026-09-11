@@ -46,7 +46,7 @@ map.on('load', async () => {
       'circle-color': ['match', ['get', 'q'], 0, '#2563eb', 1, '#7c3aed', 2, '#d97706', '#2563eb'],
       'circle-radius': 4.5, 'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
 
-  const TAP_R = window.matchMedia && matchMedia('(pointer: coarse)').matches ? 26 : 14;
+  const TAP_R = window.matchMedia && matchMedia('(pointer: coarse)').matches ? 44 : 14;
   function near(point, layer, r) {
     const b = [[point.x - r, point.y - r], [point.x + r, point.y + r]];
     return map.queryRenderedFeatures(b, {layers: [layer]});
