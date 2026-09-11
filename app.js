@@ -2,7 +2,7 @@
 mapboxgl.accessToken = window.MAPBOX_TOKEN;
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/light-v12',
+  style: 'mapbox://styles/mapbox/light-v11',
   center: [16.37, 48.208],
   zoom: 10.5,
   maxBounds: [[15.9, 47.9], [16.9, 48.45]]
