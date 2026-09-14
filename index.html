@@ -44,6 +44,10 @@ footer b{color:#fff;}
 #aboutBox h3{margin:16px 0 6px;font-size:15px;}
 #aboutBox p{font-size:14px;line-height:1.6;color:#1f2937;margin:8px 0;}
 #aboutClose{float:right;border:none;background:#f3f4f6;border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer;}
+#scanModal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:30;display:none;align-items:center;justify-content:center;padding:12px;}
+.sm-box{background:#fff;border-radius:12px;width:min(900px,96vw);height:min(90vh,900px);display:flex;flex-direction:column;overflow:hidden;}
+.sm-close{align-self:flex-end;border:none;background:#f3f4f6;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;margin:8px 8px 0;min-height:44px;}
+.sm-frame{flex:1;border:none;width:100%;}
 @media (max-width:640px){.brand{font-size:13px;}#q{font-size:14px;}}
 .spin{width:34px;height:34px;border-radius:50%;border:4px solid rgba(0,0,0,.12);border-top-color:#1a73e8;animation:spn .8s linear infinite;}
 .spin.sm{width:20px;height:20px;border-width:3px;}
@@ -122,11 +126,32 @@ function recLinks(r){
   let links = '';
   const _pv = (r.pg != null) ? SCAN_PV[r.pg + 1] : null;
   if (VIEWER_URL && _pv)
-    links += '<a href="' + VIEWER_URL.split('{pageview}').join(_pv) + '" target="_blank" rel="noopener">View in original</a>';
+    links += '<a href="#" data-pv="' + _pv + '" class="scanlink">View scan</a>';
   if (CORRECT_URL && r._id != null)
     links += (links ? ' \u00b7 ' : '') + '<a href="' + CORRECT_URL + encodeURIComponent(CUR_YEAR + ':' + r._id) + '" target="_blank" rel="noopener">Suggest correction</a>';
   return links ? '<div class="pp-links">' + links + '</div>' : '';
 }
+
+// Ground truth viewer: modal with Wienbibliothek scan
+document.addEventListener('click', e => {
+  const a = e.target.closest('a.scanlink');
+  if (!a) return;
+  e.preventDefault();
+  const pv = a.dataset.pv;
+  const url = VIEWER_URL.split('{pageview}').join(pv);
+  let m = document.getElementById('scanModal');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'scanModal';
+    m.innerHTML = '<div class="sm-box"><button class="sm-close">✕ Close</button>' +
+      '<iframe class="sm-frame" sandbox="allow-same-origin allow-scripts"></iframe></div>';
+    document.body.appendChild(m);
+    m.querySelector('.sm-close').addEventListener('click', () => m.style.display = 'none');
+    m.addEventListener('click', ev => { if (ev.target === m) m.style.display = 'none'; });
+  }
+  m.querySelector('.sm-frame').src = url;
+  m.style.display = 'flex';
+});
 let searchIdx = null;
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
 const foldUmlaut = s => s.replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's');
