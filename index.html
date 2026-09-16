@@ -62,6 +62,7 @@ footer b{color:#fff;}
   <div class="brand">Lehmann <small>· Vienna</small></div>
   <select id="yrPick" aria-label="Year">
     <option value="1938" selected>1938</option>
+    <option value="1938h">1938 Houses</option>
     <option value="1942">1942</option>
   </select>
   <input id="q" type="search" placeholder="Surname, street, occupation…" autocomplete="off">
@@ -78,7 +79,7 @@ footer b{color:#fff;}
 <div id="aboutOverlay"><div id="aboutBox">
 <button id="aboutClose">Close</button>
 <h2>About this map</h2>
-<p>Every pin is a Vienna address with one or more people or businesses listed in the alphabetical residents' directory (Band&nbsp;1) of <i>Lehmann's Wohnungsanzeiger</i> — Vienna's address book. Use the year picker to switch between the 1938 volume (on the eve of World War&nbsp;II: 94,698 people at 27,503 addresses) and the 1942 volume (11,248 people at 7,116 addresses, partial coverage).</p>
+<p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i> — Vienna's address book. Use the year picker to switch between the 1938 alphabetical residents' directory (Band&nbsp;1; 94,698 people at 27,503 addresses), the 1938 house directory (Band&nbsp;2, IV.&nbsp;Teil — residents by street address), and the 1942 volume (11,248 people at 7,116 addresses, partial coverage).</p>
 <h3>How it was built</h3>
 <p>The 1,644-page scan was rendered page by page, split into columns, and OCR'd (Tesseract with a Fraktur model). A parsing pipeline extracted names, occupations and addresses, stripped page headers, footers and advertisements, and normalized historical street abbreviations. Each address was then joined against the City of Vienna's official address registry (“Adressen Standorte Wien”, CC&nbsp;BY&nbsp;4.0). Exact matches are blue, registry matches with a number fallback are purple, fuzzy street matches are amber.</p>
 <h3>The AI part</h3>
@@ -92,10 +93,11 @@ footer b{color:#fff;}
 <script>'use strict';
 // ---- year config --------------------------------------------------------
 const YEARS = {
-  1938: {dir: 'data', shard: 1024, geojson: 'data/points.8cead7a2dce8.geojson'},
-  1942: {dir: 'data42', shard: 1000, geojson: 'data42/points.geojson'},
+  '1938': {dir: 'data', shard: 1024, geojson: 'data/points.8cead7a2dce8.geojson', label: '1938'},
+  '1938h': {dir: 'data38h', shard: 1000, geojson: 'data38h/points.geojson', label: '1938 Houses'},
+  '1942': {dir: 'data42', shard: 1000, geojson: 'data42/points.geojson', label: '1942'},
 };
-let CUR_YEAR = 1938;
+let CUR_YEAR = '1938';
 const YC = () => YEARS[CUR_YEAR];
 
 mapboxgl.accessToken = window.MAPBOX_TOKEN;
@@ -176,14 +178,14 @@ async function loadYearData(){
   for (const f of allFeatures) for (const id of f.properties.m) featByRec.set(id, f);
   for (const k in shardCache) delete shardCache[k];
   searchIdx = null; searchKeys = null;
-  document.title = 'Lehmann ' + CUR_YEAR + ' · Vienna Address Map';
+  document.title = 'Lehmann ' + YC().label + ' · Vienna Address Map';
 }
 
 async function switchYear(year){
   if (year === CUR_YEAR) return;
   CUR_YEAR = year;
   $('boot').classList.remove('gone');
-  $('boot').lastElementChild.textContent = 'Loading ' + year + '…';
+  $('boot').lastElementChild.textContent = 'Loading ' + YC().label + '…';
   await loadYearData();
   const feats = allFeatures.filter(f => { const qc = f.properties.qc; return keepIdx.some(k => qc[k] > 0); });
   map.getSource('places').setData({type: 'FeatureCollection', features: feats});
@@ -191,7 +193,7 @@ async function switchYear(year){
   $('boot').classList.add('gone');
   $('q').value = ''; $('results').style.display = 'none';
 }
-$('yrPick').addEventListener('change', e => switchYear(+e.target.value));
+$('yrPick').addEventListener('change', e => switchYear(e.target.value));
 
 map.on('load', async () => {
   await loadYearData();
@@ -260,7 +262,7 @@ function popupHTML(r){
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') +
        (r.u ? ' \u00b7 ' + esc(r.u) : '') + ', ' + esc(r.d || '') + '. Bezirk</div>';
-  h += '<div class="pp-meta">' + CUR_YEAR + ' \u00b7 ' + esc(q) + '</div></div>';
+  h += '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(q) + '</div></div>';
   return h;
 }
 
@@ -292,7 +294,7 @@ async function openGroupPopup(f, highlightId){
     h += '<div class="pp-row' + (highlightId !== null && r._id === highlightId ? ' hl' : '') + '">' +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') +
-      '<div class="pp-meta">' + (r.u ? esc(r.u) + ' \u00b7 ' : '') + CUR_YEAR + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>' +
+      '<div class="pp-meta">' + (r.u ? esc(r.u) + ' \u00b7 ' : '') + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>' +
       recLinks(r) + '</div>';
   }
   h += '</div>';
