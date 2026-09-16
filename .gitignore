@@ -1,0 +1,10 @@
+# Lehmann pipeline data (not versioned)
+/pipeline/*.pdf
+/pipeline/raw*/
+/pipeline/*.png
+/pipeline/*.txt
+/pipeline/progress*/
+/pipeline/*.jsonl
+/pipeline/*.log
+# OS
+.DS_Store
