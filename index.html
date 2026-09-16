@@ -62,7 +62,6 @@ footer b{color:#fff;}
   <div class="brand">Lehmann <small>· Vienna</small></div>
   <select id="yrPick" aria-label="Year">
     <option value="1938" selected>1938</option>
-    <option value="1938h">1938 Houses</option>
     <option value="1942">1942</option>
   </select>
   <input id="q" type="search" placeholder="Surname, street, occupation…" autocomplete="off">
@@ -79,7 +78,7 @@ footer b{color:#fff;}
 <div id="aboutOverlay"><div id="aboutBox">
 <button id="aboutClose">Close</button>
 <h2>About this map</h2>
-<p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i> — Vienna's address book. Use the year picker to switch between the 1938 alphabetical residents' directory (Band&nbsp;1; 94,698 people at 27,503 addresses), the 1938 house directory (Band&nbsp;2, IV.&nbsp;Teil — residents by street address), and the 1942 volume (11,248 people at 7,116 addresses, partial coverage).</p>
+<p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i> — Vienna's address book. Use the year picker to switch between the 1938 alphabetical residents' directory (Band&nbsp;1; 94,698 people at 27,503 addresses) and the 1942 volume (11,248 people at 7,116 addresses, partial coverage).</p>
 <h3>How it was built</h3>
 <p>The 1,644-page scan was rendered page by page, split into columns, and OCR'd (Tesseract with a Fraktur model). A parsing pipeline extracted names, occupations and addresses, stripped page headers, footers and advertisements, and normalized historical street abbreviations. Each address was then joined against the City of Vienna's official address registry (“Adressen Standorte Wien”, CC&nbsp;BY&nbsp;4.0). Exact matches are blue, registry matches with a number fallback are purple, fuzzy street matches are amber.</p>
 <h3>The AI part</h3>
@@ -94,7 +93,6 @@ footer b{color:#fff;}
 // ---- year config --------------------------------------------------------
 const YEARS = {
   '1938': {dir: 'data', shard: 1024, geojson: 'data/points.8cead7a2dce8.geojson', label: '1938'},
-  '1938h': {dir: 'data38h', shard: 1000, geojson: 'data38h/points.geojson', label: '1938 Houses'},
   '1942': {dir: 'data42', shard: 1000, geojson: 'data42/points.geojson', label: '1942'},
 };
 let CUR_YEAR = '1938';
