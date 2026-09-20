@@ -19,7 +19,7 @@ header>*{pointer-events:auto;}
 #q:focus{outline:none;border-color:#ffd97a;background:rgba(255,255,255,.14);}
 #yrPick{background:transparent;border:none;color:#ffd97a;font-weight:700;font-size:16px;cursor:pointer;min-height:44px;padding:8px 2px;}
 #yrPick option{color:#111827;}
-#flt,#aboutBtn{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+#aboutBtn,#shareBtn,#flt{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
 #aboutBtn{font-weight:600;}
 #srcBtn{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;color:#111;text-decoration:none;}
 .pp-links{margin-top:4px;font-size:12px;color:#6b7280;}
@@ -31,8 +31,6 @@ header>*{pointer-events:auto;}
 #results div:hover{background:#f9fafb;}
 #results div.r-hl{background:#dbeafe;}
 #results .r-sub{color:#6b7280;font-size:12px;}
-footer{position:absolute;left:10px;bottom:10px;z-index:5;background:rgba(17,24,39,.85);color:#e5e7eb;padding:6px 12px;border-radius:8px;font-size:12px;}
-footer b{color:#fff;}
 .pp{font-size:14px;line-height:1.45;min-width:180px;}
 .pp-name{font-weight:700;font-size:15px;}
 .pp-occ{color:#4b5563;font-style:italic;}
@@ -58,6 +56,13 @@ footer b{color:#fff;}
 #aboutOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:none;align-items:center;justify-content:center;padding:18px;}
 #aboutBox{background:#fff;border-radius:14px;max-width:620px;max-height:85vh;overflow:auto;padding:24px 26px;box-shadow:0 8px 40px rgba(0,0,0,.35);}
 #aboutBox h2{margin:0 0 4px;font-size:20px;}
+#aboutBox h3{margin:12px 0 4px;font-size:13px;}
+.about-stats{margin:8px 0;}
+.about-legend{font-size:12px;color:#4b5563;}
+.pp-info{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;font:italic 12px Georgia,serif;cursor:pointer;margin:2px 0 0 4px;padding:0;vertical-align:middle;}
+.pp-info:hover{border-color:#2563eb;color:#2563eb;}
+.pp-info-body{margin-top:4px;}
+#lyrB2{margin-right:6px;}
 #aboutBox h3{margin:16px 0 6px;font-size:15px;}
 #aboutBox p{font-size:14px;line-height:1.6;color:#1f2937;margin:8px 0;}
 #aboutClose{float:right;border:none;background:#f3f4f6;border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer;}
@@ -76,26 +81,23 @@ footer b{color:#fff;}
 <div id="boot"><div class="spin"></div><div>Loading 127,308 people at 30,082 addresses…</div></div>
 <header>
   <div class="brand">
-    <span class="brand-name">Lehmann <small>· Vienna</small></span>
     <input id="q" type="search" placeholder="Surname, street, occupation… (/)" autocomplete="off">
+    <span class="brand-name">Lehmann <small>· Vienna</small></span>
     <select id="yrPick" aria-label="Year">
       <option value="1938" selected>1938</option>
       <option value="1942">1942</option>
     </select>
   </div>
-  <select id="flt">
-    <option value="all">All pins</option>
-    <option value="reg">Registry or better</option>
-    <option value="exact">Exact only</option>
-  </select>
   <button id="aboutBtn">About</button>
+  <button id="shareBtn">Share</button>
   <a id="srcBtn" href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Wienbibliothek digital</a>
 </header>
 <div id="results"></div>
-<footer><b id="count">—</b> people · <b id="acount">—</b> addresses · blue exact · purple registry · amber fuzzy</footer>
 <div id="aboutOverlay"><div id="aboutBox">
 <button id="aboutClose">Close</button>
 <h2>About this map</h2>
+<p class="about-stats"><b id="aboutCount">—</b> people · <b id="aboutAcount">—</b> addresses<br>
+<span class="about-legend"><span style="color:#2563eb">●</span> exact registry match · <span style="color:#7c3aed">●</span> registry match · <span style="color:#d97706">●</span> fuzzy street match</span></p>
 <p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i> — Vienna's address book. Use the year picker to switch between the 1938 alphabetical residents' directory (Band&nbsp;1; 94,698 people at 27,503 addresses) and the 1942 volume (11,248 people at 7,116 addresses, partial coverage).</p>
 <h3>How it was built</h3>
 <p>The 1,644-page scan was rendered page by page, split into columns, and OCR'd (Tesseract with a Fraktur model). A parsing pipeline extracted names, occupations and addresses, stripped page headers, footers and advertisements, and normalized historical street abbreviations. Each address was then joined against the City of Vienna's official address registry (“Adressen Standorte Wien”, CC&nbsp;BY&nbsp;4.0). Exact matches are blue, registry matches with a number fallback are purple, fuzzy street matches are amber.</p>
@@ -103,6 +105,15 @@ footer b{color:#fff;}
 <p>This pipeline was built by Muse by Meta, an AI research assistant, working with Moshe Berman. The agent wrote the OCR, parsing and geocoding code, ran the batches, validated samples against the page scans, and built this site. Every stage reported measured numbers — match rates, not adjectives — and uncertain matches are flagged on the map rather than hidden.</p>
 <h3>Caveats</h3>
 <p>OCR misreads names; some 1938 streets were renamed or no longer exist; amber pins are approximate. Absence of a pin doesn't mean absence from the book — only 48.7% of addressed entries matched the modern registry.</p>
+<h3>Keyboard</h3>
+<p><b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · on the map, <b>←</b><b>→</b> steps through pins.</p>
+<h3>Developer</h3>
+<p>Pin quality filter: <select id="flt">
+<option value="all">All pins</option>
+<option value="reg">Registry or better</option>
+<option value="exact">Exact only</option>
+</select></p>
+<p><label><input type="checkbox" id="lyrB2"> 1938 Band 2 residences — unreviewed OCR preview layer</label></p>
 <h3>Source</h3><p>The directory was scanned from the 1938 volume held by the Wienbibliothek im Rathaus. <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Browse the original scan</a> page by page.</p>
 <h3>License</h3><p>Source scans © Wienbibliothek im Rathaus, Stadt Wien. The 1938 and 1942 Lehmann volumes are in the public domain. Map data extracted from the directory is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0 Universal</a>.</p>
 </div></div>
@@ -114,14 +125,20 @@ const YEARS = {
   '1942': {dir: 'data42', shard: 1000, geojson: 'data42/points.geojson', label: '1942'},
 };
 let CUR_YEAR = '1938';
+// Restore a shared view (#year/zoom/lat/lng) when present.
+(function(){
+  const m = location.hash.match(/^#(1938|1942)\/([\d.]+)\/(-?[\d.]+)\/(-?[\d.]+)/);
+  if (m && YEARS[m[1]]) { CUR_YEAR = m[1]; window._sharedView = {zoom: +m[2], lat: +m[3], lng: +m[4]}; }
+})();
 const YC = () => YEARS[CUR_YEAR];
 
 mapboxgl.accessToken = window.MAPBOX_TOKEN;
+const _sv = window._sharedView;
 const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/light-v11',
-  center: [16.37, 48.208],
-  zoom: 10.5,
+  center: _sv ? [_sv.lng, _sv.lat] : [16.37, 48.208],
+  zoom: _sv ? _sv.zoom : 10.5,
   maxBounds: [[15.9, 47.9], [16.9, 48.45]],
   keyboard: false // arrow keys step through pins instead of panning
 });
@@ -150,14 +167,23 @@ function bezPill(r){
 function tuerPill(r){
   return r.u ? '<span class="pill pill-tuer pill-tr">' + esc(r.u) + '</span>' : '';
 }
-function recLinks(r){
-  const links = [];
+function viewOriginalLink(r){
   const _pv = (r.pg != null) ? SCAN_PV[r.pg + 1] : null;
   if (VIEWER_URL && _pv)
-    links.push('<a href="' + VIEWER_URL.split('{pageview}').join(_pv) + '" target="_blank" rel="noopener">View in original</a>');
-  if (CORRECT_URL && r._id != null)
-    links.push('<a href="' + CORRECT_URL + encodeURIComponent(CUR_YEAR + ':' + r._id) + '" target="_blank" rel="noopener">Suggest correction</a>');
-  return links.length ? '<div class="pp-links">' + links.map(l => '<div>' + l + '</div>').join('') + '</div>' : '';
+    return '<div class="pp-links"><div><a href="' + VIEWER_URL.split('{pageview}').join(_pv) + '" target="_blank" rel="noopener">View in original</a></div></div>';
+  return '';
+}
+// Match quality + the correction link hide behind a circled-i toggle.
+function ppInfo(r){
+  const meta = '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>';
+  const corr = (CORRECT_URL && r._id != null)
+    ? '<div><a href="' + CORRECT_URL + encodeURIComponent(CUR_YEAR + ':' + r._id) + '" target="_blank" rel="noopener">Suggest correction</a></div>' : '';
+  return '<button class="pp-info" onclick="togglePpInfo(this)" aria-label="Record details">i</button>' +
+    '<div class="pp-info-body" style="display:none">' + meta + corr + '</div>';
+}
+function togglePpInfo(btn){
+  const body = btn.nextElementSibling;
+  if (body) body.style.display = (body.style.display === 'none') ? '' : 'none';
 }
 let searchIdx = null;
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
@@ -257,8 +283,11 @@ map.on('load', async () => {
       return;
     }
     const f = near(e.point, 'unclustered-point', TAP_R)[0];
-    if (!f) return;
-    openGroupPopup(f, null);
+    if (f) { openGroupPopup(f, null); return; }
+    if (b2Ready && $('lyrB2').checked) {
+      const b2 = near(e.point, 'b2-point', TAP_R)[0];
+      if (b2) { openB2Popup(b2); return; }
+    }
   });
   for (const lyr of ['clusters', 'unclustered-point']) {
     map.on('mouseenter', lyr, () => map.getCanvas().style.cursor = 'pointer');
@@ -273,8 +302,8 @@ map.on('load', async () => {
 function updateCount(feats){
   let n = 0;
   for (const f of feats) { const qc = f.properties.qc; for (const k of keepIdx) n += qc[k]; }
-  $('count').textContent = n.toLocaleString('en-US');
-  $('acount').textContent = feats.length.toLocaleString('en-US');
+  $('aboutCount').textContent = n.toLocaleString('en-US');
+  $('aboutAcount').textContent = feats.length.toLocaleString('en-US');
 }
 
 $('flt').addEventListener('change', e => {
@@ -284,15 +313,76 @@ $('flt').addEventListener('change', e => {
   map.getSource('places').setData({type: 'FeatureCollection', features: feats});
   updateCount(feats);
 });
+$('yrPick').value = CUR_YEAR;
+// ---- shareable links: #year/zoom/lat/lng -----------------------------------
+function viewHash(){
+  const c = map.getCenter();
+  return '#' + CUR_YEAR + '/' + map.getZoom().toFixed(2) + '/' + c.lat.toFixed(5) + '/' + c.lng.toFixed(5);
+}
+$('shareBtn').addEventListener('click', async () => {
+  const url = location.origin + location.pathname + viewHash();
+  const btn = $('shareBtn');
+  try {
+    await navigator.clipboard.writeText(url);
+    const old = btn.textContent;
+    btn.textContent = 'Copied \u2713';
+    setTimeout(() => { btn.textContent = old; }, 1600);
+  } catch (e) { prompt('Copy this link:', url); }
+});
+map.on('moveend', () => { try { history.replaceState(null, '', viewHash()); } catch (e) {} });
+// ---- 1938 Band 2 unreviewed preview layer ------------------------------------
+let b2Ready = false;
+const b2RecCache = {};
+async function getB2Record(id){
+  const sh = 'r' + String(Math.floor(id / 1000)).padStart(4, '0');
+  if (!b2RecCache[sh]) {
+    const res = await fetch('data38b2/records/' + sh + '.json');
+    if (!res.ok) return null;
+    b2RecCache[sh] = await res.json();
+  }
+  return b2RecCache[sh][String(id)] || null;
+}
+async function openB2Popup(f){
+  let ids = f.properties.m;
+  if (typeof ids === 'string') { try { ids = JSON.parse(ids); } catch (e) { ids = null; } }
+  if (!Array.isArray(ids)) ids = [];
+  const recs = (await Promise.all(ids.map(getB2Record))).filter(Boolean);
+  if (!recs.length) return;
+  const r0 = recs[0];
+  let h = '<div class="pp"><div class="pp-addr"><b>' + esc(r0.st || '') + ' ' + esc(r0.hn || '') + '</b> ' + bezPill(r0) + '</div>' +
+    '<div class="pp-meta" style="margin:4px 0">Unreviewed OCR preview \u00b7 Band 2</div><div class="pp-list">';
+  for (const r of recs.slice(0, 50))
+    h += '<div class="pp-row"><div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
+      (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + '</div>';
+  if (recs.length > 50) h += '<div class="pp-more">' + (recs.length - 50) + ' more in preview</div>';
+  h += '</div></div>';
+  new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(f.geometry.coordinates).setHTML(h).addTo(map);
+}
+$('lyrB2').addEventListener('change', async e => {
+  const on = e.target.checked;
+  try {
+    if (on && !b2Ready) {
+      const res = await fetch('data38b2/points.geojson');
+      if (!res.ok) throw new Error('no data');
+      map.addSource('places-b2', {type: 'geojson', data: await res.json()});
+      map.addLayer({id: 'b2-point', type: 'circle', source: 'places-b2',
+        paint: {'circle-color': '#059669', 'circle-radius': 4.5, 'circle-stroke-width': 1.5,
+                'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
+      b2Ready = true;
+    }
+    if (b2Ready) map.setLayoutProperty('b2-point', 'visibility', on ? 'visible' : 'none');
+  } catch (err) {
+    e.target.checked = false;
+    alert('Band 2 preview data is not built yet \u2014 check back after the next processing batch.');
+  }
+});
 
 function popupHTML(r){
-  const q = qLabel(r.m);
   let h = '<div class="pp pp-single' + (r.u ? ' pp-tuer' : '') + '">' + tuerPill(r) +
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(q) + '</div>';
-  h += recLinks(r) + '</div>';
+  h += viewOriginalLink(r) + ppInfo(r) + '</div>';
   return h;
 }
 
@@ -327,8 +417,7 @@ async function openGroupPopup(f, highlightId){
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') +
-      '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>' +
-      recLinks(r) + '</div>';
+      viewOriginalLink(r) + ppInfo(r) + '</div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + hidden + ' more resident' + (hidden > 1 ? 's' : '') + ' hidden by filter</div>';
