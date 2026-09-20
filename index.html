@@ -81,7 +81,7 @@ header>*{pointer-events:auto;}
 <div id="boot"><div class="spin"></div><div>Loading 127,308 people at 30,082 addresses…</div></div>
 <header>
   <div class="brand">
-    <input id="q" type="search" placeholder="Surname, street, occupation… (/)" autocomplete="off">
+    <input id="q" type="search" placeholder="/ to search" autocomplete="off">
     <span class="brand-name">Lehmann <small>· Vienna</small></span>
     <select id="yrPick" aria-label="Year">
       <option value="1938" selected>1938</option>
@@ -457,6 +457,8 @@ function selectResRow(row){
     }
   });
 }
+$('q').addEventListener('focus', () => { $('q').placeholder = 'Surname, street, occupation…'; });
+$('q').addEventListener('blur', () => { $('q').placeholder = '/ to search'; });
 $('q').addEventListener('input', e => {
   clearTimeout(searchTimer);
   resRows = []; resHl = -1;
