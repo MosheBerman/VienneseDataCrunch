@@ -170,7 +170,7 @@ function tuerPill(r){
 function viewOriginalLink(r){
   const _pv = (r.pg != null) ? SCAN_PV[r.pg + 1] : null;
   if (VIEWER_URL && _pv)
-    return '<div class="pp-links"><div><a href="' + VIEWER_URL.split('{pageview}').join(_pv) + '" target="_blank" rel="noopener">View in original</a></div></div>';
+    return '<div class="pp-links"><div><a href="' + VIEWER_URL.split('{pageview}').join(_pv) + '" target="_blank" rel="noopener">View in scan</a></div></div>';
   return '';
 }
 // Match quality + the correction link hide behind a circled-i toggle.
