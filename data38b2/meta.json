@@ -2,15 +2,15 @@
  "year": "1938b2",
  "label": "1938 Band 2 residences (preview — OCR unreviewed)",
  "unreviewed": true,
- "records": 305855,
- "pins": 10785,
- "shards": 723,
- "match_rate": 0.6352,
+ "records": 321212,
+ "pins": 11527,
+ "shards": 767,
+ "match_rate": 0.6312,
  "match_tiers": {
-  "band1": 177249,
-  "unmatched": 172555,
-  "ogd": 104210,
-  "ogd_district_fb": 24396
+  "band1": 181540,
+  "unmatched": 184537,
+  "ogd": 108310,
+  "ogd_district_fb": 31362
  },
  "built_from": "gemini_parsed.jsonl"
 }
