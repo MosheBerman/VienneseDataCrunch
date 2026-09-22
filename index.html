@@ -101,6 +101,7 @@ header>*{pointer-events:auto;}
 <p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i> — Vienna's address book. Use the year picker to switch between the 1938 alphabetical residents' directory (Band&nbsp;1; 94,698 people at 27,503 addresses) and the 1942 volume (11,248 people at 7,116 addresses, partial coverage).</p>
 <h3>How it was built</h3>
 <p>The 1,644-page scan was rendered page by page, split into columns, and OCR'd (Tesseract with a Fraktur model). A parsing pipeline extracted names, occupations and addresses, stripped page headers, footers and advertisements, and normalized historical street abbreviations. Each address was then joined against the City of Vienna's official address registry (“Adressen Standorte Wien”, CC&nbsp;BY&nbsp;4.0). Exact matches are blue, registry matches with a number fallback are purple, fuzzy street matches are amber.</p>
+<p><a href="research/lighting/" target="_blank" rel="noopener">Scan preprocessing experiments</a> — a gallery of the lighting-correction algorithms being tested to improve OCR.</p>
 <h3>The AI part</h3>
 <p>This pipeline was built by Muse by Meta, an AI research assistant, working with Moshe Berman. The agent wrote the OCR, parsing and geocoding code, ran the batches, validated samples against the page scans, and built this site. Every stage reported measured numbers — match rates, not adjectives — and uncertain matches are flagged on the map rather than hidden.</p>
 <h3>Caveats</h3>

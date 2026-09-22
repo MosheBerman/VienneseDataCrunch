@@ -1,0 +1,16 @@
+{
+ "year": "1938b2clean",
+ "label": "1938 Band 2 clean-only (preview — OCR unreviewed)",
+ "unreviewed": true,
+ "records": 335847,
+ "pins": 16826,
+ "shards": 1120,
+ "match_rate": 0.6516,
+ "match_tiers": {
+  "band1": 191657,
+  "ogd": 116083,
+  "unmatched": 177177,
+  "ogd_district_fb": 28107
+ },
+ "built_from": "lehmann1938-clean.jsonl"
+}
