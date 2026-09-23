@@ -25,6 +25,13 @@ header>*{pointer-events:auto;}
 .pp-links{margin-top:4px;font-size:12px;color:#6b7280;}
 .pp-links a{color:#2563eb;text-decoration:none;}
 @media (pointer:coarse){.pp-links a{display:inline-block;padding:14px 6px;}}
+.btnrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+@media (max-width:640px){
+  header{flex-direction:column;align-items:stretch;}
+  .brand{max-width:none;}
+  .btnrow{width:100%;}
+  #results{left:10px;right:10px;max-width:none;}
+}
 #results{position:absolute;top:56px;left:10px;z-index:6;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:360px;max-height:50vh;overflow:auto;display:none;}
 #results div{padding:9px 12px;border-bottom:1px solid #f3f4f6;cursor:pointer;font-size:14px;}
 #results div:last-child{border-bottom:none;}
@@ -88,9 +95,11 @@ header>*{pointer-events:auto;}
       <option value="1942">1942</option>
     </select>
   </div>
-  <button id="aboutBtn">About</button>
-  <button id="shareBtn">Share</button>
-  <a id="srcBtn" href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Wienbibliothek digital</a>
+  <div class="btnrow">
+    <button id="aboutBtn">About</button>
+    <button id="shareBtn">Share</button>
+    <a id="srcBtn" href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Wienbibliothek digital</a>
+  </div>
 </header>
 <div id="results"></div>
 <div id="aboutOverlay"><div id="aboutBox">
@@ -464,12 +473,13 @@ $('q').addEventListener('input', e => {
   clearTimeout(searchTimer);
   resRows = []; resHl = -1;
   const box = $('results');
+  const placeBox = () => { const h = document.querySelector('header'); box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px'; };
   searchTimer = setTimeout(async () => {
     const q = e.target.value.trim().toLowerCase();
     if (q.length < 2) { box.style.display = 'none'; return; }
     if (!searchIdx) {
       box.innerHTML = '<div class="r-load"><div class="spin sm"></div></div>';
-      box.style.display = 'block';
+      placeBox(); box.style.display = 'block';
       try { searchIdx = await (await fetch(YC().dir + '/search.idx.json')).json(); }
       catch (err) { box.style.display = 'none'; return; }
     }
@@ -500,7 +510,7 @@ $('q').addEventListener('input', e => {
       }
     }
     const top = Object.entries(hits).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    if (!top.length) { box.innerHTML = '<div>No matches</div>'; box.style.display = 'block'; return; }
+    if (!top.length) { box.innerHTML = '<div>No matches</div>'; placeBox(); box.style.display = 'block'; return; }
     box.innerHTML = '';
     for (const [id] of top) {
       const rec = await getRecord(+id);
@@ -514,7 +524,7 @@ $('q').addEventListener('input', e => {
       d.addEventListener('click', () => selectResRow(row));
       box.appendChild(d);
     }
-    box.style.display = 'block';
+    placeBox(); box.style.display = 'block';
   }, 220);
 });
 // ---- keyboard shortcuts -------------------------------------------------
