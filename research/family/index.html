@@ -2,28 +2,41 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Family addresses 1938–1942 — Lehmann's Vienna</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.css" rel="stylesheet">
 <style>
-body{font-family:-apple-system,Helvetica,Arial,sans-serif;margin:0;background:#f8fafc;color:#111827}
-header{background:#111827;color:#f9fafb;padding:20px 18px}
-header h1{margin:0 0 6px;font-size:21px}
-header p{margin:4px 0;max-width:760px;color:#d1d5db;font-size:13.5px;line-height:1.55}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f8fafc;color:#111827}
+header{background:#111827;color:#f9fafb;padding:18px 16px}
+header h1{margin:0 0 6px;font-size:20px}
+header p{margin:4px 0;max-width:780px;color:#d1d5db;font-size:13.5px;line-height:1.55}
 header a{color:#93c5fd}
-#controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 14px;background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:500}
-.yr{flex:1 1 0;min-width:64px;padding:12px 0;font-size:16px;font-weight:600;border:2px solid #d1d5db;border-radius:10px;background:#fff;color:#111827;cursor:pointer}
-.yr.active{background:#111827;color:#fff;border-color:#111827}
-#band1wrap{display:none;align-items:center;gap:8px;font-size:14px;padding:6px 4px;width:100%}
+#controls{padding:10px 12px;background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:10}
+.seg{display:flex;gap:0;margin-bottom:10px;border:2px solid #d1d5db;border-radius:12px;overflow:hidden}
+.segbtn{flex:1;padding:12px 0;font-size:15px;font-weight:700;border:none;background:#fff;color:#4b5563;cursor:pointer}
+.segbtn.active{background:#111827;color:#fff}
+#years{display:flex;gap:8px;margin-bottom:10px}
+.yr{flex:1;padding:10px 0;font-size:15px;font-weight:600;border:2px solid #d1d5db;border-radius:10px;background:#fff;color:#111827;cursor:pointer}
+.yr.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.yr:disabled{opacity:.35;cursor:default}
+#player{display:flex;align-items:center;gap:12px}
+#play{width:60px;height:60px;flex:0 0 60px;border-radius:50%;border:none;background:#dc2626;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+#play.on{background:#111827}
+#scrub{flex:1;min-width:0;height:34px;accent-color:#dc2626}
+#yearRead{font-size:30px;font-weight:800;min-width:86px;text-align:right;font-variant-numeric:tabular-nums}
+#band1wrap{display:none;align-items:center;gap:8px;font-size:14px;padding:8px 2px 0;color:#4b5563}
 #band1wrap.show{display:flex}
 #band1wrap input{width:22px;height:22px}
-#map{height:68vh;min-height:420px;width:100%}
-#legend{padding:10px 14px;font-size:12.5px;color:#4b5563;background:#fff;border-top:1px solid #e5e7eb;display:flex;flex-wrap:wrap;gap:6px 16px}
+#map{height:58vh;min-height:360px;width:100%}
+#caption{padding:10px 14px;font-size:13.5px;background:#fefce8;border-top:1px solid #fde68a;color:#713f12;line-height:1.6}
+#legend{padding:10px 14px;font-size:12.5px;color:#4b5563;background:#fff;border-top:1px solid #e5e7eb;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
 .dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
-#summary{padding:10px 14px;font-size:13.5px;background:#fefce8;border-top:1px solid #fde68a;color:#713f12}
-footer{padding:14px;color:#6b7280;font-size:12px;line-height:1.6;max-width:760px}
-.leaflet-popup-content{font-size:13.5px;line-height:1.5;max-height:46vh;overflow:auto}
-.leaflet-popup-content h3{margin:0 0 4px;font-size:15px}
-.leaflet-popup-content .meta{color:#4b5563;font-size:12px;margin:2px 0}
-.leaflet-popup-content ul{margin:6px 0;padding-left:18px}
+.yrs{color:#9ca3af;font-size:11.5px}
+footer{padding:14px;color:#6b7280;font-size:12px;line-height:1.6;max-width:780px}
+.mapboxgl-popup-content{font-size:13.5px;line-height:1.5;max-height:46vh;overflow:auto;border-radius:10px}
+.mapboxgl-popup-content h3{margin:0 0 4px;font-size:15px}
+.mapboxgl-popup-content .meta{color:#4b5563;font-size:12px;margin:2px 0}
+.mapboxgl-popup-content ul{margin:6px 0;padding-left:18px}
 .fam{font-weight:700;color:#b91c1c}
 .badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:20px;background:#eef2ff;color:#3730a3;margin:2px 4px 2px 0}
 .badge.warn{background:#fef3c7;color:#92400e}
@@ -32,113 +45,403 @@ footer{padding:14px;color:#6b7280;font-size:12px;line-height:1.6;max-width:760px
 <header><h1>Family addresses, 1938–1942</h1>
 <p>Year-by-year view of four family addresses from Lehmann's <i>Wiener Adressbuch</i>, Band 2 (Häuserverzeichnis):
 <b>Wallensteinstraße 62</b> (XX., Bermann) · <b>Rueppgasse 18</b> (II., Biller) · <b>Karajangasse 17</b> (XX., Goldberg) · <b>Kleine Pfarrgasse 13</b> (II.).
-Every resident listed at each address, each year — family surnames highlighted. Data extracted from the directory scans; see notes in each popup.</p>
+Press play to animate the migration — family trails follow named people across the years, building view shows every resident fading in and out as the houses empty.</p>
 <p><a href="../../">← back to the map</a> · <a href="../">research index</a></p></header>
-<div id="controls" role="group" aria-label="Year picker">
-<button class="yr" data-y="1938">1938</button><button class="yr" data-y="1939">1939</button><button class="yr" data-y="1940">1940</button><button class="yr" data-y="1941">1941</button><button class="yr" data-y="1942">1942</button>
-<label id="band1wrap"><input type="checkbox" id="band1"> 1942 Band 1 surname hits <span style="color:#6b7280">(OCR-unverified, separate layer)</span></label>
+<div id="controls">
+  <div class="seg" role="group" aria-label="View mode">
+    <button id="modeTrails" class="segbtn active">Family trails</button>
+    <button id="modeBuildings" class="segbtn">Building residents</button>
+  </div>
+  <div id="years" role="group" aria-label="Year picker"></div>
+  <div id="player">
+    <button id="play" aria-label="Play animation">▶</button>
+    <input id="scrub" type="range" min="0" max="0" step="1" value="0" aria-label="Timeline scrubber">
+    <div id="yearRead">…</div>
+  </div>
+  <label id="band1wrap"><input type="checkbox" id="band1"> 1942 Band 1 surname hits <span>(OCR-unverified, separate layer)</span></label>
 </div>
 <div id="map"></div>
-<div id="summary"></div>
-<div id="legend">
-<span><span class="dot" style="background:#2563eb"></span>address listed</span>
-<span><span class="dot" style="background:#dc2626"></span>family surname present</span>
-<span><span class="dot" style="background:#9ca3af"></span>house absent that year</span>
-<span><span class="dot" style="background:#7c3aed"></span>1942 Band 1 hit (unverified)</span>
-<span>◌ dashed ring = interpolated position</span>
-</div>
-<footer>Sources: Lehmann Band 2 IV. Teil scans via Wienbibliothek (Public Domain Mark 1.0);
-resident lists transcribed from the scans (1938–39, 1941–42) and the 1940 volume.
+<div id="caption">loading…</div>
+<div id="legend"></div>
+<footer>Sources: Lehmann Band 2 IV. Teil scans via Wienbibliothek (Public Domain Mark 1.0).
 Kleine Pfarrgasse 13's pin is interpolated along the street — the house was gone by 1940 and the modern registry has no #13.
 1942 Band 1 surname hits come from noisy Tesseract OCR and are unverified — check page images before research use.
-Work in progress; corrections welcome.</footer>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+Person trails match by surname + given-name initial across years. Map: Mapbox. Work in progress; corrections welcome.</footer>
+<script>window.MAPBOX_TOKEN="pk.eyJ1IjoibW9zaGViZXJtYW5uIiwiYSI6ImNtdHc5a21odDA0aGMzNG9vNnF6Z3Z6cjAifQ.iO_N_QmWcIANN2aRrfXl_Q";</script>
 <script>
+'use strict';
+/* Family migration demo — Mapbox rebuild + migration animation prototype.
+   Person identity rule (user standing rule): a given-name initial counts as a
+   match when surname (+ address/occupation) otherwise line up. */
+mapboxgl.accessToken = window.MAPBOX_TOKEN;
+
+const YEARS_WANTED = [1938, 1939, 1940, 1941, 1942];
 const FAM = /^(Bermann|Berman|Biller|Korn|Goldberg)\b/i;
-const map = L.map('map').setView([48.224, 16.381], 13);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-  {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>', maxZoom: 19}).addTo(map);
+const PALETTE = ['#dc2626', '#7c3aed', '#059669', '#b45309', '#2563eb', '#db2777', '#0d9488'];
+const STEP_MS = 2200, TWEEN_MS = 800;
 
-let layers = {main: L.layerGroup().addTo(map), band1: L.layerGroup()};
-const cache = {};
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fold = s => s.toLowerCase().replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's');
+const famKey = pr => fold(pr.surname).replace(/^berman+$/, 'bermann') + '|' + pr.initial;
+function hash01(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967296; }
 
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+let YEARS = [], DATA = {}, PEOPLE = [], BKEYS = [];
+let mode = 'trails', yi = 0, playing = false, timer = null, tweenRAF = null;
+let prevPeoplePts = [];
 
-function popup(p){
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/light-v11',
+  center: [16.381, 48.2215], zoom: 12.5,
+  maxBounds: [[16.2, 48.12], [16.55, 48.32]]
+});
+map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+// ---- data loading (data-driven years; missing files degrade gracefully) ----
+async function loadAll() {
+  const res = await Promise.allSettled(YEARS_WANTED.map(y =>
+    fetch(`family_${y}.geojson`).then(r => { if (!r.ok) throw new Error(y); return r.json(); })));
+  res.forEach((r, i) => {
+    if (r.status === 'fulfilled') { YEARS.push(YEARS_WANTED[i]); DATA[YEARS_WANTED[i]] = r.value.features; }
+  });
+}
+
+// "Biller S., Spengler" | "Biller T." | "Fadrek M Private" (1940/41 rows lack commas)
+function parseResident(s) {
+  let name = s, occ = '';
+  const ci = s.indexOf(',');
+  if (ci >= 0) { name = s.slice(0, ci).trim(); occ = s.slice(ci + 1).trim(); }
+  const toks = name.split(/\s+/).filter(Boolean);
+  return { surname: toks[0] || '', initial: (toks[1] || '').charAt(0).toUpperCase(), occ, raw: s };
+}
+const isFam = pr => FAM.test(pr.surname);
+
+// Match highlighted family members across years by normalized surname + initial.
+function buildPeople() {
+  const byKey = new Map();
+  for (const y of YEARS) {
+    for (const f of DATA[y]) {
+      const p = f.properties;
+      if (p.status === 'absent') continue;
+      const [lon, lat] = f.geometry.coordinates;
+      for (const r of p.residents) {
+        const pr = parseResident(r);
+        if (!isFam(pr)) continue;
+        const key = famKey(pr);
+        if (!byKey.has(key)) byKey.set(key, {
+          key, surname: pr.surname, initial: pr.initial,
+          label: `${pr.surname} ${pr.initial}.`, stops: []
+        });
+        const person = byKey.get(key);
+        if (!person.stops.some(s => s.year === y))
+          person.stops.push({ year: y, lon, lat, addr: `${p.street} ${p.house}`, occ: pr.occ });
+      }
+    }
+  }
+  PEOPLE = [...byKey.values()];
+  PEOPLE.forEach(p => p.stops.sort((a, b) => a.year - b.year));
+  // Most years present first, then alphabetical — stable trail colors.
+  PEOPLE.sort((a, b) => b.stops.length - a.stops.length || a.label.localeCompare(b.label));
+  PEOPLE.forEach((p, i) => { p.color = PALETTE[i % PALETTE.length]; });
+}
+
+// Unique buildings across all years.
+function buildBuildings() {
+  const seen = new Map();
+  for (const y of YEARS) for (const f of DATA[y]) {
+    const p = f.properties, k = p.street + '|' + p.house;
+    if (!seen.has(k)) seen.set(k, { key: k, street: p.street, house: p.house, lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1], interp: p.geo_quality !== 'exact' });
+  }
+  BKEYS = [...seen.values()];
+}
+const bkeyOf = f => f.properties.street + '|' + f.properties.house;
+function featFor(bkey, y) { return (DATA[y] || []).find(f => bkeyOf(f) === bkey); }
+
+// ---- trail / marker geometry ----
+function trailFeatures() {
+  const feats = [];
+  for (const p of PEOPLE)
+    for (let i = 0; i + 1 < p.stops.length; i++) {
+      const a = p.stops[i], b = p.stops[i + 1];
+      if (b.year !== a.year + 1) continue; // never invent a presence for a gap year
+      feats.push({
+        type: 'Feature', properties: { person: p.label, color: p.color },
+        geometry: { type: 'LineString', coordinates: [[a.lon, a.lat], [b.lon, b.lat]] }
+      });
+    }
+  return feats;
+}
+function peopleAt(y) {
+  return PEOPLE.filter(p => p.stops.some(s => s.year === y)).map(p => {
+    const s = p.stops.find(s => s.year === y);
+    return {
+      type: 'Feature',
+      properties: { key: p.key, label: p.label, color: p.color, addr: s.addr, occ: s.occ },
+      geometry: { type: 'Point', coordinates: [s.lon, s.lat] }
+    };
+  });
+}
+function bldgPinFeatures(y) {
+  return BKEYS.map(b => {
+    const f = featFor(b.key, y);
+    const absent = !f || f.properties.status === 'absent';
+    const hits = !absent && (f.properties.surname_hits || []).length > 0;
+    return {
+      type: 'Feature',
+      properties: {
+        bkey: b.key, absent,
+        color: absent ? '#9ca3af' : (hits ? '#dc2626' : '#2563eb'),
+        label: `${b.street} ${b.house}`
+      },
+      geometry: { type: 'Point', coordinates: [b.lon, b.lat] }
+    };
+  });
+}
+// One dot per resident, golden-angle spiral around the building, deterministic.
+function residentDotFeatures(y) {
+  const feats = [];
+  for (const b of BKEYS) {
+    const f = featFor(b.key, y);
+    if (!f || f.properties.status === 'absent') continue;
+    const residents = f.properties.residents;
+    const n = residents.length, R = 0.0013, rot = hash01(b.key) * 6.283;
+    residents.forEach((r, i) => {
+      const pr = parseResident(r), fam = isFam(pr);
+      const rr = R * Math.sqrt((i + 0.5) / Math.max(n, 1));
+      const th = rot + i * 2.399963;
+      feats.push({
+        type: 'Feature',
+        properties: { fam, name: r, bkey: b.key, color: fam ? '#dc2626' : '#64748b' },
+        geometry: { type: 'Point', coordinates: [b.lon + rr * Math.cos(th), b.lat + rr * Math.sin(th) * 0.75] }
+      });
+    });
+  }
+  return feats;
+}
+
+// ---- map sources & layers ----
+function addSourcesAndLayers() {
+  const empty = { type: 'FeatureCollection', features: [] };
+  for (const s of ['bldg', 'trails', 'people', 'residents', 'band1'])
+    map.addSource(s, { type: 'geojson', data: empty });
+
+  map.addLayer({
+    id: 'trailLines', type: 'line', source: 'trails',
+    paint: { 'line-color': ['get', 'color'], 'line-width': 3, 'line-opacity': 0.8 }
+  });
+  map.addLayer({
+    id: 'bldgPins', type: 'circle', source: 'bldg',
+    paint: {
+      'circle-color': ['get', 'color'], 'circle-radius': 11,
+      'circle-stroke-width': 3, 'circle-stroke-color': '#fff', 'circle-opacity': 0.9
+    }
+  });
+  map.addLayer({
+    id: 'resDots', type: 'circle', source: 'residents',
+    paint: {
+      'circle-color': ['get', 'color'], 'circle-radius': 5,
+      'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff', 'circle-opacity': 0.9,
+      'circle-opacity-transition': { duration: 250 }
+    }
+  });
+  map.addLayer({
+    id: 'peoplePts', type: 'circle', source: 'people',
+    paint: {
+      'circle-color': ['get', 'color'], 'circle-radius': 9,
+      'circle-stroke-width': 3, 'circle-stroke-color': '#fff'
+    }
+  });
+  map.addLayer({
+    id: 'peopleLabels', type: 'symbol', source: 'people',
+    layout: {
+      'text-field': ['get', 'label'], 'text-size': 12, 'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
+      'text-offset': [0, 1.6], 'text-anchor': 'top'
+    },
+    paint: { 'text-color': ['get', 'color'], 'text-halo-color': '#fff', 'text-halo-width': 2 }
+  });
+  map.addLayer({
+    id: 'band1Pts', type: 'circle', source: 'band1',
+    paint: {
+      'circle-color': '#7c3aed', 'circle-radius': 8,
+      'circle-stroke-width': 2.5, 'circle-stroke-color': '#fff', 'circle-opacity': 0.8
+    }
+  });
+}
+
+// ---- popups ----
+function popupHTML(p) {
   let h = `<h3>${esc(p.street)} ${esc(p.house)} <span style="color:#6b7280">(${esc(p.district)})</span> · ${p.year}</h3>`;
-  if (p.status === 'absent'){
-    h += `<p><span class="badge absent">house absent this year</span></p><p class="meta">${esc(p.note||'')}</p>`;
+  if (p.status === 'absent') {
+    h += `<p><span class="badge absent">house absent this year</span></p><p class="meta">${esc(p.note || '')}</p>`;
   } else {
     if (p.house_line) h += `<p class="meta">${esc(p.house_line)}</p>`;
     if (p.owner) h += `<p class="meta">Owner: ${esc(p.owner)}</p>`;
     if (p.caretaker) h += `<p class="meta">Caretaker: ${esc(p.caretaker)}</p>`;
     if (p.note) h += `<p class="meta">Note: ${esc(p.note)}</p>`;
-    h += '<ul>' + p.residents.map(r=>{
-      const fam = FAM.test(r.split(',')[0].trim());
-      return `<li${fam?' class="fam"':''}>${esc(r)}</li>`;
-    }).join('') + '</ul>';
+    h += '<ul>' + p.residents.map(r =>
+      `<li${isFam(parseResident(r)) ? ' class="fam"' : ''}>${esc(r)}</li>`).join('') + '</ul>';
   }
   if (p.geo_quality !== 'exact') h += `<span class="badge warn">position ${esc(p.geo_quality)}</span>`;
-  if (p.printed_page) h += `<p class="meta">Band 2, printed p. ${esc(p.printed_page)}${p.scan?`, scan ${esc(p.scan)}`:''}</p>`;
+  if (p.printed_page) h += `<p class="meta">Band 2, printed p. ${esc(p.printed_page)}${p.scan ? `, scan ${esc(p.scan)}` : ''}</p>`;
   return h;
 }
-
-function markerFor(f){
-  const p = f.properties, [lon, lat] = f.geometry.coordinates;
-  let color = '#2563eb';
-  if (p.status === 'absent') color = '#9ca3af';
-  else if ((p.surname_hits||[]).length) color = '#dc2626';
-  const m = L.circleMarker([lat, lon], {radius: 11, color, weight: 3,
-    fillColor: color, fillOpacity: p.status==='absent'?0.25:0.55,
-    dashArray: p.geo_quality==='exact' ? null : '5 4'});
-  m.bindPopup(popup(p));
-  return m;
+map.on('click', 'bldgPins', e => {
+  const bkey = e.features[0].properties.bkey, y = YEARS[yi];
+  const f = featFor(bkey, y);
+  if (f) new mapboxgl.Popup({ offset: 14, maxWidth: '300px' })
+    .setLngLat(e.lngLat).setHTML(popupHTML(f.properties)).addTo(map);
+});
+map.on('click', 'peoplePts', e => {
+  const pr = e.features[0].properties;
+  new mapboxgl.Popup({ offset: 14 })
+    .setLngLat(e.lngLat)
+    .setHTML(`<h3 style="margin:0">${esc(pr.label)}</h3><p class="meta">${esc(pr.addr)} · ${esc(pr.occ || '')}</p>`).addTo(map);
+});
+for (const lyr of ['bldgPins', 'peoplePts']) {
+  map.on('mouseenter', lyr, () => map.getCanvas().style.cursor = 'pointer');
+  map.on('mouseleave', lyr, () => map.getCanvas().style.cursor = '');
 }
 
-function summaryFor(year, feats){
-  const bits = feats.map(f=>{
+// ---- rendering ----
+function setData(src, feats) { map.getSource(src).setData({ type: 'FeatureCollection', features: feats }); }
+
+function renderTrails(y, animate) {
+  setData('bldg', bldgPinFeatures(y));
+  setData('trails', trailFeatures());
+  setData('residents', []);
+  map.setLayoutProperty('trailLines', 'visibility', 'visible');
+  map.setLayoutProperty('peoplePts', 'visibility', 'visible');
+  map.setLayoutProperty('peopleLabels', 'visibility', 'visible');
+  map.setLayoutProperty('resDots', 'visibility', 'none');
+  map.setPaintProperty('bldgPins', 'circle-radius', 11);
+  const to = peopleAt(y);
+  if (animate && prevPeoplePts.length) tweenPeople(prevPeoplePts, to, TWEEN_MS);
+  else { cancelAnimationFrame(tweenRAF); setData('people', to); }
+  prevPeoplePts = to;
+}
+function renderBuildings(y) {
+  cancelAnimationFrame(tweenRAF);
+  setData('bldg', bldgPinFeatures(y));
+  setData('trails', []);
+  setData('people', []);
+  prevPeoplePts = [];
+  map.setLayoutProperty('trailLines', 'visibility', 'none');
+  map.setLayoutProperty('peoplePts', 'visibility', 'none');
+  map.setLayoutProperty('peopleLabels', 'visibility', 'none');
+  map.setLayoutProperty('resDots', 'visibility', 'visible');
+  map.setPaintProperty('bldgPins', 'circle-radius', 6);
+  // fade out, swap, fade in
+  map.setPaintProperty('resDots', 'circle-opacity', 0);
+  setTimeout(() => {
+    setData('residents', residentDotFeatures(y));
+    map.setPaintProperty('resDots', 'circle-opacity', 0.9);
+  }, 260);
+}
+function tweenPeople(from, to, dur) {
+  cancelAnimationFrame(tweenRAF);
+  const t0 = performance.now();
+  const fromMap = new Map(from.map(f => [f.properties.key, f.geometry.coordinates]));
+  const step = now => {
+    const t = Math.min(1, (now - t0) / dur), e = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    setData('people', to.map(f => {
+      const c0 = fromMap.get(f.properties.key), c1 = f.geometry.coordinates;
+      const c = c0 ? [c0[0] + (c1[0] - c0[0]) * e, c0[1] + (c1[1] - c0[1]) * e] : c1;
+      return { ...f, geometry: { type: 'Point', coordinates: c } };
+    }));
+    if (t < 1) tweenRAF = requestAnimationFrame(step);
+  };
+  tweenRAF = requestAnimationFrame(step);
+}
+
+// ---- chrome: caption, legend, year buttons ----
+function captionFor(y) {
+  const bits = (DATA[y] || []).map(f => {
     const p = f.properties;
-    if (p.status === 'absent') return `${p.street} ${p.house}: gone`;
-    const hits = (p.surname_hits||[]).map(s=>s.split(',')[0]).join(', ');
-    return `${p.street} ${p.house}: ${p.residents.length} residents${hits?` — <b>${esc(hits)}</b>`:''}`;
+    if (p.status === 'absent') return `${esc(p.street)} ${esc(p.house)}: gone`;
+    const hits = (p.surname_hits || []).map(h => h.split(',')[0].trim()).join(', ');
+    return `${esc(p.street)} ${esc(p.house)}: ${p.residents.length} residents${hits ? ` — <b>${esc(hits)}</b>` : ''}`;
   });
-  document.getElementById('summary').innerHTML = `<b>${year}:</b> ` + bits.join(' · ');
+  return `<b>${y}</b> · ` + bits.join(' &nbsp;·&nbsp; ');
 }
-
-async function loadYear(year){
-  layers.main.clearLayers(); layers.band1.clearLayers();
-  document.getElementById('band1').checked = false;
-  document.getElementById('band1wrap').classList.toggle('show', year==='1942');
-  if (!cache[year]){
-    const r = await fetch(`family_${year}.geojson`);
-    cache[year] = await r.json();
+function renderLegend() {
+  if (mode === 'trails') {
+    $('legend').innerHTML =
+      PEOPLE.map(p => `<span><span class="dot" style="background:${p.color}"></span>${esc(p.label)} <span class="yrs">${p.stops[0].year}–${p.stops[p.stops.length - 1].year}</span></span>`).join('') +
+      `<span><span class="dot" style="background:#dc2626"></span>family present</span>` +
+      `<span><span class="dot" style="background:#9ca3af"></span>house absent</span>`;
+  } else {
+    $('legend').innerHTML =
+      `<span><span class="dot" style="background:#dc2626"></span>family resident</span>` +
+      `<span><span class="dot" style="background:#64748b"></span>other resident</span>` +
+      `<span><span class="dot" style="background:#9ca3af"></span>house absent</span>`;
   }
-  const feats = cache[year].features;
-  feats.forEach(f=>markerFor(f).addTo(layers.main));
-  summaryFor(year, feats);
-  const b = L.latLngBounds(feats.map(f=>{const [lo,la]=f.geometry.coordinates;return [la,lo];}));
-  map.fitBounds(b.pad(0.35));
-  document.querySelectorAll('.yr').forEach(el=>el.classList.toggle('active', el.dataset.y===String(year)));
+}
+function buildYearButtons() {
+  const wrap = $('years'); wrap.innerHTML = '';
+  YEARS.forEach((y, i) => {
+    const b = document.createElement('button');
+    b.className = 'yr'; b.textContent = y;
+    b.addEventListener('click', () => { stop(); setYear(i, false); });
+    wrap.appendChild(b);
+  });
+  $('scrub').max = YEARS.length - 1;
+}
+function updateChrome(y) {
+  $('scrub').value = yi;
+  $('yearRead').textContent = y;
+  $('caption').innerHTML = captionFor(y);
+  [...$('years').children].forEach((b, i) => b.classList.toggle('active', i === yi));
+  $('band1wrap').classList.toggle('show', y === 1942);
+  if (y !== 1942) { $('band1').checked = false; setData('band1', []); }
 }
 
-document.getElementById('band1').addEventListener('change', async e=>{
-  layers.band1.clearLayers();
+function setYear(i, animate) {
+  yi = i; const y = YEARS[i];
+  if (mode === 'trails') renderTrails(y, animate); else renderBuildings(y);
+  updateChrome(y);
+}
+
+// ---- playback ----
+function play() {
+  if (playing) return;
+  if (yi >= YEARS.length - 1) setYear(0, false);
+  playing = true; $('play').textContent = '⏸'; $('play').classList.add('on');
+  timer = setInterval(() => { if (yi < YEARS.length - 1) setYear(yi + 1, true); else stop(); }, STEP_MS);
+}
+function stop() {
+  playing = false; clearInterval(timer);
+  $('play').textContent = '▶'; $('play').classList.remove('on');
+}
+$('play').addEventListener('click', () => playing ? stop() : play());
+$('scrub').addEventListener('input', e => { stop(); setYear(+e.target.value, false); });
+$('modeTrails').addEventListener('click', () => { if (mode !== 'trails') { mode = 'trails'; $('modeTrails').classList.add('active'); $('modeBuildings').classList.remove('active'); renderLegend(); setYear(yi, false); } });
+$('modeBuildings').addEventListener('click', () => { if (mode !== 'buildings') { mode = 'buildings'; $('modeBuildings').classList.add('active'); $('modeTrails').classList.remove('active'); renderLegend(); setYear(yi, false); } });
+
+// ---- 1942 Band 1 overlay (OCR-unverified, as before) ----
+$('band1').addEventListener('change', async e => {
+  setData('band1', []);
   if (!e.target.checked) return;
-  const r = await fetch('family_1942_band1.geojson');
-  const gj = await r.json();
-  gj.features.forEach(f=>{
-    const p = f.properties, [lon, lat] = f.geometry.coordinates;
-    const m = L.circleMarker([lat, lon], {radius: 9, color:'#7c3aed', weight: 3, fillColor:'#7c3aed', fillOpacity:0.5,
-      dashArray: p.geo_quality==='exact'?null:'5 4'});
-    m.bindPopup(`<h3>${esc(p.label)}</h3><p class="meta">${esc(p.raw)}</p>`+
-      `<p><span class="badge warn">OCR-unverified</span>`+
-      (p.geo_quality!=='exact'?`<span class="badge warn">${esc(p.geo_quality)} position</span>`:'')+`</p>`+
-      `<p class="meta">${esc(p.note)}</p><p class="meta">OCR confidence: ${esc(p.confidence)}</p>`);
-    m.addTo(layers.band1);
-  });
-  layers.band1.addTo(map);
+  const gj = await (await fetch('family_1942_band1.geojson')).json();
+  setData('band1', gj.features);
+});
+map.on('click', 'band1Pts', e => {
+  const p = e.features[0].properties;
+  new mapboxgl.Popup({ offset: 12 })
+    .setLngLat(e.lngLat)
+    .setHTML(`<h3 style="margin:0">${esc(p.label)}</h3><p class="meta">${esc(p.raw)}</p><p><span class="badge warn">OCR-unverified</span></p>`).addTo(map);
 });
 
-document.querySelectorAll('.yr').forEach(el=>el.addEventListener('click', ()=>loadYear(el.dataset.y)));
-loadYear('1938');
+// ---- init ----
+map.on('load', async () => {
+  addSourcesAndLayers();
+  await loadAll();
+  if (!YEARS.length) { $('caption').textContent = 'No yearly data found.'; return; }
+  buildPeople(); buildBuildings();
+  buildYearButtons(); renderLegend();
+  setYear(0, false);
+  const b = new mapboxgl.LngLatBounds();
+  BKEYS.forEach(k => b.extend([k.lon, k.lat]));
+  map.fitBounds(b, { padding: 70 });
+});
 </script></body></html>
