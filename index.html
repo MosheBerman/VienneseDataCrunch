@@ -30,7 +30,7 @@ header>*{pointer-events:auto;}
 .pp-links{margin-top:4px;font-size:12px;color:#6b7280;}
 .pp-links a{color:#2563eb;text-decoration:none;}
 @media (pointer:coarse){.pp-links a{display:inline-block;padding:14px 6px;}}
-.rowsnip{position:relative;overflow:hidden;max-width:100%;border:2px solid #dc2626;border-radius:6px;margin:6px 0 2px;background:#e5e7eb;}
+.rowsnip{position:relative;overflow:hidden;max-width:100%;border:2px solid #dc2626;border-radius:6px;margin:8px 0 4px;background:#e5e7eb;}
 .rowsnip img{position:absolute;max-width:none;}
 .rowsnip-frame{position:absolute;left:0;right:0;border:2px solid #dc2626;box-sizing:border-box;pointer-events:none;}
 @media (max-width:640px){
@@ -52,15 +52,21 @@ header>*{pointer-events:auto;}
 #resHead .sp{flex:1;}
 #resHead button{border:1px solid #d1d5db;background:#f9fafb;border-radius:8px;min-width:34px;min-height:34px;font-size:15px;cursor:pointer;color:#374151;line-height:1;}
 .pp{font-size:14px;line-height:1.45;min-width:180px;}
-.pp-name{font-weight:700;font-size:15px;}
-.pp-occ{color:#4b5563;font-style:italic;}
+.pp-name{font-weight:700;font-size:15px;margin:0 0 2px;}
+.pp-occ{color:#4b5563;font-style:italic;margin:0 0 4px;}
 .pp-rescue{font-size:11px;color:#9f1239;font-style:italic;margin:2px 0 0;}
-.pp-addr{margin-top:2px;}
+.pp-addr{margin:0 0 2px;padding-bottom:8px;border-bottom:1px solid #eef0f2;font-size:16px;}
 .pp-meta{color:#6b7280;font-size:12px;margin-top:4px;}
-.pp-list{max-height:230px;overflow:auto;margin-top:6px;border-top:1px solid #f3f4f6;}
-.pp-row{padding:6px 2px;border-bottom:1px solid #f3f4f6;}
+/* NOTE: .pp-list intentionally has NO top border. It is a scrollable region;
+   a border pinned to its top edge reads as a line striking through the first
+   row's name whenever the list is scrolled even slightly. The divider lives
+   on .pp-addr (above, non-scrolling) instead. */
+.pp-list{max-height:230px;overflow:auto;margin-top:8px;}
+.pp-row{padding:10px 4px;border-bottom:1px solid #f3f4f6;}
 .pp-row:last-child{border-bottom:none;}
-.pp-row.hl{background:#eff6ff;border-radius:6px;padding:6px;}
+.pp-row.hl{background:#eff6ff;border-radius:8px;}
+/* actions row: scan link, info toggle, follow button — one aligned row */
+.pp-act{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
 .pp-more{color:#6b7280;font-size:12px;margin-top:4px;}
 .pill{display:inline-block;font-size:11px;font-weight:600;line-height:1.5;padding:0 8px;border-radius:999px;white-space:nowrap;vertical-align:1px;}
 .pill-ez{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
@@ -69,18 +75,18 @@ header>*{pointer-events:auto;}
 .pp-name .pill{margin-left:6px;}
 .pp-addr .pill{margin-left:6px;}
 .pp-row{position:relative;}
-.pp-row.pp-tuer{padding-right:74px;}
+.pp-row.pp-tuer{padding:10px 74px 10px 4px;}
 .pill-tr{position:absolute;top:8px;right:4px;}
 .pp-single{position:relative;}
 .pp-single.pp-tuer{padding-right:74px;}
-.pp-links div{margin-top:2px;}
+.pp-links div{margin:0;}
 #aboutOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:none;align-items:center;justify-content:center;padding:18px;}
 #aboutBox{background:#fff;border-radius:14px;max-width:620px;max-height:85vh;overflow:auto;padding:24px 26px;box-shadow:0 8px 40px rgba(0,0,0,.35);}
 #aboutBox h2{margin:0 0 4px;font-size:20px;}
 #aboutBox h3{margin:12px 0 4px;font-size:13px;}
 .about-stats{margin:8px 0;}
 .about-legend{font-size:12px;color:#4b5563;}
-.pp-info{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;font:italic 12px Georgia,serif;cursor:pointer;margin:2px 0 0 4px;padding:0;vertical-align:middle;}
+.pp-info{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;font:italic 12px Georgia,serif;cursor:pointer;margin:0;padding:0;vertical-align:middle;flex:0 0 auto;}
 .pp-info:hover{border-color:#2563eb;color:#2563eb;}
 .pp-info-body{margin-top:4px;}
 
@@ -128,7 +134,7 @@ header>*{pointer-events:auto;}
 #results #pager button:disabled{opacity:.35;cursor:default;}
 #results #pager .pginfo{font-size:12px;color:#6b7280;text-align:center;}
 /* ---- Follow this person: cross-year timeline --------------------------- */
-.pp-follow{display:inline-block;margin:6px 0 2px;padding:8px 12px;min-height:38px;border:1px solid #2563eb;
+.pp-follow{display:inline-block;margin:0;padding:8px 12px;min-height:38px;border:1px solid #2563eb;
   background:#eff6ff;color:#1d4ed8;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
 .pp-follow:hover{background:#dbeafe;}
 #followPanel{position:fixed;left:10px;right:10px;bottom:10px;z-index:15;background:#fff;border-radius:14px;
@@ -638,7 +644,7 @@ function popupHTML(r){
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += rescueLine(r) + rowSnippetPH(r) + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div>';
+  h += rescueLine(r) + rowSnippetPH(r) + '<div class="pp-act">' + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div></div>';
   return h;
 }
 
@@ -735,7 +741,7 @@ async function openGroupPopup(f, highlightId){
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
-      snip + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div>';
+      snip + '<div class="pp-act">' + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div></div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + hidden + ' more resident' + (hidden > 1 ? 's' : '') + ' hidden by filter</div>';
@@ -1325,7 +1331,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('followPanel').style.display === 'block') fwClose();
 });
 document.addEventListener('click', e => {
-  const b = e.target.closest ? e.target.closest('[data-follow]') : null;
+  const b = e.target.closest ? e.target.closest('[data-follow-id]') : null;
   if (!b) return;
   e.stopPropagation();
   startFollow(b.getAttribute('data-follow-year'), +b.getAttribute('data-follow-id'));
