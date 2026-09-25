@@ -287,7 +287,7 @@ function togglePpInfo(btn){
 }
 let searchIdx = null;
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
-const foldUmlaut = s => s.replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's');
+const foldUmlaut = s => s.replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's').replace(/(^|[^a-z])zosef/g, '$1josef'); // systematic OCR misread: Zosef = Josef (also Zosefa, Zosefine)
 // Given-name spelling variants: the book's spelling isn't always the family's
 // (e.g. Josef Bermann is listed as "Jossel Bermann" in 1938). Variant tokens
 // match at half weight so exact spellings still rank first.
