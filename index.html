@@ -19,8 +19,13 @@ header>*{pointer-events:auto;}
 #q:focus{outline:none;border-color:#93c5fd;background:rgba(255,255,255,.14);}
 #yrPick{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:none;border-radius:8px;color:#111827;font-weight:700;font-size:15px;cursor:pointer;min-height:44px;padding:8px 28px 8px 12px;}
 #yrPick option{color:#111827;}
-#shareBtn,#flt{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
-#shareBtn{font-weight:600;}
+#shareBtn{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid #d1d5db;background:#fff;
+  font-size:22px;line-height:1;color:#111827;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0;}
+#shareBtn:hover{border-color:#2563eb;color:#2563eb;}
+#flt{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;cursor:pointer;margin-top:6px;}
+.hctl{display:flex;gap:8px;align-items:center;}
+.blog{margin:8px 0;padding-left:22px;font-size:14px;line-height:1.6;color:#1f2937;}
+.blog li{margin-bottom:4px;}
 
 .pp-links{margin-top:4px;font-size:12px;color:#6b7280;}
 .pp-links a{color:#2563eb;text-decoration:none;}
@@ -32,7 +37,7 @@ header>*{pointer-events:auto;}
   header{flex-direction:column;align-items:stretch;}
   .brand{max-width:none;flex-wrap:wrap;}
   #q{flex:1 1 100%;min-width:0;}
-  #infoBtn{align-self:flex-end;}
+  .hctl{align-self:flex-end;}
   #results{left:10px;right:10px;max-width:none;}
 }
 #results{position:absolute;top:56px;left:10px;z-index:6;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:360px;max-height:50vh;overflow:auto;display:none;}
@@ -127,7 +132,10 @@ header>*{pointer-events:auto;}
     <span class="brand-name">Lehmann <small>· Vienna</small></span>
     <select id="yrPick" aria-label="Year"></select>
   </div>
-  <button id="infoBtn" aria-label="About, research and settings">&#9432;</button>
+  <div class="hctl">
+    <button id="shareBtn" aria-label="Copy link to this view">&#8599;</button>
+    <button id="infoBtn" aria-label="About, research and settings">&#9432;</button>
+  </div>
 </header>
 <div id="results"></div>
 <div id="aboutOverlay"><div id="aboutBox">
@@ -142,32 +150,32 @@ header>*{pointer-events:auto;}
 <h2>About this map</h2>
 <p class="about-stats"><b id="aboutCount">—</b> people · <b id="aboutAcount">—</b> addresses<br>
 <span class="about-legend"><span style="color:#2563eb">●</span> exact registry match · <span style="color:#7c3aed">●</span> registry match · <span style="color:#d97706">●</span> fuzzy street match</span></p>
-<p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i> — Vienna's address book. Use the year picker to switch between the 1938 alphabetical residents' directory (Band&nbsp;1; 94,698 people at 27,503 addresses) and the 1942 volume (11,248 people at 7,116 addresses, partial coverage).</p>
-<p><button id="shareBtn">Copy link to this view</button></p>
-<h3>How it was built</h3>
-<p>The 1,644-page scan was rendered page by page, split into columns, and OCR'd (Tesseract with a Fraktur model). A parsing pipeline extracted names, occupations and addresses, stripped page headers, footers and advertisements, and normalized historical street abbreviations. Each address was then joined against the City of Vienna's official address registry (“Adressen Standorte Wien”, CC&nbsp;BY&nbsp;4.0). Exact matches are blue, registry matches with a number fallback are purple, fuzzy street matches are amber.</p>
-<p><a href="research/lighting/" target="_blank" rel="noopener">Scan preprocessing experiments</a> — a gallery of the lighting-correction algorithms being tested to improve OCR.</p>
-<h3>The AI part</h3>
-<p>This pipeline was built by Muse by Meta, an AI research assistant, working with Moshe Berman. The agent wrote the OCR, parsing and geocoding code, ran the batches, validated samples against the page scans, and built this site. Every stage reported measured numbers — match rates, not adjectives — and uncertain matches are flagged on the map rather than hidden.</p>
+<p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1941 plus a partial 1942 preview. Each record popup shows the scanned row it came from.</p>
+<h3>Build log</h3>
+<ol class="blog">
+<li>Scans of the Lehmann volumes from the Wienbibliothek's Retrodigitalisierung copies (public domain).</li>
+<li>The library's per-page Transkribus ALTO OCR, with bounding boxes for every text line.</li>
+<li>Parsing names, occupations, addresses and unit numbers (Stg./T&uuml;r/Top); headers, footers and ads stripped.</li>
+<li>Street-name normalization — ambiguous forms held for review, not silently fixed.</li>
+<li>Geocoding against the City of Vienna address registry (Adressen Standorte Wien, CC&nbsp;BY&nbsp;4.0).</li>
+<li>Tiered pins: blue exact, purple registry, amber fuzzy-approximate.</li>
+<li>Full 1938–1941 layers plus a partial 1942 preview.</li>
+<li>Scanned-row snippets in every record popup.</li>
+</ol>
 <h3>Caveats</h3>
-<p>OCR misreads names; some 1938 streets were renamed or no longer exist; amber pins are approximate. Absence of a pin doesn't mean absence from the book — only 48.7% of addressed entries matched the modern registry.</p>
+<p>OCR misreads names; some streets were renamed or no longer exist; amber pins are approximate. A missing pin doesn't mean the entry is missing from the book — not every address matched the modern registry.</p>
 <h3>Keyboard</h3>
 <p><b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · on the map, <b>←</b><b>→</b> steps through pins.</p>
-<h3>Developer</h3>
-<p>Pin quality filter: <select id="flt">
-<option value="all">All pins</option>
-<option value="reg">Registry or better</option>
-<option value="exact">Exact only</option>
-</select></p>
-<h3>Source</h3><p>The directory was scanned from the 1938 volume held by the Wienbibliothek im Rathaus. <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Browse the original scan</a> page by page.</p>
 </div>
 <div class="tabpage" id="tab-research">
 <h2>Research</h2>
-<p>Draft explorers and experiments built while the 1939–1941 layers are in the pipeline. Drafts are unreviewed work in progress.</p>
+<p>Draft explorers and experiments. Drafts are unreviewed work in progress.</p>
+<h3>Method</h3>
+<p>The library's OCR of the page scans is parsed into names, occupations and addresses; street names are normalized (ambiguous forms held for review); each address is matched against the City of Vienna's address registry (Adressen Standorte Wien, CC&nbsp;BY&nbsp;4.0), and uncertain matches are flagged on the map rather than hidden. The pipeline was built by Muse by Meta working with Moshe Berman, and every stage reported measured match rates.</p>
 <ul class="rlist">
 <li><a href="1939-band1-draft/">1939 · Band 1 draft</a><span class="rdraft">draft</span><br>Namenverzeichnis (residents' directory) search explorer — surname, street and occupation search over the library OCR.</li>
 <li><a href="1939-band2-draft/">1939 · Band 2 draft</a><span class="rdraft">draft</span><br>Häuserverzeichnis (house directory) explorer with an A–Z Browse tab: collapsible streets and house numbers, residents listed per address.</li>
-<li><a href="research/family/">Family migration demo</a><br>Follow family addresses across 1938–1942 on the map, with a year picker.</li>
+<li><a href="research/family/">Family migration demo</a><br>An animated 1938→1942 timeline of family addresses, with person trails and a building-residents view.</li>
 <li><a href="research/lighting/">Scan preprocessing experiments</a><br>Gallery of the lighting-correction algorithms tested to improve OCR, each labeled under its images.</li>
 </ul>
 </div>
@@ -176,13 +184,20 @@ header>*{pointer-events:auto;}
 <div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b>Green dots — 1938 Band 2 preview</b><small>Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b>Teal dots — 1938 Band 2 clean-only preview</b><small>Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b>Show Research section in the year picker</b><small>Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
+<h3>Map</h3>
+<p><label for="flt"><b>Pin quality filter</b></label><br>
+<select id="flt">
+<option value="all">All pins</option>
+<option value="reg">Registry or better</option>
+<option value="exact">Exact only</option>
+</select></p>
 </div>
 <div class="tabpage" id="tab-license">
 <h2>Licensing</h2>
-<p>Scans: <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href="https://creativecommons.org/publicdomain/mark/1.0/" target="_blank" rel="noopener">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution.</p>
+<p>Scans: <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href="https://creativecommons.org/publicdomain/mark/1.0/" target="_blank" rel="noopener">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution. <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Browse the original 1938 scan</a> page by page.</p>
 <p>Map data extracted from the directory is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0 Universal</a>.</p>
 <h3>Site version</h3>
-<p>Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>2f50f3c</code></p>
+<p>Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>b8977d9</code></p>
 <h3>Code libraries</h3>
 <p><a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">Mapbox GL JS</a> v3.30.0 — BSD 3-Clause.</p>
 <h3>Credit</h3>
@@ -436,9 +451,10 @@ $('shareBtn').addEventListener('click', async () => {
   const btn = $('shareBtn');
   try {
     await navigator.clipboard.writeText(url);
-    const old = btn.textContent;
-    btn.textContent = 'Copied \u2713';
-    setTimeout(() => { btn.textContent = old; }, 1600);
+    const old = btn.innerHTML;
+    btn.innerHTML = '&#10003;';
+    btn.style.color = '#16a34a';
+    setTimeout(() => { btn.innerHTML = old; btn.style.color = ''; }, 1600);
   } catch (e) { prompt('Copy this link:', url); }
 });
 map.on('moveend', () => { try { history.replaceState(null, '', viewHash()); } catch (e) {} });
