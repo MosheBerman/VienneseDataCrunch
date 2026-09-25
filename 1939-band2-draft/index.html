@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lehmann 1939 · Band 2 · Häuserverzeichnis — Such-DRAFT</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         margin: 0; padding: 0; background: #faf8f2; color: #222; }
+  header { background: #1f4d7a; color: #fff; padding: 12px 14px; }
+  header h1 { font-size: 17px; margin: 0 0 4px; }
+  header p { font-size: 12px; margin: 2px 0; opacity: .92; }
+  .draft-badge { display: inline-block; background: #f5c518; color: #222;
+                 font-weight: 700; font-size: 12px; padding: 2px 8px;
+                 border-radius: 4px; margin-bottom: 6px; }
+  .tabs { display: flex; gap: 6px; padding: 10px 12px 0; }
+  .tabs button { flex: 1; padding: 10px 4px; font-size: 14px; border: 1px solid #ccc;
+                 border-bottom: none; background: #eee; border-radius: 8px 8px 0 0;
+                 cursor: pointer; }
+  .tabs button.active { background: #fff; font-weight: 700; }
+  .panel { background: #fff; border-top: 1px solid #ccc; padding: 12px;
+           display: none; }
+  .panel.active { display: block; }
+  .searchrow { display: flex; gap: 8px; }
+  input[type=text] { flex: 1; font-size: 16px; padding: 10px; border: 1px solid #bbb;
+                     border-radius: 6px; }
+  button.go { font-size: 16px; padding: 10px 16px; border: none; border-radius: 6px;
+              background: #1f4d7a; color: #fff; cursor: pointer; }
+  .hint { font-size: 12px; color: #666; margin: 8px 0 0; }
+  #status { font-size: 13px; color: #555; padding: 8px 12px; }
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 8px;
+          margin: 8px 12px; padding: 10px 12px; }
+  .card .nm { font-size: 16px; font-weight: 700; }
+  .card .oc { font-size: 13px; color: #444; }
+  .card .ad { font-size: 14px; margin-top: 2px; }
+  .card .meta { font-size: 12px; color: #777; margin-top: 4px; }
+  .card details { font-size: 12px; color: #555; margin-top: 6px; }
+  .card summary { cursor: pointer; color: #1f4d7a; }
+  .card .raw { font-family: ui-monospace, Menlo, Consolas, monospace;
+               background: #f4f1ea; padding: 6px; border-radius: 4px;
+               margin-top: 4px; white-space: pre-wrap; word-break: break-word; }
+  .flag { display: inline-block; background: #eee; border-radius: 3px;
+          padding: 0 5px; margin-right: 4px; font-size: 11px; }
+  .house { border-top: 1px solid #eee; padding: 8px 0 4px; margin-top: 8px; }
+  .house .hn { font-weight: 700; font-size: 15px; }
+  .house .res { font-size: 14px; padding: 3px 0; }
+  .house .res .rl { font-size: 11px; color: #777; }
+  footer { font-size: 11px; color: #888; padding: 14px 12px 30px; }
+</style>
+</head>
+<body>
+<header>
+  <span class="draft-badge">DRAFT — free ABBYY OCR, not production data</span>
+  <h1>Lehmann 1939 · Band 2 · Häuserverzeichnis (Teil IV)</h1>
+  <p>Searchable draft parsed from the Wienbibliothek Retrodigitalisierung
+     free ABBYY ALTO OCR (1,340 pages: p2425905–p2427244). Raw OCR is preserved
+     under each hit so you can verify against the scan. This is <b>not</b>
+     the production map data.</p>
+  <p id="meta-line">loading…</p>
+</header>
+
+<div class="tabs">
+  <button data-tab="street" class="active">Street</button>
+  <button data-tab="resident">Resident</button>
+  <button data-tab="occ">Occupation</button>
+</div>
+
+<div class="panel active" id="panel-street">
+  <div class="searchrow">
+    <input type="text" id="q-street" placeholder="Street, e.g. Wallensteinstr"
+           autocapitalize="off" autocomplete="off">
+    <button class="go" id="go-street">Search</button>
+  </div>
+  <p class="hint">Street search first: tap a street to open its houses.
+     Loads only the letter file it needs (ſ → s folded).</p>
+</div>
+<div class="panel" id="panel-resident">
+  <div class="searchrow">
+    <input type="text" id="q-res" placeholder="Resident name, e.g. Bermann"
+           autocapitalize="off" autocomplete="off">
+    <button class="go" id="go-res">Search</button>
+  </div>
+  <p class="hint">Matches anywhere in the resident name.</p>
+</div>
+<div class="panel" id="panel-occ">
+  <div class="searchrow">
+    <input type="text" id="q-occ" placeholder="Occupation, e.g. Kaufm"
+           autocapitalize="off" autocomplete="off">
+    <button class="go" id="go-occ">Search</button>
+  </div>
+  <p class="hint">First occupation search loads the occupation index.</p>
+</div>
+
+<div id="status"></div>
+<div id="results"></div>
+
+<footer>
+  Draft built from free ABBYY ALTO OCR — expect OCR errors. Every hit shows
+  the raw OCR line and the Wienbibliothek page ID so you can check the scan.
+  Scans: Public Domain Mark 1.0, Wienbibliothek im Rathaus.
+</footer>
+
+<script>
+const MAXHITS = 300;
+function fold(s) {
+  return (s || '').replace(/ſ/g, 's').normalize('NFKD')
+                  .replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+const cache = {};
+async function getJSON(path) {
+  if (!cache[path]) {
+    const r = await fetch(path);
+    if (!r.ok) throw new Error('fetch failed: ' + path);
+    cache[path] = await r.json();
+  }
+  return cache[path];
+}
+function esc(s) {
+  return (s == null ? '' : String(s)).replace(/[&<>"]/g,
+    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+function letterOf(s) {
+  const f = fold(s);
+  return /^[a-z]/.test(f) ? f[0] : 'other';
+}
+function roleName(r) {
+  return r === 'E' ? 'Eigentümer' : r === 'H' ? 'Hausbesorger' : r === 'house' ? '' : '';
+}
+// street record: [page,name,occ,role,sub,hnr,side,stiege,flags,raw]
+function streetCard(entry) {
+  // entry: [display, district, pa, recs]
+  const disp = entry[0], dist = entry[1], pa = entry[2], recs = entry[3];
+  const houses = {};
+  for (const r of recs) {
+    const key = (r[5] || '?') + '|' + (r[6] || '');
+    (houses[key] = houses[key] || []).push(r);
+  }
+  const hkeys = Object.keys(houses).sort((a, b) => {
+    const na = parseInt(a), nb = parseInt(b);
+    return (isNaN(na) ? 1e9 : na) - (isNaN(nb) ? 1e9 : nb) || (a < b ? -1 : 1);
+  });
+  let html = '';
+  for (const k of hkeys.slice(0, 400)) {
+    const rs = houses[k];
+    const hn = rs[0][5] || '?', side = rs[0][6];
+    const sideName = side === 'L' ? 'linke Seite' : side === 'R' ? 'rechte Seite' : '';
+    html += '<div class="house"><div class="hn">' + esc(hn) +
+            (sideName ? ' <span class="rl">(' + sideName + ')</span>' : '') + '</div>';
+    for (const r of rs) {
+      const flags = r[8] ? r[8].split('|').map(f =>
+        '<span class="flag">' + esc(f) + '</span>').join('') : '';
+      const rl = roleName(r[3]);
+      if (r[3] === 'house') {
+        html += '<div class="res"><i>' + esc(r[8].replace(/^note:/, '')) + '</i> ' + flags +
+                ' <span class="rl">p.' + r[0] + '</span>' +
+                '<details><summary>raw OCR</summary><div class="raw">' +
+                esc(r[9]) + '</div></details></div>';
+      } else {
+        html += '<div class="res"><b>' + esc(r[1]) + '</b>' +
+                (r[2] ? ', ' + esc(r[2]) : '') +
+                (rl ? ' <span class="rl">(' + rl + ')</span>' : '') +
+                (r[7] ? ' <span class="rl">Stiege ' + esc(r[7]) + '</span>' : '') +
+                ' ' + flags + ' <span class="rl">p.' + r[0] + '</span>' +
+                '<details><summary>raw OCR</summary><div class="raw">' +
+                esc(r[9]) + '</div></details></div>';
+      }
+    }
+    html += '</div>';
+  }
+  const nRes = recs.filter(r => r[3] !== 'house').length;
+  return '<div class="card"><div class="nm">' + esc(disp) + '</div>' +
+    '<div class="ad">' + esc(dist ? dist + '. Bezirk' : '') +
+    (pa ? ' · P.A. ' + esc(pa) : '') + '</div>' +
+    '<div class="meta">' + hkeys.length + ' house numbers · ' + nRes +
+    ' residents</div>' +
+    '<details' + (hkeys.length <= 12 ? ' open' : '') + '><summary>' +
+    (hkeys.length <= 12 ? 'houses' : 'show houses') + '</summary>' +
+    html + '</details></div>';
+}
+// full resident record: [page,name,occ,role,district,sub,street,hnr,side,stiege,flags,raw]
+function resCard(r) {
+  const flags = r[10] ? r[10].split('|').map(f =>
+    '<span class="flag">' + esc(f) + '</span>').join('') : '';
+  let a = '';
+  if (r[4]) a += r[4] + '.';
+  if (r[5]) a += r[5];
+  if (r[6]) a += ' ' + r[6];
+  if (r[7]) a += ' ' + r[7];
+  if (r[8]) a += ' (' + (r[8] === 'L' ? 'linke' : r[8] === 'R' ? 'rechte' : r[8]) + ' Seite)';
+  if (r[9]) a += ', Stiege ' + r[9];
+  const rl = roleName(r[3]);
+  return '<div class="card">' +
+    '<div class="nm">' + esc(r[1]) + '</div>' +
+    (r[2] ? '<div class="oc">' + esc(r[2]) + '</div>' : '') +
+    (a.trim() ? '<div class="ad">' + esc(a.trim()) +
+      (rl ? ' <span class="rl">(' + rl + ')</span>' : '') + '</div>' : '') +
+    '<div class="meta">p.' + r[0] + ' ' + flags + '</div>' +
+    '<details><summary>raw OCR</summary><div class="raw">' +
+      esc(r[11]) + '</div></details></div>';
+}
+function showResults(html, what) {
+  document.getElementById('results').innerHTML = html;
+  document.getElementById('status').textContent = what || '';
+}
+function showError(msg) {
+  document.getElementById('status').textContent = msg;
+}
+async function searchStreet() {
+  const q = document.getElementById('q-street').value.trim();
+  if (!q) { showError('Type a street.'); return; }
+  const fq = fold(q);
+  showError('loading…');
+  try {
+    const idx = await getJSON('data/streets_' + letterOf(q) + '.json');
+    showError('searching…');
+    const hits = idx.filter(e => fold(e[0]).includes(fq)).slice(0, 60);
+    if (!hits.length) { showResults('', 'No streets match “' + q + '”.'); return; }
+    showResults(hits.map(streetCard).join(''),
+      hits.length + ' street' + (hits.length == 1 ? '' : 's') +
+      ' match “' + q + '”');
+  } catch (e) { showError('Could not load data: ' + e.message); }
+}
+async function searchResident() {
+  const q = document.getElementById('q-res').value.trim();
+  if (!q) { showError('Type a name.'); return; }
+  const fq = fold(q);
+  showError('loading…');
+  try {
+    const recs = await getJSON('data/names_' + letterOf(q) + '.json');
+    const hits = recs.filter(r => fold(r[1]).includes(fq)).slice(0, MAXHITS);
+    if (!hits.length) { showResults('', 'No residents match “' + q + '”.'); return; }
+    showResults(hits.map(resCard).join(''),
+      hits.length + ' resident' + (hits.length == 1 ? '' : 's') +
+      ' match “' + q + '”');
+  } catch (e) { showError('Could not load data: ' + e.message); }
+}
+async function searchOcc() {
+  const q = document.getElementById('q-occ').value.trim();
+  if (!q) { showError('Type an occupation.'); return; }
+  const fq = fold(q);
+  showError('loading occupation index…');
+  try {
+    const idx = await getJSON('data/occupations_' + letterOf(q) + '.json');
+    showError('searching…');
+    const hits = [];
+    for (const [disp, recs] of idx) {
+      if (fold(disp).includes(fq)) {
+        for (const r of recs)
+          // -> full shape: [page,name,occ,role,district,sub,street,hnr,side,stiege,flags,raw]
+          hits.push([r[0], r[1], disp, r[2], r[3], r[4], r[5], r[6], r[7], '', '', r[8]]);
+      }
+    }
+    const list = hits.slice(0, MAXHITS);
+    if (!list.length) { showResults('', 'No occupations match “' + q + '”.'); return; }
+    showResults(list.map(resCard).join(''),
+      hits.length + ' hit' + (hits.length == 1 ? '' : 's') +
+      ' for occupation “' + q + '”' +
+      (hits.length > MAXHITS ? ' — showing first ' + MAXHITS : ''));
+  } catch (e) { showError('Could not load data: ' + e.message); }
+}
+document.querySelectorAll('.tabs button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('panel-' + b.dataset.tab).classList.add('active');
+  });
+});
+document.getElementById('go-street').addEventListener('click', searchStreet);
+document.getElementById('q-street').addEventListener('keydown', e => { if (e.key === 'Enter') searchStreet(); });
+document.getElementById('go-res').addEventListener('click', searchResident);
+document.getElementById('q-res').addEventListener('keydown', e => { if (e.key === 'Enter') searchResident(); });
+document.getElementById('go-occ').addEventListener('click', searchOcc);
+document.getElementById('q-occ').addEventListener('keydown', e => { if (e.key === 'Enter') searchOcc(); });
+getJSON('data/meta.json').then(m => {
+  document.getElementById('meta-line').textContent =
+    m.residents.toLocaleString('en-US') + ' residents · ' +
+    m.streets.toLocaleString('en-US') + ' streets · ' +
+    m.occupations.toLocaleString('en-US') + ' occupations';
+}).catch(() => {});
+</script>
+</body>
+</html>
