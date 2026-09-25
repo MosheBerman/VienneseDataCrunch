@@ -150,7 +150,7 @@ header>*{pointer-events:auto;}
 <h2>About this map</h2>
 <p class="about-stats"><b id="aboutCount">—</b> people · <b id="aboutAcount">—</b> addresses<br>
 <span class="about-legend"><span style="color:#2563eb">●</span> exact registry match · <span style="color:#7c3aed">●</span> registry match · <span style="color:#d97706">●</span> fuzzy street match</span></p>
-<p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1941 plus a partial 1942 preview. Each record popup shows the scanned row it came from.</p>
+<p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.</p>
 <h3>Build log</h3>
 <ol class="blog">
 <li>Scans of the Lehmann volumes from the Wienbibliothek's Retrodigitalisierung copies (public domain).</li>
@@ -159,7 +159,7 @@ header>*{pointer-events:auto;}
 <li>Street-name normalization — ambiguous forms held for review, not silently fixed.</li>
 <li>Geocoding against the City of Vienna address registry (Adressen Standorte Wien, CC&nbsp;BY&nbsp;4.0).</li>
 <li>Tiered pins: blue exact, purple registry, amber fuzzy-approximate.</li>
-<li>Full 1938–1941 layers plus a partial 1942 preview.</li>
+<li>Full 1938–1942 layers.</li>
 <li>Scanned-row snippets in every record popup.</li>
 </ol>
 <h3>Caveats</h3>
@@ -207,7 +207,7 @@ header>*{pointer-events:auto;}
 <script>window.MAPBOX_TOKEN="pk.eyJ1IjoibW9zaGViZXJtYW5uIiwiYSI6ImNtdHc5a21odDA0aGMzNG9vNnF6Z3Z6cjAifQ.iO_N_QmWcIANN2aRrfXl_Q";</script>
 <script>'use strict';
 // ---- year manifest ------------------------------------------------------
-// Production layers (1938–1941) plus the partial 1942 preview — the picker, share links and
+// Production layers (1938–1942) — the picker, share links and
 // layer loading all read from this manifest. kind:'layer' loads map data;
 // kind:'link' navigates to a research view (used by the Research section).
 const YEARS = {
