@@ -49,6 +49,7 @@ header>*{pointer-events:auto;}
 .pp{font-size:14px;line-height:1.45;min-width:180px;}
 .pp-name{font-weight:700;font-size:15px;}
 .pp-occ{color:#4b5563;font-style:italic;}
+.pp-rescue{font-size:11px;color:#9f1239;font-style:italic;margin:2px 0 0;}
 .pp-addr{margin-top:2px;}
 .pp-meta{color:#6b7280;font-size:12px;margin-top:4px;}
 .pp-list{max-height:230px;overflow:auto;margin-top:6px;border-top:1px solid #f3f4f6;}
@@ -193,7 +194,7 @@ header>*{pointer-events:auto;}
 <div class="tabpage active" id="tab-about">
 <h2>About this map</h2>
 <p class="about-stats"><b id="aboutCount">—</b> people · <b id="aboutAcount">—</b> addresses<br>
-<span class="about-legend"><span style="color:#2563eb">●</span> exact registry match · <span style="color:#7c3aed">●</span> registry match · <span style="color:#d97706">●</span> fuzzy street match</span></p>
+<span class="about-legend"><span style="color:#2563eb">●</span> exact registry match · <span style="color:#7c3aed">●</span> registry match · <span style="color:#d97706">●</span> fuzzy street match · <span style="color:#e11d48">◯</span> inferred street name</span></p>
 <p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.</p>
 <h3>Build log</h3>
 <ol class="blog">
@@ -228,6 +229,7 @@ header>*{pointer-events:auto;}
 <div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b>Green dots — 1938 Band 2 preview</b><small>Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b>Teal dots — 1938 Band 2 clean-only preview</b><small>Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b>Show Research section in the year picker</b><small>Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b>Rose ring — inferred street names</b><small>Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
 <h3>Map</h3>
 <p><label for="flt"><b>Pin quality filter</b></label><br>
 <select id="flt">
@@ -343,6 +345,14 @@ function ppInfo(r){
   return '<button class="pp-info" onclick="togglePpInfo(this)" aria-label="Record details">i</button>' +
     '<div class="pp-info-body" style="display:none">' + meta + corr + '</div>';
 }
+// Inferred-street provenance: "Listed as Reichsbrückenstraße in the 1941 directory."
+function rescueLine(r){
+  const g = r.geo_rescue;
+  if (!g) return '';
+  const m = /^[^:]+:(.+)->(.+)$/.exec(g);
+  if (!m) return '';
+  return '<div class="pp-rescue">Listed as ' + esc(m[1]) + ' in the ' + esc(YC().label) + ' directory.</div>';
+}
 function togglePpInfo(btn){
   const body = btn.nextElementSibling;
   if (body) body.style.display = (body.style.display === 'none') ? '' : 'none';
@@ -445,6 +455,15 @@ map.on('load', async () => {
     paint: {
       'circle-color': ['match', ['get', 'q'], 0, '#2563eb', 1, '#7c3aed', 2, '#d97706', '#2563eb'],
       'circle-radius': 4.5, 'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
+  // Inferred-street highlight: a rose ring drawn UNDER the pins, so the tier
+  // color (blue/purple/amber) always stays readable. Toggled from Settings.
+  map.addLayer({id: 'inferred-halo', type: 'circle', source: 'places',
+    filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'ir'], 1]],
+    paint: {
+      'circle-radius': 8.5, 'circle-color': '#e11d48', 'circle-opacity': 0.16,
+      'circle-stroke-width': 2, 'circle-stroke-color': '#e11d48', 'circle-stroke-opacity': 0.85}},
+    'unclustered-point');
+  map.setLayoutProperty('inferred-halo', 'visibility', 'none');
 
   const TAP_R = window.matchMedia && matchMedia('(pointer: coarse)').matches ? 44 : 14;
   function near(point, layer, r) {
@@ -586,9 +605,22 @@ $('setResearch').addEventListener('change', e => {
   try { localStorage.setItem('lehmann.showResearch', e.target.checked ? '1' : '0'); } catch (err) {}
   buildYearPicker();
 });
+function showInfer(){
+  try { return localStorage.getItem('lehmann.showInfer') === '1'; } catch (e) { return false; }
+}
+function applyInferToggle(){
+  const on = $('setInfer').checked;
+  if (map.getLayer('inferred-halo')) map.setLayoutProperty('inferred-halo', 'visibility', on ? 'visible' : 'none');
+}
+$('setInfer').addEventListener('change', e => {
+  try { localStorage.setItem('lehmann.showInfer', e.target.checked ? '1' : '0'); } catch (err) {}
+  applyInferToggle();
+});
 // Restore persisted research settings once the map is up.
 map.on('load', async () => {
   $('setResearch').checked = showResearch();
+  $('setInfer').checked = showInfer();
+  applyInferToggle();
   buildYearPicker();
   let w = null;
   try { w = localStorage.getItem('lehmann.b2which') || null; } catch (e) {}
@@ -600,7 +632,7 @@ function popupHTML(r){
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += rowSnippetPH(r) + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div>';
+  h += rescueLine(r) + rowSnippetPH(r) + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div>';
   return h;
 }
 
@@ -696,7 +728,7 @@ async function openGroupPopup(f, highlightId){
     const snip = (highlightId != null ? r._id === highlightId : r === list[0]) ? rowSnippetPH(r) : '';
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
-      (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') +
+      (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
       snip + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div>';
   }
   h += '</div>';
