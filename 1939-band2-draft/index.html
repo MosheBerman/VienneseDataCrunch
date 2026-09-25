@@ -47,6 +47,20 @@
   .house .hn { font-weight: 700; font-size: 15px; }
   .house .res { font-size: 14px; padding: 3px 0; }
   .house .res .rl { font-size: 11px; color: #777; }
+  .b-letters { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+  .b-letters button { padding: 9px 0; min-width: 38px; flex: 1 0 38px; font-size: 15px;
+                     border: 1px solid #ccc; border-radius: 6px; background: #f4f4f4;
+                     cursor: pointer; }
+  .b-letters button.active { background: #1f4d7a; color: #fff; border-color: #1f4d7a; }
+  details.b-street { cursor: default; }
+  details.b-street > summary { cursor: pointer; }
+  details.b-street > summary::-webkit-details-marker { color: #1f4d7a; }
+  .b-house { border-top: 1px solid #eee; padding: 2px 0; }
+  .b-house > summary { cursor: pointer; padding: 7px 0; font-size: 15px; }
+  .b-house > summary::-webkit-details-marker { color: #1f4d7a; }
+  .b-house .hn { font-weight: 700; }
+  .b-house .res { font-size: 14px; padding: 3px 0 3px 12px; }
+  .b-house .res .rl { font-size: 11px; color: #777; }
   footer { font-size: 11px; color: #888; padding: 14px 12px 30px; }
 </style>
 </head>
@@ -65,6 +79,7 @@
   <button data-tab="street" class="active">Street</button>
   <button data-tab="resident">Resident</button>
   <button data-tab="occ">Occupation</button>
+  <button data-tab="browse">Browse</button>
 </div>
 
 <div class="panel active" id="panel-street">
@@ -92,8 +107,18 @@
   </div>
   <p class="hint">First occupation search loads the occupation index.</p>
 </div>
+<div class="panel" id="panel-browse">
+  <div class="b-letters" id="browse-letters"></div>
+  <div class="searchrow">
+    <input type="text" id="q-browse" placeholder="Filter streets in this letter…"
+           autocapitalize="off" autocomplete="off">
+  </div>
+  <p class="hint">Pick a letter, then tap a street to open its house numbers,
+     and a number to see its residents.</p>
+</div>
 
 <div id="status"></div>
+<div id="browse-list"></div>
 <div id="results"></div>
 
 <footer>
@@ -266,7 +291,123 @@ document.querySelectorAll('.tabs button').forEach(b => {
     document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
     b.classList.add('active');
     document.getElementById('panel-' + b.dataset.tab).classList.add('active');
+    if (b.dataset.tab !== 'browse') {
+      document.getElementById('browse-list').innerHTML = '';
+    }
   });
+});
+// ---- Browse tab: letter -> collapsible streets -> collapsible house numbers ----
+let browseData = null;
+const LETTERS = 'abcdefghijklmnopqrstuvwxyz'.split('').concat(['other']);
+(function buildLetters() {
+  const host = document.getElementById('browse-letters');
+  host.innerHTML = LETTERS.map(l =>
+    '<button data-l="' + l + '">' + (l === 'other' ? '#' : l.toUpperCase()) + '</button>'
+  ).join('');
+  host.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => {
+      host.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      loadBrowseLetter(b.dataset.l);
+    });
+  });
+})();
+async function loadBrowseLetter(l) {
+  document.getElementById('q-browse').value = '';
+  showError('loading…');
+  try {
+    browseData = await getJSON('data/streets_' + l + '.json');
+    renderBrowseList('');
+    showError(browseData.length + ' streets');
+  } catch (e) { showError('Could not load data: ' + e.message); }
+}
+function sortHouseKeys(keys) {
+  return keys.sort((a, b) => {
+    const na = parseInt(a), nb = parseInt(b);
+    return (isNaN(na) ? 1e9 : na) - (isNaN(nb) ? 1e9 : nb) || (a < b ? -1 : 1);
+  });
+}
+function browseResHTML(r) {
+  // street rec: [page,name,occ,role,sub,hnr,side,stiege,flags,raw]
+  const flags = r[8] ? r[8].split('|').map(f =>
+    '<span class="flag">' + esc(f) + '</span>').join('') : '';
+  const rl = roleName(r[3]);
+  if (r[3] === 'house') {
+    return '<div class="res"><i>' + esc(r[8].replace(/^note:/, '')) + '</i> ' + flags +
+      ' <span class="rl">p.' + r[0] + '</span>' +
+      '<details><summary>raw OCR</summary><div class="raw">' + esc(r[9]) +
+      '</div></details></div>';
+  }
+  return '<div class="res"><b>' + esc(r[1]) + '</b>' +
+    (r[2] ? ', ' + esc(r[2]) : '') +
+    (rl ? ' <span class="rl">(' + rl + ')</span>' : '') +
+    (r[7] ? ' <span class="rl">Stiege ' + esc(r[7]) + '</span>' : '') +
+    ' ' + flags + ' <span class="rl">p.' + r[0] + '</span>' +
+    '<details><summary>raw OCR</summary><div class="raw">' + esc(r[9]) +
+    '</div></details></div>';
+}
+function renderBrowseList(filter) {
+  const host = document.getElementById('browse-list');
+  document.getElementById('results').innerHTML = '';
+  if (!browseData) { host.innerHTML = ''; return; }
+  const fq = fold(filter);
+  const items = [];
+  browseData.forEach((e, i) => {
+    if (fq && !fold(e[0]).includes(fq)) return;
+    items.push([e, i]);
+  });
+  host.innerHTML = items.map(([e, i]) => {
+    const recs = e[3];
+    const nRes = recs.filter(r => r[3] !== 'house').length;
+    const nH = new Set(recs.map(r => (r[5] || '?') + '|' + (r[6] || ''))).size;
+    return '<details class="card b-street" data-i="' + i + '">' +
+      '<summary><div class="nm">' + esc(e[0]) + '</div>' +
+      '<div class="ad">' + esc(e[1] ? e[1] + '. Bezirk' : '') +
+      (e[2] ? ' · P.A. ' + esc(e[2]) : '') + '</div>' +
+      '<div class="meta">' + nH + ' house numbers · ' + nRes + ' residents</div>' +
+      '</summary><div class="b-houses"></div></details>';
+  }).join('');
+  showError(items.length + ' streets');
+  host.querySelectorAll('details.b-street').forEach(d => {
+    d.addEventListener('toggle', () => {
+      if (d.open && !d.dataset.built) {
+        d.dataset.built = '1';
+        buildBrowseHouses(d, browseData[+d.dataset.i][3]);
+      }
+    });
+  });
+}
+function buildBrowseHouses(d, recs) {
+  const houses = {};
+  for (const r of recs) {
+    const key = (r[5] || '?') + '|' + (r[6] || '');
+    (houses[key] = houses[key] || []).push(r);
+  }
+  const hkeys = sortHouseKeys(Object.keys(houses));
+  const host = d.querySelector('.b-houses');
+  host.innerHTML = hkeys.map((k, hi) => {
+    const rs = houses[k];
+    const hn = rs[0][5] || '?', side = rs[0][6];
+    const sideName = side === 'L' ? 'linke Seite' : side === 'R' ? 'rechte Seite' : '';
+    const nRes = rs.filter(r => r[3] !== 'house').length;
+    return '<details class="b-house" data-hi="' + hi + '">' +
+      '<summary><span class="hn">' + esc(hn) + '</span>' +
+      (sideName ? ' <span class="rl">(' + sideName + ')</span>' : '') +
+      ' <span class="rl">· ' + nRes + ' resident' + (nRes == 1 ? '' : 's') + '</span>' +
+      '</summary><div class="b-res"></div></details>';
+  }).join('');
+  host.querySelectorAll('details.b-house').forEach(hd => {
+    hd.addEventListener('toggle', () => {
+      if (hd.open && !hd.dataset.built) {
+        hd.dataset.built = '1';
+        hd.querySelector('.b-res').innerHTML =
+          houses[hkeys[+hd.dataset.hi]].map(browseResHTML).join('');
+      }
+    });
+  });
+}
+document.getElementById('q-browse').addEventListener('input', e => {
+  renderBrowseList(e.target.value.trim());
 });
 document.getElementById('go-street').addEventListener('click', searchStreet);
 document.getElementById('q-street').addEventListener('keydown', e => { if (e.key === 'Enter') searchStreet(); });
