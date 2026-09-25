@@ -84,7 +84,72 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fold = s => s.toLowerCase().replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's');
 const famKey = pr => fold(pr.surname).replace(/^berman+$/, 'bermann') + '|' + pr.initial;
+// __PURE_START__
+// Resident-dot layout math. Pure functions (no map/DOM) so the headless
+// overlap test can exercise them: dots are packed in concentric rings around
+// each building in screen-pixel space, then converted back to lng/lat.
 function hash01(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0) / 4294967296; }
+function mpp(zoom, lat) { return 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom); } // meters per px
+function dotRadiusFor(n) { return n >= 40 ? 3 : n >= 15 ? 4 : 5; } // shrink dots as buildings grow
+function ringsFor(n) { let k = 1; while (3 * k * (k + 1) < n) k++; return k; } // ring k holds 6k dots
+// buildings: [{key, lon, lat, n}]. Returns per building {key, n, dotR, cx, cy, px, py, nudged, dots:[{dx,dy}]}.
+// cx,cy = cluster center in px; px,py = pin in px (same local frame); dots relative to center.
+function layoutResidentDots(buildings, zoom) {
+  const PIN_R = 6, PIN_CLEAR = 1, DOT_CLEAR = 1, PAD = 4; // px of breathing room, visually
+  const bs = buildings.map(b => {
+    const dotR = dotRadiusFor(b.n), vr = dotR + 0.75; // visual radius incl. stroke
+    const rings = ringsFor(b.n), ringGap = 2 * vr + DOT_CLEAR;
+    return { ...b, dotR, vr, rings, ringGap, r1: PIN_R + vr + PIN_CLEAR, R: 0 };
+  });
+  const finalizeR = b => { b.R = b.r1 + (b.rings - 1) * b.ringGap + b.vr; };
+  bs.forEach(finalizeR);
+  if (!bs.length) return [];
+  const lat0 = bs[0].lat, lon0 = bs[0].lon, m = mpp(zoom, lat0);
+  const kx = (111320 * Math.cos(lat0 * Math.PI / 180)) / m; // px per degree lon
+  const ky = 110540 / m;                                    // px per degree lat
+  for (const b of bs) { b.px = (b.lon - lon0) * kx; b.py = (b.lat - lat0) * ky; b.cx = b.px; b.cy = b.py; }
+  const relax = () => {
+    let moved = false;
+    for (let i = 0; i < bs.length; i++) for (let j = i + 1; j < bs.length; j++) {
+      const a = bs[i], c = bs[j];
+      const dx = c.cx - a.cx, dy = c.cy - a.cy, d = Math.hypot(dx, dy) || 0.01;
+      const need = a.R + c.R + PAD;
+      if (d < need) { const s = (need - d) / 2 / d; a.cx -= dx * s; a.cy -= dy * s; c.cx += dx * s; c.cy += dy * s; moved = true; }
+    }
+    for (const a of bs) for (const q of bs) { // cluster discs keep clear of other pins too
+      if (a === q) continue;
+      const dx = a.cx - q.px, dy = a.cy - q.py, d = Math.hypot(dx, dy) || 0.01, need = a.R + PIN_R + 2;
+      if (d < need) { const s = (need - d) / d; a.cx += dx * s; a.cy += dy * s; moved = true; }
+    }
+    return moved;
+  };
+  const place = () => bs.map(b => {
+    const pinDx = b.px - b.cx, pinDy = b.py - b.cy; // pin, relative to cluster center
+    const dots = [], rot = hash01(b.key) * Math.PI * 2, need = PIN_R + b.vr + PIN_CLEAR;
+    let idx = 0;
+    for (let k = 1; k <= b.rings + 3 && idx < b.n; k++) {
+      const cap = 6 * k, rk = b.r1 + (k - 1) * b.ringGap;
+      for (let j = 0; j < cap && idx < b.n; j++) {
+        const th = rot + (j / cap) * Math.PI * 2;
+        const dx = rk * Math.cos(th), dy = rk * Math.sin(th);
+        if (Math.hypot(dx - pinDx, dy - pinDy) < need) continue; // never cover the pin
+        dots.push({ dx, dy }); idx++;
+      }
+    }
+    return { key: b.key, n: b.n, dotR: b.dotR, cx: b.cx, cy: b.cy, px: b.px, py: b.py,
+             nudged: Math.hypot(b.cx - b.px, b.cy - b.py) > 4, dots };
+  });
+  for (let r = 0; r < 12 && relax(); r++);
+  let out = place();
+  bs.forEach((b, i) => { // skipping pin-covering slots can add a ring; relax once more on true radii
+    let maxR = 0;
+    for (const d of out[i].dots) maxR = Math.max(maxR, Math.hypot(d.dx, d.dy));
+    b.R = maxR + b.vr;
+  });
+  for (let r = 0; r < 12 && relax(); r++);
+  return place();
+}
+// __PURE_END__
 
 let YEARS = [], DATA = {}, PEOPLE = [], BKEYS = [];
 let mode = 'trails', yi = 0, playing = false, timer = null, tweenRAF = null;
@@ -198,32 +263,44 @@ function bldgPinFeatures(y) {
     };
   });
 }
-// One dot per resident, golden-angle spiral around the building, deterministic.
+// One dot per resident, laid out by layoutResidentDots (collision-free rings in
+// screen space, deterministic per building+zoom). Returns {dots, leaders}.
 function residentDotFeatures(y) {
-  const feats = [];
+  const zoom = map.getZoom();
+  const bl = [];
   for (const b of BKEYS) {
     const f = featFor(b.key, y);
-    if (!f || f.properties.status === 'absent') continue;
-    const residents = f.properties.residents;
-    const n = residents.length, R = 0.0013, rot = hash01(b.key) * 6.283;
+    if (!f || f.properties.status === 'absent' || !f.properties.residents.length) continue;
+    bl.push({ key: b.key, lon: b.lon, lat: b.lat, n: f.properties.residents.length, feat: f });
+  }
+  if (!bl.length) return { dots: [], leaders: [] };
+  const layout = layoutResidentDots(bl.map(({ key, lon, lat, n }) => ({ key, lon, lat, n })), zoom);
+  const lat0 = bl[0].lat, lon0 = bl[0].lon, m = mpp(zoom, lat0);
+  const kx = m / (111320 * Math.cos(lat0 * Math.PI / 180)), ky = m / 110540; // degrees per px
+  const toLngLat = (px, py) => [lon0 + px * kx, lat0 + py * ky];
+  const dots = [], leaders = [];
+  for (const L of layout) {
+    const src = bl.find(x => x.key === L.key), residents = src.feat.properties.residents;
     residents.forEach((r, i) => {
-      const pr = parseResident(r), fam = isFam(pr);
-      const rr = R * Math.sqrt((i + 0.5) / Math.max(n, 1));
-      const th = rot + i * 2.399963;
-      feats.push({
+      const pr = parseResident(r), fam = isFam(pr), d = L.dots[i] || { dx: 0, dy: 0 };
+      dots.push({
         type: 'Feature',
-        properties: { fam, name: r, bkey: b.key, color: fam ? '#dc2626' : '#64748b' },
-        geometry: { type: 'Point', coordinates: [b.lon + rr * Math.cos(th), b.lat + rr * Math.sin(th) * 0.75] }
+        properties: { fam, name: r, bkey: L.key, color: fam ? '#dc2626' : '#64748b', r: L.dotR },
+        geometry: { type: 'Point', coordinates: toLngLat(L.cx + d.dx, L.cy + d.dy) }
       });
     });
+    if (L.nudged) leaders.push({ // faint tether when a cluster had to slide off its pin
+      type: 'Feature', properties: {},
+      geometry: { type: 'LineString', coordinates: [toLngLat(L.px, L.py), toLngLat(L.cx, L.cy)] }
+    });
   }
-  return feats;
+  return { dots, leaders };
 }
 
 // ---- map sources & layers ----
 function addSourcesAndLayers() {
   const empty = { type: 'FeatureCollection', features: [] };
-  for (const s of ['bldg', 'trails', 'people', 'residents', 'band1'])
+  for (const s of ['bldg', 'trails', 'people', 'residents', 'band1', 'dotLeaders'])
     map.addSource(s, { type: 'geojson', data: empty });
 
   map.addLayer({
@@ -240,10 +317,14 @@ function addSourcesAndLayers() {
   map.addLayer({
     id: 'resDots', type: 'circle', source: 'residents',
     paint: {
-      'circle-color': ['get', 'color'], 'circle-radius': 5,
+      'circle-color': ['get', 'color'], 'circle-radius': ['get', 'r'],
       'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff', 'circle-opacity': 0.9,
       'circle-opacity-transition': { duration: 250 }
     }
+  });
+  map.addLayer({
+    id: 'dotLeaders', type: 'line', source: 'dotLeaders',
+    paint: { 'line-color': '#9ca3af', 'line-width': 1.5, 'line-opacity': 0.55, 'line-dasharray': [4, 3] }
   });
   map.addLayer({
     id: 'peoplePts', type: 'circle', source: 'people',
@@ -256,7 +337,12 @@ function addSourcesAndLayers() {
     id: 'peopleLabels', type: 'symbol', source: 'people',
     layout: {
       'text-field': ['get', 'label'], 'text-size': 12, 'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
-      'text-offset': [0, 1.6], 'text-anchor': 'top'
+      // Let the renderer pick a free side per label: stacked people (e.g. two
+      // Billers at one address) fan out instead of overlapping. Colliding
+      // labels are hidden, never drawn on top of each other.
+      'text-variable-anchor': ['bottom', 'top', 'left', 'right', 'bottom-left', 'bottom-right', 'top-left', 'top-right'],
+      'text-radial-offset': 1.7, 'text-padding': 3,
+      'text-allow-overlap': false, 'text-ignore-placement': false
     },
     paint: { 'text-color': ['get', 'color'], 'text-halo-color': '#fff', 'text-halo-width': 2 }
   });
@@ -310,16 +396,19 @@ function renderTrails(y, animate) {
   setData('bldg', bldgPinFeatures(y));
   setData('trails', trailFeatures());
   setData('residents', []);
+  setData('dotLeaders', []);
   map.setLayoutProperty('trailLines', 'visibility', 'visible');
   map.setLayoutProperty('peoplePts', 'visibility', 'visible');
   map.setLayoutProperty('peopleLabels', 'visibility', 'visible');
   map.setLayoutProperty('resDots', 'visibility', 'none');
+  map.setLayoutProperty('dotLeaders', 'visibility', 'none');
   map.setPaintProperty('bldgPins', 'circle-radius', 11);
   const to = peopleAt(y);
   if (animate && prevPeoplePts.length) tweenPeople(prevPeoplePts, to, TWEEN_MS);
   else { cancelAnimationFrame(tweenRAF); setData('people', to); }
   prevPeoplePts = to;
 }
+let bldgSeq = 0, lastBldgZoom = 0;
 function renderBuildings(y) {
   cancelAnimationFrame(tweenRAF);
   setData('bldg', bldgPinFeatures(y));
@@ -330,14 +419,35 @@ function renderBuildings(y) {
   map.setLayoutProperty('peoplePts', 'visibility', 'none');
   map.setLayoutProperty('peopleLabels', 'visibility', 'none');
   map.setLayoutProperty('resDots', 'visibility', 'visible');
+  map.setLayoutProperty('dotLeaders', 'visibility', 'visible');
   map.setPaintProperty('bldgPins', 'circle-radius', 6);
   // fade out, swap, fade in
+  const seq = ++bldgSeq;
   map.setPaintProperty('resDots', 'circle-opacity', 0);
   setTimeout(() => {
-    setData('residents', residentDotFeatures(y));
+    if (seq !== bldgSeq) return;
+    const L = residentDotFeatures(y);
+    setData('residents', L.dots);
+    setData('dotLeaders', L.leaders);
     map.setPaintProperty('resDots', 'circle-opacity', 0.9);
+    lastBldgZoom = map.getZoom();
   }, 260);
 }
+// Dot layout is computed in screen pixels, so re-lay out after zooming to stay
+// collision-free at every zoom (masked by the same quick fade).
+map.on('zoomend', () => {
+  if (mode !== 'buildings' || Math.abs(map.getZoom() - lastBldgZoom) < 0.05) return;
+  const seq = ++bldgSeq;
+  map.setPaintProperty('resDots', 'circle-opacity', 0);
+  setTimeout(() => {
+    if (seq !== bldgSeq || mode !== 'buildings') return;
+    const L = residentDotFeatures(YEARS[yi]);
+    setData('residents', L.dots);
+    setData('dotLeaders', L.leaders);
+    map.setPaintProperty('resDots', 'circle-opacity', 0.9);
+    lastBldgZoom = map.getZoom();
+  }, 140);
+});
 function tweenPeople(from, to, dur) {
   cancelAnimationFrame(tweenRAF);
   const t0 = performance.now();
