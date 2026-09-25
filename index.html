@@ -46,6 +46,11 @@ header>*{pointer-events:auto;}
 #results .rrow:hover{background:#f9fafb;}
 #results .rrow.r-hl{background:#dbeafe;}
 #results .r-sub{color:#6b7280;font-size:12px;}
+#resPill{position:absolute;top:56px;left:10px;z-index:6;background:#1f2937;color:#fff;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none;align-items:center;gap:4px;padding:6px 6px 6px 14px;font-size:14px;cursor:pointer;max-width:calc(100vw - 20px);white-space:nowrap;}
+#resPill .rpx{border:none;background:rgba(255,255,255,.16);color:#fff;border-radius:999px;min-width:30px;min-height:30px;font-size:13px;cursor:pointer;line-height:1;}
+#resHead{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#374151;font-weight:600;position:sticky;top:0;background:#fff;z-index:1;}
+#resHead .sp{flex:1;}
+#resHead button{border:1px solid #d1d5db;background:#f9fafb;border-radius:8px;min-width:34px;min-height:34px;font-size:15px;cursor:pointer;color:#374151;line-height:1;}
 .pp{font-size:14px;line-height:1.45;min-width:180px;}
 .pp-name{font-weight:700;font-size:15px;}
 .pp-occ{color:#4b5563;font-style:italic;}
@@ -173,6 +178,7 @@ header>*{pointer-events:auto;}
   </div>
 </header>
 <div id="results"></div>
+<div id="resPill" role="button" aria-label="Show search results"></div>
 <div id="followPanel" style="display:none" aria-hidden="true">
   <div class="fw-head">
     <div class="fw-title"><div class="fw-name"></div><div class="fw-sub"></div></div>
@@ -425,7 +431,7 @@ async function switchYear(year){
   map.getSource('places').setData({type: 'FeatureCollection', features: feats});
   updateCount(feats);
   $('boot').classList.add('gone');
-  $('q').value = ''; $('results').style.display = 'none';
+  $('q').value = ''; $('results').style.display = 'none'; $('resPill').style.display = 'none';
 }
 $('yrPick').addEventListener('change', e => {
   const v = e.target.value;
@@ -764,8 +770,40 @@ const PAGE_SIZE = 100;
 function paintResHl(){
   for (let i = 0; i < resRows.length; i++) resRows[i].el.classList.toggle('r-hl', i === resHl);
 }
-function selectResRow(row){
+// Persistent results: tapping the map collapses the panel to a pill
+// (count + dismiss) instead of losing the results; the pill re-expands
+// on tap and ✕ dismisses it outright.
+function minimizeResults(){
+  const box = $('results'), pill = $('resPill');
+  if (box.style.display !== 'block' || !resIds.length) { box.style.display = 'none'; pill.style.display = 'none'; return; }
+  box.style.display = 'none';
+  pill.innerHTML = '';
+  const label = document.createElement('span');
+  const n = filteredIds().length;
+  label.textContent = n.toLocaleString('en-US') + ' match' + (n === 1 ? '' : 'es');
+  const x = document.createElement('button');
+  x.className = 'rpx'; x.textContent = '\u2715'; x.setAttribute('aria-label', 'Dismiss results');
+  x.addEventListener('click', ev => { ev.stopPropagation(); dismissResults(); });
+  pill.appendChild(label); pill.appendChild(x);
+  const h = document.querySelector('header');
+  pill.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
+  pill.style.display = 'flex';
+}
+function expandResults(){
+  $('resPill').style.display = 'none';
+  const box = $('results');
+  const h = document.querySelector('header');
+  box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
+  box.style.display = 'block';
+}
+function dismissResults(){
   $('results').style.display = 'none';
+  $('resPill').style.display = 'none';
+  resRows = []; resHl = -1;
+}
+$('resPill').addEventListener('click', () => expandResults());
+function selectResRow(row){
+  minimizeResults();
   resRows = []; resHl = -1;
   const rec = row.rec, rid = row.id;
   rec._id = rid;
@@ -800,6 +838,18 @@ async function renderResPage(seq){
   if (resPage >= pages) resPage = pages - 1;
   const slice = ids.slice(resPage * PAGE_SIZE, (resPage + 1) * PAGE_SIZE);
   box.innerHTML = '';
+  // header: count + minimize + dismiss (persistent, re-rendered per page)
+  const head = document.createElement('div');
+  head.id = 'resHead';
+  const title = document.createElement('span');
+  title.textContent = ids.length.toLocaleString('en-US') + ' match' + (ids.length === 1 ? '' : 'es');
+  const hsp = document.createElement('span'); hsp.className = 'sp';
+  const hmin = document.createElement('button'); hmin.innerHTML = '&#8211;'; hmin.setAttribute('aria-label', 'Minimize results');
+  hmin.addEventListener('click', ev => { ev.stopPropagation(); minimizeResults(); });
+  const hx = document.createElement('button'); hx.innerHTML = '&#215;'; hx.setAttribute('aria-label', 'Dismiss results');
+  hx.addEventListener('click', ev => { ev.stopPropagation(); dismissResults(); });
+  head.appendChild(title); head.appendChild(hsp); head.appendChild(hmin); head.appendChild(hx);
+  box.appendChild(head);
   // filter chips (enabled once background classification completes)
   const chips = document.createElement('div');
   chips.id = 'chips';
@@ -883,6 +933,7 @@ $('q').addEventListener('blur', () => { $('q').placeholder = '/ to search'; });
 $('q').addEventListener('input', e => {
   clearTimeout(searchTimer);
   resRows = []; resHl = -1;
+  $('resPill').style.display = 'none';
   searchTimer = setTimeout(async () => {
     const seq = ++searchSeq;
     const q = e.target.value.trim().toLowerCase();
@@ -944,7 +995,7 @@ $('q').addEventListener('input', e => {
 // through the visible pins.
 $('q').addEventListener('keydown', e => {
   const open = $('results').style.display === 'block' && resRows.length > 0;
-  if (e.key === 'Escape') { $('results').style.display = 'none'; resHl = -1; paintResHl(); return; }
+  if (e.key === 'Escape') { minimizeResults(); resHl = -1; paintResHl(); return; }
   if (!open) return;
   if (e.key === 'ArrowDown') { e.preventDefault(); resHl = Math.min(resHl + 1, resRows.length - 1); paintResHl(); }
   else if (e.key === 'ArrowUp') { e.preventDefault(); resHl = Math.max(resHl - 1, 0); paintResHl(); }
@@ -972,7 +1023,8 @@ document.addEventListener('keydown', e => {
   }
 });
 document.addEventListener('click', e => {
-  if (!$('results').contains(e.target) && e.target.id !== 'q') $('results').style.display = 'none';
+  if ($('resPill').contains(e.target)) return;
+  if (!$('results').contains(e.target) && e.target.id !== 'q') minimizeResults();
 });
 
 // ---- info popup (circled-i): About / Research / Settings / Licensing -----
