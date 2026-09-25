@@ -121,6 +121,40 @@ header>*{pointer-events:auto;}
   cursor:pointer;min-height:42px;color:#111827;}
 #results #pager button:disabled{opacity:.35;cursor:default;}
 #results #pager .pginfo{font-size:12px;color:#6b7280;text-align:center;}
+/* ---- Follow this person: cross-year timeline --------------------------- */
+.pp-follow{display:inline-block;margin:6px 0 2px;padding:8px 12px;min-height:38px;border:1px solid #2563eb;
+  background:#eff6ff;color:#1d4ed8;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
+.pp-follow:hover{background:#dbeafe;}
+#followPanel{position:fixed;left:10px;right:10px;bottom:10px;z-index:15;background:#fff;border-radius:14px;
+  box-shadow:0 8px 30px rgba(0,0,0,.3);padding:12px 12px 14px;max-height:48vh;overflow:auto;}
+@media(min-width:641px){#followPanel{left:auto;right:12px;bottom:12px;width:410px;}}
+.fw-head{display:flex;align-items:center;gap:8px;}
+.fw-title{flex:1;min-width:0;}
+.fw-name{font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fw-sub{color:#6b7280;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+#fwPlay,#fwClose{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1px solid #d1d5db;background:#fff;
+  font-size:17px;cursor:pointer;color:#111827;padding:0;}
+#fwPlay{background:#111827;color:#fff;border-color:#111827;}
+.fw-status{display:flex;align-items:center;gap:8px;color:#6b7280;font-size:13px;margin:8px 2px 0;}
+.fw-years{display:flex;gap:6px;margin-top:8px;}
+.fw-cell{flex:1;min-width:0;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;padding:8px 4px;
+  cursor:pointer;text-align:center;font-size:12px;color:#111827;font-family:inherit;}
+.fw-cell.is-active{border-color:#2563eb;background:#eff6ff;box-shadow:0 0 0 1px #2563eb;}
+.fw-cell.is-gap{background:#f3f4f6;color:#9ca3af;cursor:default;}
+.fw-yr{font-weight:700;font-size:13px;}
+.fw-addr{margin-top:3px;min-height:2.4em;line-height:1.25;overflow:hidden;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.fw-conf{margin-top:3px;font-size:10px;color:#6b7280;}
+.fw-conf.c-strong{color:#065f46;font-weight:600;}
+.fw-conf.c-likely{color:#92400e;font-weight:600;}
+.fw-conf.c-possible{color:#6b7280;font-style:italic;}
+.fw-nalt{font-size:10px;color:#2563eb;font-weight:700;margin-top:3px;text-decoration:underline;}
+.fw-alts{margin-top:8px;border-top:1px solid #f3f4f6;padding-top:4px;}
+.fw-alts-h{font-size:12px;color:#6b7280;margin:4px 2px;}
+.fw-alt{display:block;width:100%;text-align:left;border:1px solid #e5e7eb;background:#fff;border-radius:8px;
+  padding:8px 10px;margin:6px 0;font-size:13px;cursor:pointer;color:#111827;font-family:inherit;min-height:44px;}
+.fw-alt small{color:#6b7280;display:block;margin-top:2px;}
+.fw-alt.is-pick{border-color:#2563eb;background:#eff6ff;}
 </style>
 </head>
 <body>
@@ -138,6 +172,16 @@ header>*{pointer-events:auto;}
   </div>
 </header>
 <div id="results"></div>
+<div id="followPanel" style="display:none" aria-hidden="true">
+  <div class="fw-head">
+    <div class="fw-title"><div class="fw-name"></div><div class="fw-sub"></div></div>
+    <button id="fwPlay" aria-label="Play timeline">&#9654;</button>
+    <button id="fwClose" aria-label="Close follow view">&#10005;</button>
+  </div>
+  <div class="fw-status"></div>
+  <div class="fw-years"></div>
+  <div class="fw-alts" style="display:none"></div>
+</div>
 <div id="aboutOverlay"><div id="aboutBox">
 <button id="aboutClose">Close</button>
 <div class="tabs" role="tablist">
@@ -302,6 +346,13 @@ function ppInfo(r){
 function togglePpInfo(btn){
   const body = btn.nextElementSibling;
   if (body) body.style.display = (body.style.display === 'none') ? '' : 'none';
+}
+// "Follow this person" button for record popups. data-follow-year/id are read
+// by the delegated handler in the follow-person section below.
+function followBtn(r){
+  if (r._id == null) return '';
+  return '<button class="pp-follow" data-follow-year="' + esc(CUR_YEAR) + '" data-follow-id="' + r._id +
+    '">Follow this person &rarr;</button>';
 }
 let searchIdx = null;
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
@@ -549,7 +600,7 @@ function popupHTML(r){
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += rowSnippetPH(r) + viewOriginalLink(r) + ppInfo(r) + '</div>';
+  h += rowSnippetPH(r) + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div>';
   return h;
 }
 
@@ -646,7 +697,7 @@ async function openGroupPopup(f, highlightId){
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') +
-      snip + viewOriginalLink(r) + ppInfo(r) + '</div>';
+      snip + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + hidden + ' more resident' + (hidden > 1 ? 's' : '') + ' hidden by filter</div>';
@@ -902,6 +953,298 @@ $('infoBtn').addEventListener('click', () => { switchTab('about'); $('aboutOverl
 $('aboutClose').addEventListener('click', () => $('aboutOverlay').style.display = 'none');
 $('aboutOverlay').addEventListener('click', e => {
   if (e.target.id === 'aboutOverlay') $('aboutOverlay').style.display = 'none';
+});
+
+// ---- Follow this person: cross-year person matching ------------------------
+// Query-time matching across the 1938-1942 production layers. Identity rule
+// (user-set): same surname + same given-name initial + compatible address +
+// occupation. Initials count when everything else lines up. Near-ties are
+// surfaced as alternatives, never silently merged; unmatched years show an
+// explicit gap. Year indexes/shards load lazily on first Follow and are
+// cached per session; the main search caches are untouched.
+const FW_YEARS = ['1938', '1939', '1940', '1941', '1942'];
+const fwIdxC = {};
+const fwShardC = {};
+// Build-side fold (mirrors build_data38.py): lowercase, ſ→s, strip diacritics
+// via NFKD. Index keys were built with this fold, so surname tokens look up
+// directly (no need to fold all keys like the fuzzy query search does).
+function fwFold(s){
+  s = (s || '').toLowerCase().replace(/ſ/g, 's');
+  return s.normalize('NFKD').replace(/[̀-ͯ]/g, '');
+}
+const FW_TOKRE = /[^\W\d_]{2,}/gu;
+const fwToks = s => (fwFold(s).match(FW_TOKRE) || []);
+// Street comparison fold: query-style (ß→s, ss→s) so "Straße" == "Strasse"
+// across OCR variants; spaces/punctuation stripped for full-string compare.
+const fwStreetNorm = s => foldUmlaut((s || '').toLowerCase()).replace(/[^a-z]/g, '');
+function fwStreetKeys(r){
+  const k = [fwStreetNorm(r.st)];
+  if (r.st_old) k.push(fwStreetNorm(r.st_old)); // rename-rescue bridge, either spelling counts
+  return k.filter(Boolean);
+}
+function fwNormHn(hn){
+  const h = String(hn == null ? '' : hn).trim().toLowerCase().replace(/\s+/g, '');
+  return h || null;
+}
+function fwHav(a, b){
+  if (a.la == null || b.la == null || a.lo == null || b.lo == null) return null;
+  const R = 6371000, t = Math.PI / 180;
+  const dLa = (b.la - a.la) * t, dLo = (b.lo - a.lo) * t;
+  const h = Math.sin(dLa / 2) * Math.sin(dLa / 2) +
+    Math.cos(a.la * t) * Math.cos(b.la * t) * Math.sin(dLo / 2) * Math.sin(dLo / 2);
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+function fwOccOverlap(a, b){
+  const sa = new Set(fwToks(a)), sb = new Set(fwToks(b));
+  if (!sa.size || !sb.size) return 0;
+  let inter = 0;
+  for (const t of sa){
+    if (sb.has(t)) { inter += 1; continue; }
+    for (const u of sb) if (u.indexOf(t) === 0 || t.indexOf(u) === 0) { inter += 0.7; break; } // Kaufm. ≈ Kaufmann
+  }
+  return inter / (sa.size + sb.size - inter);
+}
+function fwScore(src, cand){
+  let score = 0;
+  const why = [];
+  const sg = fwFold(src.g), cg = fwFold(cand.g);
+  if (sg && cg){
+    if (sg === cg) { score += 3; why.push('given'); }
+    else if ((NAME_VAR[sg] || NAME_VAR[foldUmlaut(sg)] || []).indexOf(cg) >= 0 ||
+             (NAME_VAR[cg] || NAME_VAR[foldUmlaut(cg)] || []).indexOf(sg) >= 0) { score += 2.5; why.push('given-variant'); }
+    else if (sg[0] === cg[0]) { score += 2; why.push('initial'); }
+    else { score -= 4; why.push('given-mismatch'); }
+  } else score += 0.5; // given name missing on one side: neutral
+  const jo = fwOccOverlap(src.o, cand.o);
+  if (jo > 0) { score += 2 * jo; why.push('occ'); }
+  const sk = fwStreetKeys(src), ck = fwStreetKeys(cand);
+  const sameStreet = sk.some(k => ck.indexOf(k) >= 0);
+  const shn = fwNormHn(src.hn), chn = fwNormHn(cand.hn);
+  if (sameStreet && shn && shn === chn) { score += 4; why.push('same-address'); }
+  else if (sameStreet) { score += 2; why.push('same-street'); }
+  else {
+    const d = fwHav(src, cand);
+    if (d != null && d < 150) { score += 1.5; why.push('nearby'); }
+    else if (d != null && d < 500) score += 0.5;
+    else score -= 1;
+  }
+  if (cand.m === 'exact') score += 0.5;
+  return {score: score, why: why};
+}
+async function fwGetIdx(year){
+  if (!fwIdxC[year]){
+    const res = await fetch(YEARS[year].dir + '/search.idx.json');
+    if (!res.ok) throw new Error('index unavailable');
+    fwIdxC[year] = await res.json();
+  }
+  return fwIdxC[year];
+}
+async function fwGetRec(year, id){
+  const dir = YEARS[year].dir;
+  const sh = 'r' + String(Math.floor(id / 1000)).padStart(4, '0');
+  const c = fwShardC[year] || (fwShardC[year] = {});
+  if (!c[sh]){
+    const res = await fetch(dir + '/records/' + sh + '.json');
+    if (!res.ok) return null;
+    c[sh] = await res.json();
+  }
+  return c[sh][String(id)] || null;
+}
+// Candidates for src in another year, scored best-first. Surname token lookup
+// via the year index, narrowed by given-name token intersection (with
+// josef↔jossel↔josel variants); falls back to surname-only when the given
+// name is OCR-mangled. The surname FIELD is verified, so street/occupation
+// token collisions can't leak in.
+async function fwFind(src, year){
+  const idx = await fwGetIdx(year);
+  const stoks = fwToks(src.s);
+  if (!stoks.length) return [];
+  let ids = new Set();
+  for (const t of stoks){ const a = idx[t]; if (a) for (const id of a) ids.add(id); }
+  const gtoks = fwToks(src.g);
+  if (gtoks.length){
+    const gs = new Set();
+    const addT = t => { const a = idx[t]; if (a) for (const id of a) gs.add(id); };
+    for (const t of gtoks){ addT(t); for (const v of (NAME_VAR[t] || NAME_VAR[foldUmlaut(t)] || [])) addT(v); }
+    const inter = [...ids].filter(id => gs.has(id));
+    if (inter.length) ids = new Set(inter);
+  }
+  const out = [];
+  let n = 0;
+  for (const id of ids){
+    if (++n > 9000) break; // degenerate common-surname guard
+    const c = await fwGetRec(year, id);
+    if (!c) continue;
+    const cs = new Set(fwToks(c.s));
+    if (!stoks.every(t => cs.has(t))) continue;
+    const r = fwScore(src, c);
+    if (r.score >= 2.5) out.push({id: +id, rec: c, score: r.score, why: r.why});
+  }
+  out.sort((a, b) => b.score - a.score || a.id - b.id);
+  return out;
+}
+const fwConfOf = s => s >= 7 ? 'strong' : s >= 4.5 ? 'likely' : s >= 3 ? 'possible' : null;
+const fwConfLabel = c => c === 'strong' ? 'strong match' : c === 'likely' ? 'likely match' : 'possible \u2014 verify';
+let fwStops = [];      // [{year,id,rec,self,score,why,conf,alts[]}]
+let fwActiveYear = null;
+let fwPlaying = false;
+let fwSrcName = '';
+function fwAddr(r){
+  return ((r.st || '') + ' ' + (r.hn || '')).trim() + (r.d ? ', ' + r.d + '. Bez.' : '');
+}
+function fwStopPlay(){
+  fwPlaying = false;
+  const b = $('fwPlay');
+  if (b){ b.innerHTML = '&#9654;'; b.setAttribute('aria-label', 'Play timeline'); }
+}
+function fwCellHTML(st){
+  let addr, conf, cls = '';
+  if (st.self){ addr = fwAddr(st.rec); conf = 'starting point'; }
+  else if (!st.rec){ addr = st.conf === 'gap' ? 'not listed' : '\u2026'; conf = ''; cls = ' is-gap'; }
+  else { addr = fwAddr(st.rec); conf = fwConfLabel(st.conf); cls = st.conf ? '' : ' is-gap'; }
+  if (st.year === fwActiveYear) cls += ' is-active';
+  const alt = (st.alts && st.alts.length)
+    ? '<div class="fw-nalt">' + st.alts.length + ' other' + (st.alts.length > 1 ? 's' : '') + ' \u25be</div>' : '';
+  const cc = st.conf === 'strong' ? ' c-strong' : st.conf === 'likely' ? ' c-likely' : st.conf === 'possible' ? ' c-possible' : '';
+  return '<div class="fw-yr">' + esc(st.year) + '</div><div class="fw-addr">' + esc(addr) + '</div>' +
+    (conf ? '<div class="fw-conf' + cc + '">' + esc(conf) + '</div>' : '') + alt;
+}
+function renderFwCells(){
+  const box = document.querySelector('.fw-years');
+  box.innerHTML = '';
+  for (const st of fwStops){
+    const b = document.createElement('button');
+    b.className = 'fw-cell' + (st.self ? '' : (!st.rec ? ' is-gap' : '')) + (st.year === fwActiveYear ? ' is-active' : '');
+    b.dataset.year = st.year;
+    b.innerHTML = fwCellHTML(st);
+    box.appendChild(b);
+  }
+}
+function fwApplyResult(st, cands){
+  if (!cands.length){ st.conf = 'gap'; return; }
+  const best = cands[0];
+  const conf = fwConfOf(best.score);
+  if (!conf){ st.conf = 'gap'; return; }
+  st.id = best.id; st.rec = best.rec; st.score = best.score; st.why = best.why; st.conf = conf;
+  st.alts = cands.slice(1)
+    .filter(c => c.score >= best.score - 1.5 && fwConfOf(c.score))
+    .slice(0, 3)
+    .map(c => ({id: c.id, rec: c.rec, score: c.score, why: c.why, conf: fwConfOf(c.score)}));
+}
+async function startFollow(year, id){
+  fwStopPlay();
+  fwActiveYear = null;
+  document.querySelector('.fw-alts').style.display = 'none';
+  let src = null;
+  try { src = await fwGetRec(year, id); } catch (e) { src = null; }
+  if (!src) return;
+  src._id = id;
+  fwSrcName = (src.s || '') + (src.g ? ', ' + src.g : '');
+  const panel = $('followPanel');
+  panel.style.display = 'block';
+  panel.setAttribute('aria-hidden', 'false');
+  document.querySelector('.fw-name').textContent = fwSrcName;
+  document.querySelector('.fw-sub').textContent =
+    [src.o, fwAddr(src)].filter(Boolean).join(' \u00b7 ') + ' \u00b7 ' + year;
+  const status = document.querySelector('.fw-status');
+  fwStops = FW_YEARS.map(y => ({year: y, id: y === year ? id : null, rec: y === year ? src : null,
+    self: y === year, score: y === year ? 99 : 0, why: [], conf: y === year ? 'start' : null, alts: []}));
+  renderFwCells();
+  for (const st of fwStops){
+    if (st.self) continue;
+    status.innerHTML = '<div class="spin sm"></div><span>Searching ' + esc(st.year) + '\u2026</span>';
+    try {
+      const cands = await fwFind(src, st.year);
+      fwApplyResult(st, cands);
+    } catch (e) { st.conf = 'error'; }
+    renderFwCells();
+  }
+  status.textContent = '';
+  document.querySelector('.fw-years').scrollIntoView({block: 'nearest'});
+}
+async function fwGoto(st){
+  if (!st.rec) return;
+  if (st.year !== CUR_YEAR) await switchYear(st.year);
+  const rec = st.rec;
+  rec._id = st.id;
+  fwActiveYear = st.year;
+  renderFwCells();
+  document.querySelector('.fw-alts').style.display = 'none';
+  map.flyTo({center: [+rec.lo, +rec.la], zoom: 16, duration: 1100});
+  await new Promise(res => { map.once('moveend', res); setTimeout(res, 2600); });
+  const f = featByRec.get(st.id);
+  document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+  if (f) openGroupPopup(f, st.id);
+  else {
+    const pop = new mapboxgl.Popup({offset: 14, maxWidth: '300px'})
+      .setLngLat([+rec.lo, +rec.la]).setHTML(popupHTML(rec)).addTo(map);
+    hydrateSnippets(pop.getElement());
+  }
+}
+function fwShowAlts(st){
+  const box = document.querySelector('.fw-alts');
+  box.innerHTML = '<div class="fw-alts-h">Other possible matches for ' + esc(fwSrcName) +
+    ' in ' + esc(st.year) + ' \u2014 tap one to inspect it:</div>';
+  const mk = (label, id, rec, conf, why, pick) => {
+    const b = document.createElement('button');
+    b.className = 'fw-alt' + (pick ? ' is-pick' : '');
+    b.innerHTML = esc(label) + '<small>' + esc(fwAddr(rec)) +
+      (rec.o ? ' \u00b7 ' + esc(rec.o) : '') + ' \u00b7 ' + esc(fwConfLabel(conf)) + '</small>';
+    b.addEventListener('click', () => {
+      st.id = id; st.rec = rec; st.score = null; st.conf = conf; st.why = why || [];
+      renderFwCells();
+      fwShowAlts(st);
+      fwGoto(st);
+    });
+    return b;
+  };
+  box.appendChild(mk('Current pick: ' + (st.rec.s || '') + (st.rec.g ? ', ' + st.rec.g : ''), st.id, st.rec, st.conf, st.why, true));
+  for (const a of st.alts)
+    box.appendChild(mk((a.rec.s || '') + (a.rec.g ? ', ' + a.rec.g : ''), a.id, a.rec, a.conf, a.why, false));
+  box.style.display = 'block';
+}
+document.querySelector('.fw-years').addEventListener('click', e => {
+  const cell = e.target.closest ? e.target.closest('.fw-cell') : null;
+  if (!cell) return;
+  const st = fwStops.filter(s => s.year === cell.dataset.year)[0];
+  if (!st) return;
+  if (e.target.closest && e.target.closest('.fw-nalt')){ fwShowAlts(st); return; }
+  fwStopPlay();
+  if (st.rec) fwGoto(st);
+});
+async function fwTogglePlay(){
+  if (fwPlaying){ fwStopPlay(); return; }
+  const seq = fwStops.filter(s => s.rec);
+  if (!seq.length) return;
+  fwPlaying = true;
+  $('fwPlay').innerHTML = '&#10074;&#10074;';
+  $('fwPlay').setAttribute('aria-label', 'Stop');
+  for (const st of seq){
+    if (!fwPlaying) break;
+    await fwGoto(st);
+    for (let i = 0; i < 8 && fwPlaying; i++) await new Promise(r => setTimeout(r, 300));
+  }
+  fwStopPlay();
+}
+function fwClose(){
+  fwStopPlay();
+  fwStops = [];
+  fwActiveYear = null;
+  document.querySelector('.fw-alts').style.display = 'none';
+  const p = $('followPanel');
+  p.style.display = 'none';
+  p.setAttribute('aria-hidden', 'true');
+}
+$('fwPlay').addEventListener('click', fwTogglePlay);
+$('fwClose').addEventListener('click', fwClose);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('followPanel').style.display === 'block') fwClose();
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest ? e.target.closest('[data-follow]') : null;
+  if (!b) return;
+  e.stopPropagation();
+  startFollow(b.getAttribute('data-follow-year'), +b.getAttribute('data-follow-id'));
 });
 
 // ---- service worker -----------------------------------------------------
