@@ -25,6 +25,9 @@ header>*{pointer-events:auto;}
 .pp-links{margin-top:4px;font-size:12px;color:#6b7280;}
 .pp-links a{color:#2563eb;text-decoration:none;}
 @media (pointer:coarse){.pp-links a{display:inline-block;padding:14px 6px;}}
+.rowsnip{position:relative;overflow:hidden;max-width:100%;border:2px solid #dc2626;border-radius:6px;margin:6px 0 2px;background:#e5e7eb;}
+.rowsnip img{position:absolute;max-width:none;}
+.rowsnip-frame{position:absolute;left:0;right:0;border:2px solid #dc2626;box-sizing:border-box;pointer-events:none;}
 @media (max-width:640px){
   header{flex-direction:column;align-items:stretch;}
   .brand{max-width:none;flex-wrap:wrap;}
@@ -530,8 +533,69 @@ function popupHTML(r){
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += viewOriginalLink(r) + ppInfo(r) + '</div>';
+  h += rowSnippetPH(r) + viewOriginalLink(r) + ppInfo(r) + '</div>';
   return h;
+}
+
+// ---- row snippets: the record's own row, cropped from the page scan --------
+// Box sidecars live at <dir>/boxes/<pageId>.json (built by build_rowboxes.py);
+// the page image is served by the Wienbibliothek. The snippet frames the row
+// with a red border (and a red outline on the row itself); records without a
+// box get nothing.
+const boxCache = {};
+async function getRowBox(dir, pg, rid){
+  const key = dir + '/' + pg;
+  if (!(key in boxCache)) {
+    try {
+      const res = await fetch(dir + '/boxes/' + pg + '.json');
+      boxCache[key] = res.ok ? await res.json() : null;
+    } catch (e) { boxCache[key] = null; }
+  }
+  const bd = boxCache[key];
+  if (!bd || !bd.boxes) return null;
+  for (const b of bd.boxes) if (b.id === rid) return {bd: bd, b: b};
+  return null;
+}
+function rowSnippetPH(r){
+  if (r.pg == null || r._id == null) return '';
+  return '<div class="rowsnip" data-pg="' + r.pg + '" data-rid="' + r._id + '"></div>';
+}
+async function hydrateSnippets(root){
+  if (!root) return;
+  const els = root.querySelectorAll('.rowsnip');
+  for (const el of els) {
+    const pg = +el.dataset.pg, rid = +el.dataset.rid;
+    let found = null;
+    try { found = await getRowBox(YC().dir, pg, rid); } catch (e) { found = null; }
+    if (!found) { el.remove(); continue; }
+    const bd = found.bd, b = found.b;
+    const img = new Image();
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.alt = '';
+    img.onerror = () => el.remove();
+    img.onload = () => {
+      const W = img.naturalWidth, H = img.naturalHeight;
+      if (!W || !H || !bd.w || !bd.h) { el.remove(); return; }
+      const sx = W / bd.w, sy = H / bd.h;
+      const cw = el.clientWidth || 264;
+      const k = cw / Math.max(1, b.w * sx);
+      const ox = b.x * sx * k, oy = b.y * sy * k, oh = b.h * sy * k;
+      const ch = Math.max(72, Math.min(160, oh * 3.2));
+      el.style.height = ch + 'px';
+      img.style.width = (W * k) + 'px';
+      img.style.height = (H * k) + 'px';
+      img.style.left = (-ox) + 'px';
+      img.style.top = (ch / 2 - oy - oh / 2) + 'px';
+      const fr = document.createElement('div');
+      fr.className = 'rowsnip-frame';
+      fr.style.top = (ch / 2 - oh / 2) + 'px';
+      fr.style.height = oh + 'px';
+      el.appendChild(fr);
+    };
+    img.src = 'https://www.digital.wienbibliothek.at/image/view/' + pg;
+    el.appendChild(img);
+  }
 }
 
 async function openGroupPopup(f, highlightId){
@@ -562,15 +626,17 @@ async function openGroupPopup(f, highlightId){
   for (const r of list) {
     const hl = (highlightId !== null && r._id === highlightId ? ' hl' : '');
     const tp = r.u ? ' pp-tuer' : '';
+    const snip = (highlightId != null ? r._id === highlightId : r === list[0]) ? rowSnippetPH(r) : '';
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') +
-      viewOriginalLink(r) + ppInfo(r) + '</div>';
+      snip + viewOriginalLink(r) + ppInfo(r) + '</div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + hidden + ' more resident' + (hidden > 1 ? 's' : '') + ' hidden by filter</div>';
   h += '</div>';
   pop.setHTML(h);
+  hydrateSnippets(pop.getElement());
 }
 
 async function getRecord(id){
@@ -610,8 +676,9 @@ function selectResRow(row){
     if (f) openGroupPopup(f, rid);
     else {
       document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
-      new mapboxgl.Popup({offset: 14, maxWidth: '280px'})
+      const pop = new mapboxgl.Popup({offset: 14, maxWidth: '280px'})
         .setLngLat([+rec.lo, +rec.la]).setHTML(popupHTML(rec)).addTo(map);
+      hydrateSnippets(pop.getElement());
     }
   });
 }
