@@ -19,25 +19,24 @@ header>*{pointer-events:auto;}
 #q:focus{outline:none;border-color:#ffd97a;background:rgba(255,255,255,.14);}
 #yrPick{background:transparent;border:none;color:#ffd97a;font-weight:700;font-size:16px;cursor:pointer;min-height:44px;padding:8px 2px;}
 #yrPick option{color:#111827;}
-#aboutBtn,#shareBtn,#flt{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
-#aboutBtn{font-weight:600;}
-#srcBtn{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;color:#111;text-decoration:none;}
+#shareBtn,#flt{padding:9px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+#shareBtn{font-weight:600;}
+
 .pp-links{margin-top:4px;font-size:12px;color:#6b7280;}
 .pp-links a{color:#2563eb;text-decoration:none;}
 @media (pointer:coarse){.pp-links a{display:inline-block;padding:14px 6px;}}
-.btnrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 @media (max-width:640px){
   header{flex-direction:column;align-items:stretch;}
   .brand{max-width:none;flex-wrap:wrap;}
   #q{flex:1 1 100%;min-width:0;}
-  .btnrow{width:100%;}
+  #infoBtn{align-self:flex-end;}
   #results{left:10px;right:10px;max-width:none;}
 }
 #results{position:absolute;top:56px;left:10px;z-index:6;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:360px;max-height:50vh;overflow:auto;display:none;}
-#results div{padding:9px 12px;border-bottom:1px solid #f3f4f6;cursor:pointer;font-size:14px;}
-#results div:last-child{border-bottom:none;}
-#results div:hover{background:#f9fafb;}
-#results div.r-hl{background:#dbeafe;}
+#results .rrow{padding:9px 12px;border-bottom:1px solid #f3f4f6;cursor:pointer;font-size:14px;}
+#results .rrow:last-child{border-bottom:none;}
+#results .rrow:hover{background:#f9fafb;}
+#results .rrow.r-hl{background:#dbeafe;}
 #results .r-sub{color:#6b7280;font-size:12px;}
 .pp{font-size:14px;line-height:1.45;min-width:180px;}
 .pp-name{font-weight:700;font-size:15px;}
@@ -70,7 +69,7 @@ header>*{pointer-events:auto;}
 .pp-info{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;font:italic 12px Georgia,serif;cursor:pointer;margin:2px 0 0 4px;padding:0;vertical-align:middle;}
 .pp-info:hover{border-color:#2563eb;color:#2563eb;}
 .pp-info-body{margin-top:4px;}
-#lyrB2{margin-right:6px;}
+
 #aboutBox h3{margin:16px 0 6px;font-size:15px;}
 #aboutBox p{font-size:14px;line-height:1.6;color:#1f2937;margin:8px 0;}
 #aboutClose{float:right;border:none;background:#f3f4f6;border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer;}
@@ -82,6 +81,38 @@ header>*{pointer-events:auto;}
 #boot.gone{opacity:0;pointer-events:none;}
 .r-load{display:flex;justify-content:center;padding:14px !important;cursor:default !important;}
 .pp-load{display:flex;justify-content:center;padding:18px 34px;}
+/* circled-i info button: the only control outside the map bar */
+#infoBtn{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid #d1d5db;background:#fff;
+  font-size:24px;line-height:1;color:#111827;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0;}
+#infoBtn:hover{border-color:#2563eb;color:#2563eb;}
+/* popup tabs */
+.tabs{display:flex;gap:2px;border-bottom:1px solid #e5e7eb;margin:0 0 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tab{border:none;background:none;padding:12px 14px;font-size:15px;font-weight:600;color:#6b7280;cursor:pointer;
+  white-space:nowrap;min-height:44px;border-bottom:3px solid transparent;}
+.tab.active{color:#111827;border-bottom-color:#2563eb;}
+.tabpage{display:none;}
+.tabpage.active{display:block;}
+/* research UI list */
+.rlist{list-style:none;margin:8px 0;padding:0;}
+.rlist li{margin:0 0 14px;font-size:14px;line-height:1.5;color:#1f2937;}
+.rlist a{color:#2563eb;font-weight:600;text-decoration:none;font-size:15px;}
+.rdraft{font-size:12px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap;}
+/* research settings */
+.setrow{display:flex;gap:10px;align-items:flex-start;margin:12px 0;font-size:14px;line-height:1.5;color:#1f2937;}
+.setrow input{width:22px;height:22px;margin-top:1px;flex:0 0 auto;}
+.setrow small{display:block;color:#6b7280;font-size:12px;margin-top:2px;}
+/* search filter chips + pager */
+#results #chips{display:flex;gap:6px;overflow-x:auto;padding:10px 10px 4px;-webkit-overflow-scrolling:touch;
+  position:sticky;top:0;background:#fff;z-index:1;cursor:default;}
+#results .chip{flex:0 0 auto;border:1px solid #d1d5db;background:#f9fafb;border-radius:999px;padding:8px 12px;
+  font-size:13px;cursor:pointer;min-height:38px;color:#111827;}
+#results .chip[aria-pressed="true"]{background:#1f2937;color:#fff;border-color:#1f2937;}
+#results .chip:disabled{opacity:.45;cursor:default;}
+#results #pager{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;cursor:default;}
+#results #pager button{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:8px 14px;font-size:14px;
+  cursor:pointer;min-height:42px;color:#111827;}
+#results #pager button:disabled{opacity:.35;cursor:default;}
+#results #pager .pginfo{font-size:12px;color:#6b7280;text-align:center;}
 </style>
 </head>
 <body>
@@ -91,24 +122,25 @@ header>*{pointer-events:auto;}
   <div class="brand">
     <input id="q" type="search" placeholder="/ to search" autocomplete="off">
     <span class="brand-name">Lehmann <small>· Vienna</small></span>
-    <select id="yrPick" aria-label="Year">
-      <option value="1938" selected>1938</option>
-      <option value="1942">1942</option>
-    </select>
+    <select id="yrPick" aria-label="Year"></select>
   </div>
-  <div class="btnrow">
-    <button id="aboutBtn">About</button>
-    <button id="shareBtn">Share</button>
-    <a id="srcBtn" href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Wienbibliothek digital</a>
-  </div>
+  <button id="infoBtn" aria-label="About, research and settings">&#9432;</button>
 </header>
 <div id="results"></div>
 <div id="aboutOverlay"><div id="aboutBox">
 <button id="aboutClose">Close</button>
+<div class="tabs" role="tablist">
+<button class="tab active" data-tab="about" role="tab">About</button>
+<button class="tab" data-tab="research" role="tab">Research</button>
+<button class="tab" data-tab="settings" role="tab">Settings</button>
+<button class="tab" data-tab="license" role="tab">Licensing</button>
+</div>
+<div class="tabpage active" id="tab-about">
 <h2>About this map</h2>
 <p class="about-stats"><b id="aboutCount">—</b> people · <b id="aboutAcount">—</b> addresses<br>
 <span class="about-legend"><span style="color:#2563eb">●</span> exact registry match · <span style="color:#7c3aed">●</span> registry match · <span style="color:#d97706">●</span> fuzzy street match</span></p>
 <p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i> — Vienna's address book. Use the year picker to switch between the 1938 alphabetical residents' directory (Band&nbsp;1; 94,698 people at 27,503 addresses) and the 1942 volume (11,248 people at 7,116 addresses, partial coverage).</p>
+<p><button id="shareBtn">Copy link to this view</button></p>
 <h3>How it was built</h3>
 <p>The 1,644-page scan was rendered page by page, split into columns, and OCR'd (Tesseract with a Fraktur model). A parsing pipeline extracted names, occupations and addresses, stripped page headers, footers and advertisements, and normalized historical street abbreviations. Each address was then joined against the City of Vienna's official address registry (“Adressen Standorte Wien”, CC&nbsp;BY&nbsp;4.0). Exact matches are blue, registry matches with a number fallback are purple, fuzzy street matches are amber.</p>
 <p><a href="research/lighting/" target="_blank" rel="noopener">Scan preprocessing experiments</a> — a gallery of the lighting-correction algorithms being tested to improve OCR.</p>
@@ -124,23 +156,77 @@ header>*{pointer-events:auto;}
 <option value="reg">Registry or better</option>
 <option value="exact">Exact only</option>
 </select></p>
-<p><label><input type="checkbox" id="lyrB2"> 1938 Band 2 residences — unreviewed OCR preview layer</label></p>
 <h3>Source</h3><p>The directory was scanned from the 1938 volume held by the Wienbibliothek im Rathaus. <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Browse the original scan</a> page by page.</p>
-<h3>License</h3><p>The 1938 and 1942 Lehmann volumes carry the <a href="https://creativecommons.org/publicdomain/mark/1.0/" target="_blank" rel="noopener">Public Domain Mark 1.0</a> per the Wienbibliothek im Rathaus; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution. Map data extracted from the directory is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0 Universal</a>.</p>
+</div>
+<div class="tabpage" id="tab-research">
+<h2>Research</h2>
+<p>Draft explorers and experiments built while the 1939–1941 layers are in the pipeline. Drafts are unreviewed work in progress.</p>
+<ul class="rlist">
+<li><a href="1939-band1-draft/">1939 · Band 1 draft</a><span class="rdraft">draft</span><br>Namenverzeichnis (residents' directory) search explorer — surname, street and occupation search over the library OCR.</li>
+<li><a href="1939-band2-draft/">1939 · Band 2 draft</a><span class="rdraft">draft</span><br>Häuserverzeichnis (house directory) explorer with an A–Z Browse tab: collapsible streets and house numbers, residents listed per address.</li>
+<li><a href="research/family/">Family migration demo</a><br>Follow family addresses across 1938–1942 on the map, with a year picker.</li>
+<li><a href="research/lighting/">Scan preprocessing experiments</a><br>Gallery of the lighting-correction algorithms tested to improve OCR, each labeled under its images.</li>
+</ul>
+</div>
+<div class="tabpage" id="tab-settings">
+<h2>Research settings</h2>
+<div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b>Green dots — 1938 Band 2 preview</b><small>Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b>Teal dots — 1938 Band 2 clean-only preview</b><small>Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b>Show Research section in the year picker</b><small>Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
+</div>
+<div class="tabpage" id="tab-license">
+<h2>Licensing</h2>
+<p>Scans: <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href="https://creativecommons.org/publicdomain/mark/1.0/" target="_blank" rel="noopener">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution.</p>
+<p>Map data extracted from the directory is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0 Universal</a>.</p>
+<h3>Site version</h3>
+<p>Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>2f50f3c</code></p>
+<h3>Code libraries</h3>
+<p><a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">Mapbox GL JS</a> v3.30.0 — BSD 3-Clause.</p>
+<h3>Credit</h3>
+<p>Built by Muse by Meta, working with Moshe Berman.</p>
+</div>
 </div></div>
 <script>window.MAPBOX_TOKEN="pk.eyJ1IjoibW9zaGViZXJtYW5uIiwiYSI6ImNtdHc5a21odDA0aGMzNG9vNnF6Z3Z6cjAifQ.iO_N_QmWcIANN2aRrfXl_Q";</script>
 <script>'use strict';
-// ---- year config --------------------------------------------------------
+// ---- year manifest ------------------------------------------------------
+// Add future years here (1939, 1940, 1941) — the picker, share links and
+// layer loading all read from this manifest. kind:'layer' loads map data;
+// kind:'link' navigates to a research view (used by the Research section).
 const YEARS = {
-  '1938': {dir: 'data', shard: 1024, geojson: 'data/points.8cead7a2dce8.geojson', label: '1938'},
-  '1942': {dir: 'data42', shard: 1000, geojson: 'data42/points.geojson', label: '1942'},
+  '1938': {kind: 'layer', dir: 'data', shard: 1024, geojson: 'data/points.8cead7a2dce8.geojson', label: '1938'},
+  '1942': {kind: 'layer', dir: 'data42', shard: 1000, geojson: 'data42/points.geojson', label: '1942'},
 };
+const RESEARCH_VIEWS = [
+  {id: 'family', label: 'Family migration demo (1938–1942)', url: 'research/family/index.html'},
+];
 let CUR_YEAR = '1938';
 // Restore a shared view (#year/zoom/lat/lng) when present.
 (function(){
-  const m = location.hash.match(/^#(1938|1942)\/([\d.]+)\/(-?[\d.]+)\/(-?[\d.]+)/);
+  const keys = Object.keys(YEARS).join('|');
+  const m = location.hash.match(new RegExp('^#(' + keys + ')\\/([\\d.]+)\\/(-?[\\d.]+)\\/(-?[\\d.]+)'));
   if (m && YEARS[m[1]]) { CUR_YEAR = m[1]; window._sharedView = {zoom: +m[2], lat: +m[3], lng: +m[4]}; }
 })();
+const showResearch = () => { try { return localStorage.getItem('lehmann.showResearch') === '1'; } catch (e) { return false; } };
+function buildYearPicker(){
+  const sel = $('yrPick');
+  sel.innerHTML = '';
+  for (const k of Object.keys(YEARS)) {
+    const o = document.createElement('option');
+    o.value = k; o.textContent = YEARS[k].label;
+    sel.appendChild(o);
+  }
+  if (showResearch()) {
+    const g = document.createElement('optgroup');
+    g.label = 'Research';
+    for (const v of RESEARCH_VIEWS) {
+      const o = document.createElement('option');
+      o.value = 'link:' + v.id; o.textContent = v.label;
+      g.appendChild(o);
+    }
+    sel.appendChild(g);
+  }
+  sel.value = CUR_YEAR;
+}
 const YC = () => YEARS[CUR_YEAR];
 
 mapboxgl.accessToken = window.MAPBOX_TOKEN;
@@ -248,7 +334,7 @@ async function loadYearData(){
 }
 
 async function switchYear(year){
-  if (year === CUR_YEAR) return;
+  if (year === CUR_YEAR || !YEARS[year] || YEARS[year].kind !== 'layer') return;
   CUR_YEAR = year;
   $('boot').classList.remove('gone');
   $('boot').lastElementChild.textContent = 'Loading ' + YC().label + '…';
@@ -259,7 +345,16 @@ async function switchYear(year){
   $('boot').classList.add('gone');
   $('q').value = ''; $('results').style.display = 'none';
 }
-$('yrPick').addEventListener('change', e => switchYear(e.target.value));
+$('yrPick').addEventListener('change', e => {
+  const v = e.target.value;
+  if (v.indexOf('link:') === 0) {
+    const view = RESEARCH_VIEWS.find(r => 'link:' + r.id === v);
+    e.target.value = CUR_YEAR;
+    if (view) location.href = view.url;
+    return;
+  }
+  switchYear(v);
+});
 
 map.on('load', async () => {
   await loadYearData();
@@ -295,9 +390,9 @@ map.on('load', async () => {
     }
     const f = near(e.point, 'unclustered-point', TAP_R)[0];
     if (f) { openGroupPopup(f, null); return; }
-    if (b2Ready && $('lyrB2').checked) {
-      const b2 = near(e.point, 'b2-point', TAP_R)[0];
-      if (b2) { openB2Popup(b2); return; }
+    if (b2Which) {
+      const b2 = near(e.point, 'b2-' + b2Which, TAP_R)[0];
+      if (b2) { openB2Popup(b2Which, b2); return; }
     }
   });
   for (const lyr of ['clusters', 'unclustered-point']) {
@@ -324,7 +419,7 @@ $('flt').addEventListener('change', e => {
   map.getSource('places').setData({type: 'FeatureCollection', features: feats});
   updateCount(feats);
 });
-$('yrPick').value = CUR_YEAR;
+buildYearPicker();
 // ---- shareable links: #year/zoom/lat/lng -----------------------------------
 function viewHash(){
   const c = map.getCenter();
@@ -341,27 +436,35 @@ $('shareBtn').addEventListener('click', async () => {
   } catch (e) { prompt('Copy this link:', url); }
 });
 map.on('moveend', () => { try { history.replaceState(null, '', viewHash()); } catch (e) {} });
-// ---- 1938 Band 2 unreviewed preview layer ------------------------------------
-let b2Ready = false;
-const b2RecCache = {};
-async function getB2Record(id){
+// ---- 1938 Band 2 unreviewed preview layers ---------------------------------
+// Two alternate OCR passes of the 1938 Häuserverzeichnis, toggled from
+// Research settings. Mutually exclusive: green = raw pass, teal = clean-only.
+const B2LAYERS = {
+  b2:      {dir: 'data38b2',      color: '#059669', tag: 'Band 2',            label: 'Unreviewed OCR preview \u00b7 Band 2'},
+  b2clean: {dir: 'data38b2clean', color: '#0d9488', tag: 'Band 2 clean-only', label: 'Unreviewed OCR preview \u00b7 Band 2 clean-only'},
+};
+let b2Which = null;
+const b2Ready = {b2: false, b2clean: false};
+const b2RecCache = {b2: {}, b2clean: {}};
+async function getB2Record(which, id){
+  const cache = b2RecCache[which];
   const sh = 'r' + String(Math.floor(id / 1000)).padStart(4, '0');
-  if (!b2RecCache[sh]) {
-    const res = await fetch('data38b2/records/' + sh + '.json');
+  if (!cache[sh]) {
+    const res = await fetch(B2LAYERS[which].dir + '/records/' + sh + '.json');
     if (!res.ok) return null;
-    b2RecCache[sh] = await res.json();
+    cache[sh] = await res.json();
   }
-  return b2RecCache[sh][String(id)] || null;
+  return cache[sh][String(id)] || null;
 }
-async function openB2Popup(f){
+async function openB2Popup(which, f){
   let ids = f.properties.m;
   if (typeof ids === 'string') { try { ids = JSON.parse(ids); } catch (e) { ids = null; } }
   if (!Array.isArray(ids)) ids = [];
-  const recs = (await Promise.all(ids.map(getB2Record))).filter(Boolean);
+  const recs = (await Promise.all(ids.map(id => getB2Record(which, id)))).filter(Boolean);
   if (!recs.length) return;
   const r0 = recs[0];
   let h = '<div class="pp"><div class="pp-addr"><b>' + esc(r0.st || '') + ' ' + esc(r0.hn || '') + '</b> ' + bezPill(r0) + '</div>' +
-    '<div class="pp-meta" style="margin:4px 0">Unreviewed OCR preview \u00b7 Band 2</div><div class="pp-list">';
+    '<div class="pp-meta" style="margin:4px 0">' + esc(B2LAYERS[which].label) + '</div><div class="pp-list">';
   for (const r of recs.slice(0, 50))
     h += '<div class="pp-row"><div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + '</div>';
@@ -369,23 +472,54 @@ async function openB2Popup(f){
   h += '</div></div>';
   new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(f.geometry.coordinates).setHTML(h).addTo(map);
 }
-$('lyrB2').addEventListener('change', async e => {
-  const on = e.target.checked;
+async function setB2Layer(which){
+  // which: null | 'b2' | 'b2clean'
   try {
-    if (on && !b2Ready) {
-      const res = await fetch('data38b2/points.geojson');
+    if (which && !b2Ready[which]) {
+      const L = B2LAYERS[which];
+      const res = await fetch(L.dir + '/points.geojson');
       if (!res.ok) throw new Error('no data');
-      map.addSource('places-b2', {type: 'geojson', data: await res.json()});
-      map.addLayer({id: 'b2-point', type: 'circle', source: 'places-b2',
-        paint: {'circle-color': '#059669', 'circle-radius': 4.5, 'circle-stroke-width': 1.5,
+      map.addSource('places-' + which, {type: 'geojson', data: await res.json()});
+      map.addLayer({id: 'b2-' + which, type: 'circle', source: 'places-' + which,
+        paint: {'circle-color': L.color, 'circle-radius': 4.5, 'circle-stroke-width': 1.5,
                 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
-      b2Ready = true;
+      b2Ready[which] = true;
     }
-    if (b2Ready) map.setLayoutProperty('b2-point', 'visibility', on ? 'visible' : 'none');
+    for (const k of Object.keys(B2LAYERS))
+      if (b2Ready[k]) map.setLayoutProperty('b2-' + k, 'visibility', k === which ? 'visible' : 'none');
+    b2Which = which;
+    try { localStorage.setItem('lehmann.b2which', which || ''); } catch (e) {}
   } catch (err) {
-    e.target.checked = false;
     alert('Band 2 preview data is not built yet \u2014 check back after the next processing batch.');
+    return false;
   }
+  return true;
+}
+function syncB2Toggles(){
+  $('setB2').checked = (b2Which === 'b2');
+  $('setB2c').checked = (b2Which === 'b2clean');
+}
+$('setB2').addEventListener('change', async e => {
+  const ok = await setB2Layer(e.target.checked ? 'b2' : null);
+  if (!ok) e.target.checked = false;
+  syncB2Toggles();
+});
+$('setB2c').addEventListener('change', async e => {
+  const ok = await setB2Layer(e.target.checked ? 'b2clean' : null);
+  if (!ok) e.target.checked = false;
+  syncB2Toggles();
+});
+$('setResearch').addEventListener('change', e => {
+  try { localStorage.setItem('lehmann.showResearch', e.target.checked ? '1' : '0'); } catch (err) {}
+  buildYearPicker();
+});
+// Restore persisted research settings once the map is up.
+map.on('load', async () => {
+  $('setResearch').checked = showResearch();
+  buildYearPicker();
+  let w = null;
+  try { w = localStorage.getItem('lehmann.b2which') || null; } catch (e) {}
+  if (w && B2LAYERS[w]) { await setB2Layer(w); syncB2Toggles(); }
 });
 
 function popupHTML(r){
@@ -446,9 +580,19 @@ async function getRecord(id){
 }
 
 // ---- search -------------------------------------------------------------
+// No result cap: every matching id is scored and sorted (exact matches
+// first), results paginate 100 per page, and filter chips classify hits by
+// which field matched (computed in the background from cached shards).
 let searchTimer = null;
 let resRows = []; // [{el, id, rec}] result rows for keyboard navigation
 let resHl = -1;   // highlighted row index (-1 = none)
+let resIds = [];  // [[id, score, exact], ...] sorted, uncapped
+let resPage = 0;
+let resFilter = 'all'; // all | n | s | o
+let resCats = null;    // id -> {n,s,o} once background classification lands
+let searchSeq = 0;
+let renderSeq = 0;
+const PAGE_SIZE = 100;
 function paintResHl(){
   for (let i = 0; i < resRows.length; i++) resRows[i].el.classList.toggle('r-hl', i === resHl);
 }
@@ -468,15 +612,113 @@ function selectResRow(row){
     }
   });
 }
+function filteredIds(){
+  if (resFilter === 'all' || !resCats) return resIds;
+  const k = resFilter;
+  return resIds.filter(e => { const c = resCats[e[0]]; return c && c[k]; });
+}
+function chipCount(k){
+  if (k === 'all') return resIds.length;
+  let n = 0;
+  for (const e of resIds) { const c = resCats[e[0]]; if (c && c[k]) n++; }
+  return n;
+}
+async function renderResPage(seq){
+  const rs = ++renderSeq;
+  const box = $('results');
+  const ids = filteredIds();
+  const pages = Math.max(1, Math.ceil(ids.length / PAGE_SIZE));
+  if (resPage >= pages) resPage = pages - 1;
+  const slice = ids.slice(resPage * PAGE_SIZE, (resPage + 1) * PAGE_SIZE);
+  box.innerHTML = '';
+  // filter chips (enabled once background classification completes)
+  const chips = document.createElement('div');
+  chips.id = 'chips';
+  const defs = [['all', 'All'], ['n', 'Names'], ['s', 'Streets'], ['o', 'Occupations']];
+  for (const [k, label] of defs) {
+    const c = document.createElement('button');
+    c.className = 'chip';
+    c.setAttribute('aria-pressed', resFilter === k ? 'true' : 'false');
+    c.textContent = resCats ? label + ' (' + chipCount(k).toLocaleString('en-US') + ')' : label + ' …';
+    c.disabled = !resCats;
+    c.addEventListener('click', ev => { ev.stopPropagation(); resFilter = k; resPage = 0; renderResPage(seq); });
+    chips.appendChild(c);
+  }
+  box.appendChild(chips);
+  // rows
+  resRows = []; resHl = -1;
+  for (const [id] of slice) {
+    if (rs !== renderSeq || seq !== searchSeq) return;
+    const rec = await getRecord(+id);
+    if (!rec) continue;
+    const d = document.createElement('div');
+    d.className = 'rrow';
+    d.innerHTML = '<b>' + esc(rec.s || '') + '</b>' + (rec.g ? ', ' + esc(rec.g) : '') + ezPill(rec) +
+      '<div class="r-sub">' + esc(rec.st || '') + ' ' + esc(rec.hn || '') +
+      (rec.d ? ' ' + bezPill(rec) : '') + (rec.o ? ' \u00b7 ' + esc(rec.o) : '') + '</div>';
+    const row = {el: d, id: +id, rec: rec};
+    resRows.push(row);
+    d.addEventListener('click', () => selectResRow(row));
+    box.appendChild(d);
+  }
+  if (rs !== renderSeq || seq !== searchSeq) return;
+  // pager
+  const pg = document.createElement('div');
+  pg.id = 'pager';
+  const prev = document.createElement('button');
+  prev.textContent = '\u2039 Prev'; prev.disabled = resPage === 0;
+  prev.addEventListener('click', ev => { ev.stopPropagation(); if (resPage > 0) { resPage--; renderResPage(seq); } });
+  const info = document.createElement('span');
+  info.className = 'pginfo';
+  info.textContent = ids.length.toLocaleString('en-US') + ' match' + (ids.length === 1 ? '' : 'es') +
+    ' \u00b7 page ' + (resPage + 1) + ' of ' + pages;
+  const next = document.createElement('button');
+  next.textContent = 'Next \u203a'; next.disabled = resPage >= pages - 1;
+  next.addEventListener('click', ev => { ev.stopPropagation(); if (resPage < pages - 1) { resPage++; renderResPage(seq); } });
+  pg.appendChild(prev); pg.appendChild(info); pg.appendChild(next);
+  box.appendChild(pg);
+  const h = document.querySelector('header');
+  box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
+  box.style.display = 'block';
+}
+async function classifyResults(toks, seq){
+  // Background pass: fetch every result record (shard-cached, so each shard
+  // loads once) and note which field each query token hit, so the chips can
+  // filter the full uncapped result set.
+  resCats = {};
+  const CH = 1500;
+  for (let i = 0; i < resIds.length; i += CH) {
+    if (seq !== searchSeq) return;
+    const chunk = resIds.slice(i, i + CH);
+    const recs = await Promise.all(chunk.map(e => getRecord(+e[0])));
+    if (seq !== searchSeq) return;
+    for (let j = 0; j < chunk.length; j++) {
+      const rec = recs[j];
+      if (!rec) continue;
+      const fn = foldUmlaut(((rec.s || '') + ' ' + (rec.g || '')).toLowerCase());
+      const fs = foldUmlaut((rec.st || '').toLowerCase());
+      const fo = foldUmlaut((rec.o || '').toLowerCase());
+      const c = {n: false, s: false, o: false};
+      for (const t of toks) {
+        if (!c.n && fn.indexOf(t) >= 0) c.n = true;
+        if (!c.s && fs.indexOf(t) >= 0) c.s = true;
+        if (!c.o && fo.indexOf(t) >= 0) c.o = true;
+      }
+      resCats[chunk[j][0]] = c;
+    }
+  }
+  if (seq === searchSeq) renderResPage(seq); // re-render with chips enabled
+}
 $('q').addEventListener('focus', () => { $('q').placeholder = 'Surname, street, occupation…'; });
 $('q').addEventListener('blur', () => { $('q').placeholder = '/ to search'; });
 $('q').addEventListener('input', e => {
   clearTimeout(searchTimer);
   resRows = []; resHl = -1;
-  const box = $('results');
-  const placeBox = () => { const h = document.querySelector('header'); box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px'; };
   searchTimer = setTimeout(async () => {
+    const seq = ++searchSeq;
     const q = e.target.value.trim().toLowerCase();
+    const box = $('results');
+    const placeBox = () => { const h = document.querySelector('header'); box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px'; };
     if (q.length < 2) { box.style.display = 'none'; return; }
     if (!searchIdx) {
       box.innerHTML = '<div class="r-load"><div class="spin sm"></div></div>';
@@ -492,13 +734,14 @@ $('q').addEventListener('input', e => {
     }
     if (!searchKeys) searchKeys = Object.keys(searchIdx).map(k => [k, foldUmlaut(k)]);
     const hits = {};
+    const exactHit = {};
     for (const [t, mul] of xtoks) {
       const thr = t.length <= 5 ? 1 : 2;
       for (let ki = 0; ki < searchKeys.length; ki++) {
         const key = searchKeys[ki][0], fk = searchKeys[ki][1];
-        let w = 0;
-        if (key === t) w = 8;
-        else if (fk === t) w = 6;
+        let w = 0, ex = false;
+        if (key === t) { w = 8; ex = true; }
+        else if (fk === t) { w = 6; ex = true; }
         else if (fk.startsWith(t)) w = 4;
         else if (fk.indexOf(t) >= 0) w = 2;
         else if (Math.abs(fk.length - t.length) <= thr && levLim(fk, t, thr) <= thr) w = 1;
@@ -507,25 +750,23 @@ $('q').addEventListener('input', e => {
         for (let i = 0; i < ids.length; i++) {
           const id = ids[i];
           hits[id] = (hits[id] || 0) + w * mul;
+          if (ex && mul === 1) exactHit[id] = 1;
         }
       }
     }
-    const top = Object.entries(hits).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    if (!top.length) { box.innerHTML = '<div>No matches</div>'; placeBox(); box.style.display = 'block'; return; }
-    box.innerHTML = '';
-    for (const [id] of top) {
-      const rec = await getRecord(+id);
-      if (!rec) continue;
-      const d = document.createElement('div');
-      d.innerHTML = '<b>' + esc(rec.s || '') + '</b>' + (rec.g ? ', ' + esc(rec.g) : '') + ezPill(rec) +
-        '<div class="r-sub">' + esc(rec.st || '') + ' ' + esc(rec.hn || '') +
-        (rec.d ? ' ' + bezPill(rec) : '') + (rec.o ? ' \u00b7 ' + esc(rec.o) : '') + '</div>';
-      const row = {el: d, id: +id, rec: rec};
-      resRows.push(row);
-      d.addEventListener('click', () => selectResRow(row));
-      box.appendChild(d);
+    if (seq !== searchSeq) return;
+    // sort: exact matches first, then by score, then stable by id
+    resIds = Object.keys(hits).map(id => [+id, hits[id], exactHit[id] ? 1 : 0]);
+    resIds.sort((a, b) => (b[2] - a[2]) || (b[1] - a[1]) || (a[0] - b[0]));
+    resPage = 0; resFilter = 'all'; resCats = null;
+    if (!resIds.length) {
+      box.innerHTML = '<div class="rrow">No matches</div>';
+      placeBox(); box.style.display = 'block';
+      return;
     }
-    placeBox(); box.style.display = 'block';
+    await renderResPage(seq);
+    if (seq !== searchSeq) return;
+    classifyResults(toks, seq); // background; chips enable when done
   }, 220);
 });
 // ---- keyboard shortcuts -------------------------------------------------
@@ -565,8 +806,13 @@ document.addEventListener('click', e => {
   if (!$('results').contains(e.target) && e.target.id !== 'q') $('results').style.display = 'none';
 });
 
-// ---- about --------------------------------------------------------------
-$('aboutBtn').addEventListener('click', () => $('aboutOverlay').style.display = 'flex');
+// ---- info popup (circled-i): About / Research / Settings / Licensing -----
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.tabpage').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+}
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+$('infoBtn').addEventListener('click', () => { switchTab('about'); $('aboutOverlay').style.display = 'flex'; });
 $('aboutClose').addEventListener('click', () => $('aboutOverlay').style.display = 'none');
 $('aboutOverlay').addEventListener('click', e => {
   if (e.target.id === 'aboutOverlay') $('aboutOverlay').style.display = 'none';
