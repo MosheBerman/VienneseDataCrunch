@@ -1,0 +1,157 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.378253,
+     48.219491
+    ]
+   },
+   "properties": {
+    "year": 1938,
+    "street": "Kleine Pfarrgasse",
+    "house": "13",
+    "district": "II",
+    "status": "listed",
+    "residents": [
+     "Drobiß R., Priv.",
+     "Hillmann J., Porzellanw. T.",
+     "Jeruchem Ch., Lebensm. T.",
+     "Seidenwurm M., Musiker"
+    ],
+    "surname_hits": [],
+    "owner": "E. Aßelrad Dora u. Mitb.",
+    "caretaker": null,
+    "house_line": "13 EZ 1308",
+    "note": null,
+    "printed_page": 107,
+    "scan": "p596",
+    "geo_quality": "interpolated",
+    "geo_source": "interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.386740788219317,
+     48.221540471996015
+    ]
+   },
+   "properties": {
+    "year": 1938,
+    "street": "Rueppgasse",
+    "house": "18",
+    "district": "II",
+    "status": "listed",
+    "residents": [
+     "Auerbach J., Arbt.",
+     "Auerbach O., Schneider",
+     "Bäcker S., Spengler",
+     "Biller C., Private",
+     "Biller B., Private",
+     "Buchwalter J., Dienstd.",
+     "Flachsiel R., Pensionist",
+     "Fockner M., Bedien.",
+     "Gober J., Gesch.Inh.",
+     "Heilgoff J., Private",
+     "Klein E., Private",
+     "Kowarz J., Kürschnermeister",
+     "Lehninger H., Näherin",
+     "Maya H., Näherin",
+     "Mayer K., Gesch.Inhb.",
+     "Meier Ch., Schuhm.",
+     "Mund R., Rentnerin",
+     "Spieß F., Hühneraugenoperateur",
+     "Sternberg J., Lebensm. T.",
+     "Thaler E., Kellner",
+     "Werner F., Private"
+    ],
+    "surname_hits": [
+     "Biller C., Private",
+     "Biller B., Private"
+    ],
+    "owner": "E. Mechtler J. (Ladendorf) u. Mitbes.",
+    "caretaker": "H. Urbany Marie",
+    "house_line": "18 EZ 1625",
+    "note": null,
+    "printed_page": 116,
+    "scan": "p605",
+    "geo_quality": "exact",
+    "geo_source": "geo1942_matched.json (1938-derived geocode tier), exact house-number match"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.375875193347547,
+     48.231017270200134
+    ]
+   },
+   "properties": {
+    "year": 1938,
+    "street": "Wallensteinstraße",
+    "house": "62",
+    "district": "XX",
+    "status": "listed",
+    "residents": [
+     "Bermann J., Kfm.",
+     "Brodil A., Agent",
+     "Brodil B., Private",
+     "Czinglar Beatrix, Lebensm.",
+     "Eichner H., Gesch.Inh.",
+     "Fastl K., Schuhm.",
+     "Filch Th., Gesch.Inh.",
+     "Grün Ph., Bäcker",
+     "Hackel M. u. M., Private",
+     "Holub R., Seifenfabr. T.",
+     "Hofstätter Hermine, Hutbinderin",
+     "Jahoda A., Ww.",
+     "Jedlicka J., Agent",
+     "Jitka J., Kleidermach.",
+     "Jungermann S., Ges.Inhaber",
+     "Kaiser H., Hölsvertr. T.",
+     "Kelser F., Tischler",
+     "Kornenda F., Schlosser",
+     "Koza Marie, Pens.",
+     "Langhammer A., Private",
+     "Lapka J., Installateur",
+     "Luz C., Rundschleifer",
+     "Pöchlaner R., Geschäftsinhaber",
+     "Roth J., Vertreter",
+     "Sanizer K., Monteur",
+     "Schleifer J., Markteur",
+     "Schläger R., Bautechn.",
+     "Schweig F., Private",
+     "Stadlinger J., Silberarb.",
+     "Tennenbaum J., Handelsag.",
+     "Wallert I., Fabrikder T",
+     "Wock L., Private",
+     "Waringer R., Private",
+     "Weber J., Verkäuferin",
+     "Weih S., Hölsangest.",
+     "Weiß Stephanie, Witwe",
+     "Wolrowiec C., Mechaniker",
+     "Zejda M., Viktualienhändlerin"
+    ],
+    "surname_hits": [
+     "Bermann J., Kfm."
+    ],
+    "owner": "E. Tuchfeld Minna",
+    "caretaker": "H. Philipp Marie",
+    "house_line": "62 EZ 2352",
+    "note": null,
+    "printed_page": 1268,
+    "scan": "p1757",
+    "geo_quality": "exact",
+    "geo_source": "geo1942_matched.json (1938-derived geocode tier), exact house-number match"
+   }
+  }
+ ]
+}

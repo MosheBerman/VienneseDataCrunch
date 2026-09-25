@@ -1,0 +1,129 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.378253,
+     48.219491
+    ]
+   },
+   "properties": {
+    "year": 1941,
+    "street": "Kleine Pfarrgasse",
+    "house": "13",
+    "district": "II",
+    "status": "absent",
+    "residents": [],
+    "surname_hits": [],
+    "owner": null,
+    "caretaker": null,
+    "house_line": null,
+    "note": "Street NOT in 1941 street index (index scan 476, P-section checked: Pe- to Pest- to Pet-, no Pfa-). House 13 therefore not listed. Cf. 1940 '13 besteht nicht'; street relisted in 1942.",
+    "printed_page": null,
+    "scan": 476,
+    "geo_quality": "interpolated",
+    "geo_source": "interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.386740788219317,
+     48.221540471996015
+    ]
+   },
+   "properties": {
+    "year": 1941,
+    "street": "Rueppgasse",
+    "house": "18",
+    "district": "II",
+    "status": "listed",
+    "residents": [
+     "Brunner F HArb",
+     "Fadrek M Private",
+     "Fritscher J Kleidermach",
+     "Gaida F HArb",
+     "Gröger B Arb",
+     "Maxa F HArbtrn",
+     "Mayer K GeschInhbrin",
+     "Mayrhofer O Maler",
+     "Sajdik A HArb",
+     "Steinhauser G Zimmerm",
+     "Wambula H Schlosser",
+     "Werner F Private"
+    ],
+    "surname_hits": [],
+    "owner": "E. ungenannt",
+    "caretaker": "H. Urbany Marie",
+    "house_line": "18 EZ 1625",
+    "note": null,
+    "printed_page": 804,
+    "scan": 1288,
+    "geo_quality": "exact",
+    "geo_source": "geo1942_matched.json (1938-derived geocode tier), exact house-number match"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.375875193347547,
+     48.231017270200134
+    ]
+   },
+   "properties": {
+    "year": 1941,
+    "street": "Wallensteinstraße",
+    "house": "62",
+    "district": "XX",
+    "status": "listed",
+    "residents": [
+     "Balog L Verkäuf",
+     "Baugr M zahnärztl",
+     "Assistentin",
+     "Berger R BetrLeit",
+     "Brodil A Agent",
+     "Čepnik A Fräser",
+     "Ezinglober Beatrix",
+     "Lebensm",
+     "Düchler F Maurer",
+     "Faitl K Arb",
+     "Gruber M Private",
+     "Jedlicka J Agent",
+     "Jirka J Kleidermach",
+     "Knapp J Spengler",
+     "Komenda F Auto=",
+     "mechanik",
+     "Langhammer A Frau",
+     "Lux E Rundschleifer",
+     "Ratyl J Vertr",
+     "Meier F Pensionistin",
+     "Redak T Feuerschutzpol",
+     "Reitter F Galvaniseurin",
+     "Sanitzer R Monteur",
+     "Schüßler W Bautechnik",
+     "Schweiz F Private",
+     "Solau J Elektromont",
+     "Bock L Private",
+     "Winklbauer M Kellnerin",
+     "Wolowiec E Mechaniker"
+    ],
+    "surname_hits": [],
+    "owner": "E. Link J Kaufm",
+    "caretaker": "H. Jahoda Antonia",
+    "house_line": "62 EZ 2352",
+    "note": "No Bermann listed; owner E. Link J. Kaufm (same as 1942)",
+    "printed_page": 1018,
+    "scan": 1502,
+    "geo_quality": "exact",
+    "geo_source": "geo1942_matched.json (1938-derived geocode tier), exact house-number match"
+   }
+  }
+ ]
+}

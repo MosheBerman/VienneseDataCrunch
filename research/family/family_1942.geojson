@@ -1,0 +1,140 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.378253,
+     48.219491
+    ]
+   },
+   "properties": {
+    "year": 1942,
+    "street": "Kleine Pfarrgasse",
+    "house": "13",
+    "district": "II",
+    "status": "absent",
+    "residents": [],
+    "surname_hits": [],
+    "owner": null,
+    "caretaker": null,
+    "house_line": null,
+    "note": "Street listed but only houses 1, 3, 5, 7, 9 present (EZ 1297-1304). House 13 does not exist in 1942.",
+    "printed_page": 698,
+    "scan": 1169,
+    "geo_quality": "interpolated",
+    "geo_source": "interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.386740788219317,
+     48.221540471996015
+    ]
+   },
+   "properties": {
+    "year": 1942,
+    "street": "Rueppgasse",
+    "house": "18",
+    "district": "II",
+    "status": "listed",
+    "residents": [
+     "Augustin J Rentner",
+     "Cypris H WehrmAngeh",
+     "Jadrek M Private",
+     "Flachsel R Pens",
+     "Forgovits J Milch",
+     "Galda J HArb",
+     "Maha F HArbtin",
+     "Mayer K GeschInhbrin",
+     "Mayerhofer O Maler",
+     "Mund M Angestellte",
+     "Steinhauser G Zimmerm",
+     "Wampula H Schlosser",
+     "Werner F Private"
+    ],
+    "surname_hits": [],
+    "owner": "E. Mechtler J (Laden-dorf 362)",
+    "caretaker": null,
+    "house_line": "18 EZ 1625",
+    "note": "No caretaker (H.) line listed; no Biller",
+    "printed_page": 784,
+    "scan": 1255,
+    "geo_quality": "exact",
+    "geo_source": "geo1942_matched.json (1938-derived geocode tier), exact house-number match"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.375875193347547,
+     48.231017270200134
+    ]
+   },
+   "properties": {
+    "year": 1942,
+    "street": "Wallensteinstraße",
+    "house": "62",
+    "district": "XX",
+    "status": "listed",
+    "residents": [
+     "Amberger L Hdlsmt",
+     "Balog L Verkäuf",
+     "Bauer H StraßbBedienst",
+     "Berger R BetrLeit",
+     "Brodil A Priv",
+     "Christl K Priv",
+     "Czinglober J GeschInh",
+     "Czinglober Beatriz",
+     "Lebensm",
+     "Faitl K Arb",
+     "Gruber M Private",
+     "Jedlicka M Telephonistin",
+     "Jirka J Kleidermach",
+     "Knapp J Spengler",
+     "Komenda F Autos",
+     "mechanik",
+     "Koza L Metallarb",
+     "Koza M Private",
+     "Krischka B Bäcker",
+     "Langhammer A Frau",
+     "Lug E Vorarb",
+     "Matok J Vertr",
+     "Meier F Pensionistin",
+     "Metz M Frau",
+     "Nitsche G GeschInh T.",
+     "Pat M Verkäuferin",
+     "Redak F Feuerschutzpol",
+     "Reitter F Galvaniseurin",
+     "Reiter K HArb",
+     "Rohrer H Fleischer",
+     "Sanitzer K Monteur",
+     "Schüßler W Bautechnik",
+     "Schweiz F Private",
+     "Seidl H Postangest",
+     "Solan J Schlosser",
+     "Stadlmaier R Frau",
+     "Vock L Private",
+     "Winklbauer M Kellnerin",
+     "Wolowicz E Mechaniker"
+    ],
+    "surname_hits": [],
+    "owner": "E. Link J. Kaufm",
+    "caretaker": "H. Jahoda Antonia",
+    "house_line": "62 EZ 2352",
+    "note": "No Bermann listed. Transcript crop bled into house 64/Wallgasse; only house-62 lines retained here.",
+    "printed_page": 994,
+    "scan": 1465,
+    "geo_quality": "exact",
+    "geo_source": "geo1942_matched.json (1938-derived geocode tier), exact house-number match"
+   }
+  }
+ ]
+}

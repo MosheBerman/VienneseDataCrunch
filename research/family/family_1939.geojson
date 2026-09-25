@@ -1,0 +1,240 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.3867,
+     48.2215
+    ]
+   },
+   "properties": {
+    "year": 1939,
+    "street": "Rueppgasse",
+    "house": "18",
+    "district": "II",
+    "status": "listed",
+    "residents": [
+     "Bäder S., Schneider",
+     "Biller S., Spengler",
+     "Biller T., Private",
+     "Buchwalter J., Dienstm.",
+     "Cypris J., Tischler",
+     "Flachsel R., Pensionist",
+     "Fodrek M., Bedien.",
+     "Gober J., Gesch. Inh.",
+     "Helfgott F., Vertreter",
+     "Klein E., Private",
+     "Kowarik L., Kürschnermeister Kürschnermeister",
+     "Lehninger H., Näherin",
+     "Matza F., HArbtrin.",
+     "Mayer K., Gesch. Inhbrin.",
+     "Mayrhofer O., Maler",
+     "Mund M., Rentnerin",
+     "Scherer Ch., Schuhmach.",
+     "Sternberg L., Lebensm.",
+     "Thaler E., Kellner",
+     "Werner F., Private"
+    ],
+    "surname_hits": [
+     "Biller S., Spengler",
+     "Biller T., Private"
+    ],
+    "owner": "E. Mechtler J. (Ladendorf) u. Mitbes.",
+    "caretaker": "H. Urbany Marie",
+    "house_line": "18",
+    "note": null,
+    "printed_page": null,
+    "scan": 2426008,
+    "geo_quality": "exact",
+    "geo_source": "1939 Band 2 geocode, exact house-number match"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.3746,
+     48.2296
+    ]
+   },
+   "properties": {
+    "year": 1939,
+    "street": "Karajangasse",
+    "house": "17",
+    "district": "XX",
+    "status": "listed",
+    "residents": [
+     "Formanek W.",
+     "Adamek J., Melker",
+     "Albin R., NäherinBilek",
+     "NäherinBilek F., HArb.",
+     "Bokor R., Köchin",
+     "Cadil L., Bäcker",
+     "Daum W., Hausierer",
+     "Diamantstein R., Näherin",
+     "Dipplinger A., HArb.",
+     "Franz J., Fleischhau.",
+     "Gold M., HArbtrin.",
+     "Goldberg M., Tischlermeister",
+     "Gollosch H., Marktfhr.",
+     "Gruber J., Kassierin",
+     "Harasymiak A., HArb.",
+     "Hauser R., Stickerin",
+     "Jan F., Kürschner",
+     "Janosch J., Gartner",
+     "Jerabek M., Private",
+     "Jungmann H., HArb.",
+     "Jursa R., HArbtrin.",
+     "Jursa M., Kanalräum.",
+     "Ketzer H., HArb.",
+     "Kindermann Franziska",
+     "Lebensm.",
+     "Kindermann J., Bankgeh.",
+     "Kindermann K., Musik.",
+     "Krail A., Private",
+     "Kripal P., Private",
+     "Kudek B., Lackierer",
+     "Mallon E., Tischler",
+     "Mayer H., Metallform.",
+     "Mayer H., Monteur",
+     "Mikes J., Eisenb. Bedienst.",
+     "Müllner J., Feuerwehrm.",
+     "Nebila M., HArbtrin.",
+     "Nemec M., Küchenangest.",
+     "Niedermayer A., Pens.",
+     "Palm M., Private",
+     "Panzer L., Ob. Wachm.",
+     "Prohaska S., Private",
+     "Radsprecher B., Küchengehilfin",
+     "Küchengehilfin",
+     "Reichart A., HArbtrin.",
+     "Reif F., Maurer",
+     "Ruß J., Private",
+     "Schaffer J., Hdlsagent",
+     "Schnobrich E., Private",
+     "Stahl F., städt. Bedienst.",
+     "Weiß F., HArb.",
+     "Wolitzer J., Schneider",
+     "Wukowits A., HArb.",
+     "Wuria L., Gem.Angest."
+    ],
+    "surname_hits": [
+     "Goldberg M., Tischlermeister"
+    ],
+    "owner": null,
+    "caretaker": null,
+    "house_line": "17",
+    "note": null,
+    "printed_page": null,
+    "scan": 2427111,
+    "geo_quality": "exact",
+    "geo_source": "1939 Band 2 geocode, exact house-number match"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.3759,
+     48.231
+    ]
+   },
+   "properties": {
+    "year": 1939,
+    "street": "Wallensteinstraße",
+    "house": "62",
+    "district": "XX",
+    "status": "listed",
+    "residents": [
+     "Philipp Marie",
+     "Bermann J., Kfm.",
+     "Brodil A., Agent",
+     "Brodil B., Private",
+     "Czinglober Beatrix, Lebensm.",
+     "Eichner H., Gesch. Inh.",
+     "Faitl K., Schuhmmstr.",
+     "Flick Ch., Gesch. Inh.",
+     "Grün Ph., Bäcker",
+     "Gutmann M., Private",
+     "Heide Malvine, Assist.",
+     "Hofstätter Hermine, Buchbinderin Buchbinderin",
+     "Jahoda A., Ww.",
+     "Jedlicka J., Agent",
+     "Jirka J., Kleidermach.",
+     "Jungermann S., Gesch. Inhaber",
+     "Kämpf E., Hdlsvertr.",
+     "Kessel L., Tischler",
+     "Komenda F., Schlosser",
+     "Koza Marie, Pens.",
+     "Langhammer A., Private",
+     "Lapka J., Installateur",
+     "Lux E., Rundschleifer",
+     "Pöchlauer St., Geschäftsinhaberin Geschäftsinhaberin",
+     "Roth J., Vertreter",
+     "Sanitzer K., Monteur",
+     "Schießler J., Markör",
+     "Schüßler W., Bautechnik.",
+     "Schweitz F., P rivate",
+     "Stadlinger J., Silberwr.",
+     "Tennenbaum J., Kfm.",
+     "Ungar M., Fahrräder",
+     "Vock L., Private",
+     "Waringer A., Private",
+     "Weber F., Vernicklerin",
+     "Weiß S., Hdlsangest.",
+     "Weitz Stephanie, Wirkwaren Wirkwaren",
+     "Wolowiec E., Mechaniker",
+     "Zejda M., Viktualienhändlerin Viktualienhändlerin"
+    ],
+    "surname_hits": [
+     "Bermann J., Kfm."
+    ],
+    "owner": "E. Link J. (XVIII. Schopenhauerstr. 67) u. Mitbes.",
+    "caretaker": null,
+    "house_line": "62",
+    "note": null,
+    "printed_page": null,
+    "scan": 2427142,
+    "geo_quality": "exact",
+    "geo_source": "1939 Band 2 geocode, exact house-number match"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.378253,
+     48.219491
+    ]
+   },
+   "properties": {
+    "year": 1939,
+    "street": "Kleine Pfarrgasse",
+    "house": "13",
+    "district": "II",
+    "status": "listed",
+    "residents": [
+     "Drobisz A., Priv.",
+     "Hillmann J., Porzellanwareu Porzellanwareu",
+     "Jeruchem Ch., Lebensm.",
+     "Seidenwurm G., Private"
+    ],
+    "surname_hits": [],
+    "owner": "E. Akselrad Dora u. Mitb.",
+    "caretaker": null,
+    "house_line": "13",
+    "note": null,
+    "printed_page": null,
+    "scan": 2425999,
+    "geo_quality": "interpolated",
+    "geo_source": "interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"
+   }
+  }
+ ]
+}

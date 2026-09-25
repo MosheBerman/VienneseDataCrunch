@@ -1,0 +1,144 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.378253,
+     48.219491
+    ]
+   },
+   "properties": {
+    "year": 1940,
+    "street": "Kleine Pfarrgasse",
+    "house": "13",
+    "district": "II",
+    "status": "absent",
+    "residents": [],
+    "surname_hits": [],
+    "owner": null,
+    "caretaker": null,
+    "house_line": null,
+    "note": "13 besteht nicht — house number 13 does not exist in 1940 (existed in 1938 as EZ 1308)",
+    "printed_page": 92,
+    "scan": 539,
+    "geo_quality": "interpolated",
+    "geo_source": "interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.386740788219317,
+     48.221540471996015
+    ]
+   },
+   "properties": {
+    "year": 1940,
+    "street": "Rueppgasse",
+    "house": "18",
+    "district": "II",
+    "status": "listed",
+    "residents": [
+     "Bäcker Ismael, Schneidermeister",
+     "Biller T., Private",
+     "Buchwalter R., Dienstm.",
+     "Chpris A., Tischler",
+     "Fischl R., Pensionist",
+     "Frischer J., Kleidermach.",
+     "Groner B., Bmtn.",
+     "Hefsgott R. Sara, Priv.",
+     "Klein E., Private",
+     "Leininger H., Näherin",
+     "Maza R., Hdrbrin,",
+     "Mayer K., GeschInhbrin.",
+     "Mayrhofer O., Maler",
+     "Nowak M., Bedienerin",
+     "Steinhauser H., Ginm.T.",
+     "Thaler E., Kellner",
+     "Werner F., Private"
+    ],
+    "surname_hits": [
+     "Biller T., Private"
+    ],
+    "owner": "E. Mechsler R. u. Mitbes.",
+    "caretaker": "H. Urbany Marie",
+    "house_line": "18 EZ 1625",
+    "note": null,
+    "printed_page": 101,
+    "scan": 548,
+    "geo_quality": "exact",
+    "geo_source": "geo1942_matched.json (1938-derived geocode tier), exact house-number match"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.375875193347547,
+     48.231017270200134
+    ]
+   },
+   "properties": {
+    "year": 1940,
+    "street": "Wallensteinstraße",
+    "house": "62",
+    "district": "XX",
+    "status": "listed",
+    "residents": [
+     "Balog E., Verkäuf.",
+     "Bauer M., zahnärztl. Assistentin",
+     "Bergmann J., Bctelt.",
+     "Probil A., Agent",
+     "Probil B., Private",
+     "Szpni! A., Fräser",
+     "Sztinglober Beatriz, Lebensm.",
+     "Haitl K., Schuhmmstr.",
+     "Halouzek K., Kontoristin",
+     "Hofstätter Hermine, Buchbinderin",
+     "Jaboda A., Ww.",
+     "Jedlika J., Agent",
+     "Jirka I., Kleidermach.",
+     "Kastner F., Tischler",
+     "Knopp J., Spengler",
+     "Komenda R., Schlosser",
+     "Roza H., Hrb.",
+     "Roza Marie, Pens.",
+     "Kritschka B., Bäcker",
+     "Lapfa F., Installateur",
+     "Llsy F., Hrb.",
+     "Lutz E., Rundschleifer",
+     "Matas R., Btrtr.",
+     "Nester R., Pensionistin",
+     "Nitsche G., GeschInh.",
+     "Resak A., Feuerwehrspr.",
+     "Robtek J., Gasmonteur",
+     "Rosner R., Fleischhau.",
+     "Santner K., Monteur",
+     "Schüßler W., Bautechnik.",
+     "Schweit F., Private",
+     "Sola J., SpengIermstr.",
+     "Solan I., Elektromont.",
+     "Ungar M. Israel, Priv.",
+     "Vot J., Private",
+     "Winkelbauer M., Kellnerin",
+     "Wolowiec E., Mechaniker"
+    ],
+    "surname_hits": [],
+    "owner": "E. Lock J. u. Mitbes.",
+    "caretaker": "H. Philipp Marie",
+    "house_line": "62 EZ 2350",
+    "note": "NO Bermann at #62 in 1940 (present in 1938 as Bermann J., Kfm.); owner changed Tuchfeld Minna -> Lock J.; EZ 2352 -> 2350",
+    "printed_page": 1221,
+    "scan": 1668,
+    "geo_quality": "exact",
+    "geo_source": "geo1942_matched.json (1938-derived geocode tier), exact house-number match"
+   }
+  }
+ ]
+}

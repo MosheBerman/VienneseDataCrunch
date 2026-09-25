@@ -1,0 +1,81 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.304181273704568,
+     48.20113545062008
+    ]
+   },
+   "properties": {
+    "year": 1942,
+    "layer": "band1_surnames",
+    "label": "Bermann, Pens.",
+    "raw": "Bermann, Pens., XIV. Spallartg. 26.",
+    "geo_quality": "exact",
+    "confidence": "medium",
+    "note": "geo1942_matched exact house match; OCR-unverified"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.374621513350437,
+     48.18256698148128
+    ]
+   },
+   "properties": {
+    "year": 1942,
+    "layer": "band1_surnames",
+    "label": "Goldberg Alois, Gärtner",
+    "raw": "Goldberg Alois, Gärtner, X. Favoritenstr. 84.",
+    "geo_quality": "exact",
+    "confidence": "medium",
+    "note": "geo1942_matched exact house match; OCR-unverified"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.314524,
+     48.192918
+    ]
+   },
+   "properties": {
+    "year": 1942,
+    "layer": "band1_surnames",
+    "label": "Biller, Ambros (?)",
+    "raw": "= Ambros, Biller, XIV. Linzer Str. 21.",
+    "geo_quality": "interpolated",
+    "confidence": "low",
+    "note": "parse uncertain (Ambros Biller vs firm); position interpolated between Linzer Str. 18 and 49; OCR-unverified"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.374076267600067,
+     48.17754541390556
+    ]
+   },
+   "properties": {
+    "year": 1942,
+    "layer": "band1_surnames",
+    "label": "Bermann, Kellner",
+    "raw": "Bermann, Kellner, X. Lagendurger Str. 49",
+    "geo_quality": "approximate",
+    "confidence": "low",
+    "note": "\"Lagendurger\" read as Laxenburger Str.; pinned to Laxenburger Str. 49-57 range centroid; OCR-unverified"
+   }
+  }
+ ]
+}
