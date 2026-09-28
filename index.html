@@ -105,6 +105,11 @@ header>*{pointer-events:auto;}
 #infoBtn{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid #d1d5db;background:#fff;
   font-size:24px;line-height:1;color:#111827;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0;}
 #infoBtn:hover{border-color:#2563eb;color:#2563eb;}
+/* language toggle: compact pill next to share/info */
+#langBtn{min-width:44px;height:44px;padding:0 12px;border-radius:22px;border:1px solid #d1d5db;background:#fff;
+  font-size:15px;font-weight:700;color:#111827;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);}
+#langBtn:hover{border-color:#2563eb;color:#2563eb;}
+#langPick{padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;background:#fff;color:#111827;flex:0 0 auto;}
 /* popup tabs */
 .tabs{display:flex;gap:2px;border-bottom:1px solid #e5e7eb;margin:0 0 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .tab{border:none;background:none;padding:12px 14px;font-size:15px;font-weight:600;color:#6b7280;cursor:pointer;
@@ -171,99 +176,354 @@ header>*{pointer-events:auto;}
 </head>
 <body>
 <div id="map"></div>
-<div id="boot"><div class="spin"></div><div>Loading 481,219 people at 58,601 addresses…</div></div>
+<div id="boot"><div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div></div>
 <header>
   <div class="brand">
-    <input id="q" type="search" placeholder="/ to search" autocomplete="off">
-    <span class="brand-name">Lehmann <small>· Vienna</small></span>
-    <select id="yrPick" aria-label="Year"></select>
+    <input id="q" type="search" placeholder="/ to search" autocomplete="off" data-i18n-ph="searchPh">
+    <span class="brand-name">Lehmann <small data-i18n="brandVienna">· Vienna</small></span>
+    <select id="yrPick" aria-label="Year" data-i18n-aria="yearAria"></select>
   </div>
   <div class="hctl">
-    <button id="shareBtn" aria-label="Copy link to this view">&#8599;</button>
-    <button id="infoBtn" aria-label="About, research and settings">&#9432;</button>
+    <button id="langBtn" aria-label="Auf Deutsch umstellen">DE</button>
+    <button id="shareBtn" aria-label="Copy link to this view" data-i18n-aria="shareAria">&#8599;</button>
+    <button id="infoBtn" aria-label="About, research and settings" data-i18n-aria="infoAria">&#9432;</button>
   </div>
 </header>
 <div id="results"></div>
-<div id="resPill" role="button" aria-label="Show search results"></div>
+<div id="resPill" role="button" aria-label="Show search results" data-i18n-aria="showResultsAria"></div>
 <div id="followPanel" style="display:none" aria-hidden="true">
   <div class="fw-head">
     <div class="fw-title"><div class="fw-name"></div><div class="fw-sub"></div></div>
-    <button id="fwPlay" aria-label="Play timeline">&#9654;</button>
-    <button id="fwClose" aria-label="Close follow view">&#10005;</button>
+    <button id="fwPlay" aria-label="Play timeline" data-i18n-aria="playTimeline">&#9654;</button>
+    <button id="fwClose" aria-label="Close follow view" data-i18n-aria="closeFollow">&#10005;</button>
   </div>
   <div class="fw-status"></div>
   <div class="fw-years"></div>
   <div class="fw-alts" style="display:none"></div>
 </div>
 <div id="aboutOverlay"><div id="aboutBox">
-<button id="aboutClose">Close</button>
+<button id="aboutClose" data-i18n="aboutClose">Close</button>
 <div class="tabs" role="tablist">
-<button class="tab active" data-tab="about" role="tab">About</button>
-<button class="tab" data-tab="research" role="tab">Research</button>
-<button class="tab" data-tab="settings" role="tab">Settings</button>
-<button class="tab" data-tab="license" role="tab">Licensing</button>
+<button class="tab active" data-tab="about" role="tab" data-i18n="tabAbout">About</button>
+<button class="tab" data-tab="research" role="tab" data-i18n="tabResearch">Research</button>
+<button class="tab" data-tab="settings" role="tab" data-i18n="tabSettings">Settings</button>
+<button class="tab" data-tab="license" role="tab" data-i18n="tabLicense">Licensing</button>
 </div>
 <div class="tabpage active" id="tab-about">
-<h2>About this map</h2>
-<p class="about-stats"><b id="aboutCount">—</b> people · <b id="aboutAcount">—</b> addresses<br>
-<span class="about-legend"><span style="color:#2563eb">●</span> exact registry match · <span style="color:#7c3aed">●</span> registry match · <span style="color:#d97706">●</span> fuzzy street match · <span style="color:#e11d48">◯</span> inferred street name</span></p>
-<p>Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.</p>
-<h3>Build log</h3>
+<h2 data-i18n="aboutTitle">About this map</h2>
+<p class="about-stats"><b id="aboutCount">—</b> <span data-i18n="peopleWord">people</span> · <b id="aboutAcount">—</b> <span data-i18n="addressesWord">addresses</span><br>
+<span class="about-legend"><span style="color:#2563eb">●</span> <span data-i18n="legendExact">exact registry match</span> · <span style="color:#7c3aed">●</span> <span data-i18n="legendRegistry">registry match</span> · <span style="color:#d97706">●</span> <span data-i18n="legendFuzzy">fuzzy street match</span> · <span style="color:#e11d48">◯</span> <span data-i18n="legendInferred">inferred street name</span></span></p>
+<p data-i18n-html="aboutIntro">Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.</p>
+<h3 data-i18n="buildLog">Build log</h3>
 <ol class="blog">
-<li>Scans of the Lehmann volumes from the Wienbibliothek's Retrodigitalisierung copies (public domain).</li>
-<li>The library's per-page Transkribus ALTO OCR, with bounding boxes for every text line.</li>
-<li>Parsing names, occupations, addresses and unit numbers (Stg./T&uuml;r/Top); headers, footers and ads stripped.</li>
-<li>Street-name normalization — ambiguous forms held for review, not silently fixed.</li>
-<li>Geocoding against the City of Vienna address registry (Adressen Standorte Wien, CC&nbsp;BY&nbsp;4.0).</li>
-<li>Tiered pins: blue exact, purple registry, amber fuzzy-approximate.</li>
-<li>Full 1938–1942 layers.</li>
-<li>Scanned-row snippets in every record popup.</li>
+<li data-i18n="build1">Scans of the Lehmann volumes from the Wienbibliothek's Retrodigitalisierung copies (public domain).</li>
+<li data-i18n="build2">The library's per-page Transkribus ALTO OCR, with bounding boxes for every text line.</li>
+<li data-i18n="build3">Parsing names, occupations, addresses and unit numbers (Stg./T&uuml;r/Top); headers, footers and ads stripped.</li>
+<li data-i18n="build4">Street-name normalization — ambiguous forms held for review, not silently fixed.</li>
+<li data-i18n="build5">Geocoding against the City of Vienna address registry (Adressen Standorte Wien, CC&nbsp;BY&nbsp;4.0).</li>
+<li data-i18n="build6">Tiered pins: blue exact, purple registry, amber fuzzy-approximate.</li>
+<li data-i18n="build7">Full 1938–1942 layers.</li>
+<li data-i18n="build8">Scanned-row snippets in every record popup.</li>
 </ol>
-<h3>Caveats</h3>
-<p>OCR misreads names; some streets were renamed or no longer exist; amber pins are approximate. A missing pin doesn't mean the entry is missing from the book — not every address matched the modern registry.</p>
-<h3>Keyboard</h3>
-<p><b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · on the map, <b>←</b><b>→</b> steps through pins.</p>
+<h3 data-i18n="caveatsTitle">Caveats</h3>
+<p data-i18n="caveatsText">OCR misreads names; some streets were renamed or no longer exist; amber pins are approximate. A missing pin doesn't mean the entry is missing from the book — not every address matched the modern registry.</p>
+<h3 data-i18n="keyboardTitle">Keyboard</h3>
+<p data-i18n-html="keyboardText"><b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · on the map, <b>←</b><b>→</b> steps through pins.</p>
 </div>
 <div class="tabpage" id="tab-research">
-<h2>Research</h2>
-<p>Draft explorers and experiments. Drafts are unreviewed work in progress.</p>
-<h3>Method</h3>
-<p>The library's OCR of the page scans is parsed into names, occupations and addresses; street names are normalized (ambiguous forms held for review); each address is matched against the City of Vienna's address registry (Adressen Standorte Wien, CC&nbsp;BY&nbsp;4.0), and uncertain matches are flagged on the map rather than hidden. The pipeline was built by Muse by Meta working with Moshe Berman, and every stage reported measured match rates.</p>
+<h2 data-i18n="researchTitle">Research</h2>
+<p data-i18n="researchIntro">Draft explorers and experiments. Drafts are unreviewed work in progress.</p>
+<h3 data-i18n="methodTitle">Method</h3>
+<p data-i18n="methodText">The library's OCR of the page scans is parsed into names, occupations and addresses; street names are normalized (ambiguous forms held for review); each address is matched against the City of Vienna's address registry (Adressen Standorte Wien, CC&nbsp;BY&nbsp;4.0), and uncertain matches are flagged on the map rather than hidden. The pipeline was built by Muse by Meta working with Moshe Berman, and every stage reported measured match rates.</p>
 <ul class="rlist">
-<li><a href="1939-band1-draft/">1939 · Band 1 draft</a><span class="rdraft">draft</span><br>Namenverzeichnis (residents' directory) search explorer — surname, street and occupation search over the library OCR.</li>
-<li><a href="1939-band2-draft/">1939 · Band 2 draft</a><span class="rdraft">draft</span><br>Häuserverzeichnis (house directory) explorer with an A–Z Browse tab: collapsible streets and house numbers, residents listed per address.</li>
-<li><a href="research/family/">Family migration demo</a><br>An animated 1938→1942 timeline of family addresses, with person trails and a building-residents view.</li>
-<li><a href="research/lighting/">Scan preprocessing experiments</a><br>Gallery of the lighting-correction algorithms tested to improve OCR, each labeled under its images.</li>
+<li><a href="1939-band1-draft/" data-i18n="r1t">1939 · Band 1 draft</a><span class="rdraft" data-i18n="draftBadge">draft</span><br><span data-i18n="r1d">Namenverzeichnis (residents' directory) search explorer — surname, street and occupation search over the library OCR.</span></li>
+<li><a href="1939-band2-draft/" data-i18n="r2t">1939 · Band 2 draft</a><span class="rdraft" data-i18n="draftBadge">draft</span><br><span data-i18n="r2d">Häuserverzeichnis (house directory) explorer with an A–Z Browse tab: collapsible streets and house numbers, residents listed per address.</span></li>
+<li><a href="research/family/" data-i18n="r3t">Family migration demo</a><br><span data-i18n="r3d">An animated 1938→1942 timeline of family addresses, with person trails and a building-residents view.</span></li>
+<li><a href="research/lighting/" data-i18n="r4t">Scan preprocessing experiments</a><br><span data-i18n="r4d">Gallery of the lighting-correction algorithms tested to improve OCR, each labeled under its images.</span></li>
 </ul>
 </div>
 <div class="tabpage" id="tab-settings">
-<h2>Research settings</h2>
-<div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b>Green dots — 1938 Band 2 preview</b><small>Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b>Teal dots — 1938 Band 2 clean-only preview</b><small>Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b>Show Research section in the year picker</b><small>Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b>Rose ring — inferred street names</b><small>Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
-<h3>Map</h3>
-<p><label for="flt"><b>Pin quality filter</b></label><br>
+<h2 data-i18n="settingsTitle">Research settings</h2>
+<div class="setrow"><label for="langPick" style="flex:1"><b data-i18n="languageLabel">Language</b><small data-i18n="languageDesc">Interface language.</small></label><select id="langPick" aria-label="Language"><option value="en">English</option><option value="de">Deutsch</option></select></div>
+<div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b data-i18n="setB2t">Green dots — 1938 Band 2 preview</b><small data-i18n="setB2d">Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b data-i18n="setB2ct">Teal dots — 1938 Band 2 clean-only preview</b><small data-i18n="setB2cd">Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b data-i18n="setResearchT">Show Research section in the year picker</b><small data-i18n="setResearchD">Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b data-i18n="setInferT">Rose ring — inferred street names</b><small data-i18n="setInferD">Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
+<h3 data-i18n="mapSection">Map</h3>
+<p><label for="flt"><b data-i18n="pinFilter">Pin quality filter</b></label><br>
 <select id="flt">
-<option value="all">All pins</option>
-<option value="reg">Registry or better</option>
-<option value="exact">Exact only</option>
+<option value="all" data-i18n="fltAll">All pins</option>
+<option value="reg" data-i18n="fltReg">Registry or better</option>
+<option value="exact" data-i18n="fltExact">Exact only</option>
 </select></p>
 </div>
 <div class="tabpage" id="tab-license">
-<h2>Licensing</h2>
-<p>Scans: <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href="https://creativecommons.org/publicdomain/mark/1.0/" target="_blank" rel="noopener">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution. <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Browse the original 1938 scan</a> page by page.</p>
-<p>Map data extracted from the directory is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0 Universal</a>.</p>
-<h3>Site version</h3>
-<p>Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>52957194</code></p>
-<h3>Code libraries</h3>
+<h2 data-i18n="licenseTitle">Licensing</h2>
+<p data-i18n-html="licenseText1">Scans: <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href="https://creativecommons.org/publicdomain/mark/1.0/" target="_blank" rel="noopener">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution. <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579" target="_blank" rel="noopener">Browse the original 1938 scan</a> page by page.</p>
+<p data-i18n-html="licenseText2">Map data extracted from the directory is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0 Universal</a>.</p>
+<h3 data-i18n="siteVersion">Site version</h3>
+<p data-i18n-html="sourceLine">Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>52957194</code></p>
+<h3 data-i18n="codeLibs">Code libraries</h3>
 <p><a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">Mapbox GL JS</a> v3.30.0 — BSD 3-Clause.</p>
-<h3>Credit</h3>
-<p>Built by Muse by Meta, working with Moshe Berman.</p>
+<h3 data-i18n="creditTitle">Credit</h3>
+<p data-i18n="creditText">Built by Muse by Meta, working with Moshe Berman.</p>
 </div>
 </div></div>
 <script>window.MAPBOX_TOKEN="pk.eyJ1IjoibW9zaGViZXJtYW5uIiwiYSI6ImNtdHc5a21odDA0aGMzNG9vNnF6Z3Z6cjAifQ.iO_N_QmWcIANN2aRrfXl_Q";</script>
 <script>'use strict';
+// ---- i18n: UI + About text in English and Austrian German ------------------
+// LANG drives every user-facing string via t(). Static markup carries
+// data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
+// data-i18n-aria (aria-label); applyI18n() walks them on every switch.
+// Record content (names, streets, occupations from the book) is never
+// translated. Persisted in localStorage; defaults to the browser language.
+const I18N = {
+en: {
+  docTitle: "Lehmann {year} · Vienna Address Map",
+  searchPh: "/ to search",
+  searchPhFocus: "Surname, street, occupation…",
+  brandVienna: "· Vienna",
+  yearAria: "Year",
+  shareAria: "Copy link to this view",
+  infoAria: "About, research and settings",
+  showResultsAria: "Show search results",
+  langBtnAria: "Auf Deutsch umstellen",
+  copyLinkPrompt: "Copy this link:",
+  bootStatic: "Loading 481,219 people at 58,601 addresses…",
+  bootLoading: "Loading {year}…",
+  tabAbout: "About", tabResearch: "Research", tabSettings: "Settings", tabLicense: "Licensing",
+  aboutClose: "Close",
+  aboutTitle: "About this map",
+  peopleWord: "people", addressesWord: "addresses",
+  legendExact: "exact registry match", legendRegistry: "registry match",
+  legendFuzzy: "fuzzy street match", legendInferred: "inferred street name",
+  aboutIntro: "Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.",
+  buildLog: "Build log",
+  build1: "Scans of the Lehmann volumes from the Wienbibliothek's Retrodigitalisierung copies (public domain).",
+  build2: "The library's per-page Transkribus ALTO OCR, with bounding boxes for every text line.",
+  build3: "Parsing names, occupations, addresses and unit numbers (Stg./Tür/Top); headers, footers and ads stripped.",
+  build4: "Street-name normalization — ambiguous forms held for review, not silently fixed.",
+  build5: "Geocoding against the City of Vienna address registry (Adressen Standorte Wien, CC BY 4.0).",
+  build6: "Tiered pins: blue exact, purple registry, amber fuzzy-approximate.",
+  build7: "Full 1938–1942 layers.",
+  build8: "Scanned-row snippets in every record popup.",
+  caveatsTitle: "Caveats",
+  caveatsText: "OCR misreads names; some streets were renamed or no longer exist; amber pins are approximate. A missing pin doesn't mean the entry is missing from the book — not every address matched the modern registry.",
+  keyboardTitle: "Keyboard",
+  keyboardText: "<b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · on the map, <b>←</b><b>→</b> steps through pins.",
+  researchTitle: "Research",
+  researchIntro: "Draft explorers and experiments. Drafts are unreviewed work in progress.",
+  methodTitle: "Method",
+  methodText: "The library's OCR of the page scans is parsed into names, occupations and addresses; street names are normalized (ambiguous forms held for review); each address is matched against the City of Vienna's address registry (Adressen Standorte Wien, CC BY 4.0), and uncertain matches are flagged on the map rather than hidden. The pipeline was built by Muse by Meta working with Moshe Berman, and every stage reported measured match rates.",
+  r1t: "1939 · Band 1",
+  r1d: "Namenverzeichnis (residents' directory) search explorer — surname, street and occupation search over the library OCR.",
+  r2t: "1939 · Band 2",
+  r2d: "Häuserverzeichnis (house directory) explorer with an A–Z Browse tab: collapsible streets and house numbers, residents listed per address.",
+  r3t: "Family migration demo",
+  r3d: "An animated 1938→1942 timeline of family addresses, with person trails and a building-residents view.",
+  r4t: "Scan preprocessing experiments",
+  r4d: "Gallery of the lighting-correction algorithms tested to improve OCR, each labeled under its images.",
+  draftBadge: "draft",
+  settingsTitle: "Research settings",
+  languageLabel: "Language",
+  languageDesc: "Interface language.",
+  setB2t: "Green dots — 1938 Band 2 preview",
+  setB2d: "Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.",
+  setB2ct: "Teal dots — 1938 Band 2 clean-only preview",
+  setB2cd: "Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.",
+  setResearchT: "Show Research section in the year picker",
+  setResearchD: "Reveals research views such as the family migration demo in the year dropdown.",
+  setInferT: "Rose ring — inferred street names",
+  setInferD: "Pins whose address was placed through an inferred historical→modern street mapping get a rose ring. The pin's own color still shows match quality.",
+  mapSection: "Map",
+  pinFilter: "Pin quality filter",
+  fltAll: "All pins", fltReg: "Registry or better", fltExact: "Exact only",
+  licenseTitle: "Licensing",
+  licenseText1: "Scans: <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href=\"https://creativecommons.org/publicdomain/mark/1.0/\" target=\"_blank\" rel=\"noopener\">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution. <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Browse the original 1938 scan</a> page by page.",
+  licenseText2: "Map data extracted from the directory is released under <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0 Universal</a>.",
+  siteVersion: "Site version",
+  sourceLine: "Source: <a href=\"https://github.com/MosheBerman/VienneseDataCrunch\" target=\"_blank\" rel=\"noopener\">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>52957194</code>",
+  codeLibs: "Code libraries",
+  creditTitle: "Credit",
+  creditText: "Built by Muse by Meta, working with Moshe Berman.",
+  researchOpt: "Research",
+  qExact: "exact registry match",
+  qDistrict: "registry match · district fallback",
+  qRange: "registry match · number range",
+  qAlpha: "alphabetical fallback",
+  qFuzzy: "fuzzy street match",
+  viewInScan: "View in scan",
+  suggestCorrection: "Suggest correction",
+  recordDetails: "Record details",
+  rescueLine: "Listed as {old} in the {year} directory.",
+  followPerson: "Follow this person →",
+  moreInPreview: "{n} more in preview",
+  moreHidden1: "1 more resident hidden by filter",
+  moreHiddenN: "{n} more residents hidden by filter",
+  noMatches: "No matches",
+  chipAll: "All", chipNames: "Names", chipStreets: "Streets", chipOccs: "Occupations",
+  prevPage: "‹ Prev", nextPage: "Next ›",
+  pageInfo: "page {p} of {n}",
+  minimizeAria: "Minimize results", dismissAria: "Dismiss results",
+  b2alert: "Band 2 preview data is not built yet — check back after the next processing batch.",
+  b2label: "Unreviewed OCR preview · Band 2",
+  b2clabel: "Unreviewed OCR preview · Band 2 clean-only",
+  fwSearching: "Searching {year}…",
+  fwStrong: "strong match", fwLikely: "likely match", fwPossible: "possible — verify",
+  fwStart: "starting point", fwGap: "not listed",
+  fwOthers: "{n} others ▾",
+  fwAltsHead: "Other possible matches for {name} in {year} — tap one to inspect it:",
+  fwCurrentPick: "Current pick: ",
+  playTimeline: "Play timeline", stopTimeline: "Stop", closeFollow: "Close follow view"
+},
+de: {
+  docTitle: "Lehmann {year} · Wiener Adresskarte",
+  searchPh: "/ zum Suchen",
+  searchPhFocus: "Nachname, Straße, Beruf…",
+  brandVienna: "· Wien",
+  yearAria: "Jahr",
+  shareAria: "Link zu dieser Ansicht kopieren",
+  infoAria: "Über, Forschung und Einstellungen",
+  showResultsAria: "Suchergebnisse anzeigen",
+  langBtnAria: "Switch to English",
+  copyLinkPrompt: "Diesen Link kopieren:",
+  bootStatic: "481.219 Personen an 58.601 Adressen werden geladen…",
+  bootLoading: "{year} wird geladen…",
+  tabAbout: "Über", tabResearch: "Forschung", tabSettings: "Einstellungen", tabLicense: "Lizenz",
+  aboutClose: "Schließen",
+  aboutTitle: "Über diese Karte",
+  peopleWord: "Personen", addressesWord: "Adressen",
+  legendExact: "exakter Registereintrag", legendRegistry: "Registertreffer",
+  legendFuzzy: "ungefähre Straßenübereinstimmung", legendInferred: "abgeleiteter Straßenname",
+  aboutIntro: "Jeder Pin ist eine Wiener Adresse mit einer oder mehreren Personen oder Firmen aus <i>Lehmanns Wohnungsanzeiger</i>, dem Wiener Adressbuch. Über die Jahresauswahl wechseln Sie zwischen den vollständigen Karten der Jahre 1938–1942. Jedes Eintrags-Popup zeigt die gescannte Zeile, aus der der Eintrag stammt.",
+  buildLog: "Entstehung",
+  build1: "Scans der Lehmann-Bände aus den Retrodigitalisierungskopien der Wienbibliothek (gemeinfrei).",
+  build2: "Das seitenweise Transkribus-ALTO-OCR der Bibliothek, mit Bounding Boxes für jede Textzeile.",
+  build3: "Parsen von Namen, Berufen, Adressen und Einheitsnummern (Stg./Tür/Top); Kopf- und Fußzeilen sowie Inserate entfernt.",
+  build4: "Straßennamen-Normalisierung — mehrdeutige Formen wurden zur Prüfung zurückgehalten, nicht stillschweigend korrigiert.",
+  build5: "Geokodierung gegen das Adressregister der Stadt Wien (Adressen Standorte Wien, CC BY 4.0).",
+  build6: "Abgestufte Pins: blau exakt, violett Register, bernsteinfarben ungefähr.",
+  build7: "Vollständige Ebenen 1938–1942.",
+  build8: "Gescannte Zeilenausschnitte in jedem Eintrags-Popup.",
+  caveatsTitle: "Einschränkungen",
+  caveatsText: "Das OCR verliest Namen; manche Straßen wurden umbenannt oder existieren nicht mehr; bernsteinfarbene Pins sind ungefähr. Ein fehlender Pin bedeutet nicht, dass der Eintrag im Buch fehlt — nicht jede Adresse konnte dem modernen Register zugeordnet werden.",
+  keyboardTitle: "Tastatur",
+  keyboardText: "<b>/</b> suchen · <b>↑</b><b>↓</b> durch Ergebnisse bewegen · <b>Leertaste</b>/<b>Enter</b> öffnet ein Ergebnis · <b>Esc</b> schließt · auf der Karte wechseln <b>←</b><b>→</b> zwischen den Pins.",
+  researchTitle: "Forschung",
+  researchIntro: "Entwürfe und Experimente. Entwürfe sind ungeprüfte Arbeitsstände.",
+  methodTitle: "Methode",
+  methodText: "Das OCR der Bibliothek von den Seitenscans wird in Namen, Berufe und Adressen geparst; Straßennamen werden normalisiert (mehrdeutige Formen zur Prüfung zurückgehalten); jede Adresse wird mit dem Adressregister der Stadt Wien abgeglichen (Adressen Standorte Wien, CC BY 4.0), und unsichere Treffer werden auf der Karte markiert statt verborgen. Die Pipeline wurde von Muse by Meta gemeinsam mit Moshe Berman gebaut; jede Stufe meldete gemessene Trefferquoten.",
+  r1t: "1939 · Band 1",
+  r1d: "Namenverzeichnis-Suche über das Bibliotheks-OCR: Nachnamen, Straßen und Berufe.",
+  r2t: "1939 · Band 2",
+  r2d: "Häuserverzeichnis-Explorer mit A–Z-Blätterregister: aufklappbare Straßen und Hausnummern, Bewohner je Adresse.",
+  r3t: "Familienmigrations-Demo",
+  r3d: "Animierte Zeitleiste 1938→1942 von Familienadressen, mit Personenpfaden und Gebäudeansicht.",
+  r4t: "Experimente zur Scan-Vorverarbeitung",
+  r4d: "Galerie der getesteten Algorithmen zur Beleuchtungskorrektur für besseres OCR, jeweils unter den Bildern beschriftet.",
+  draftBadge: "Entwurf",
+  settingsTitle: "Forschungseinstellungen",
+  languageLabel: "Sprache",
+  languageDesc: "Sprache der Benutzeroberfläche.",
+  setB2t: "Grüne Punkte — Vorschau Band 2 (1938)",
+  setB2d: "Ungeprüftes OCR des Häuserverzeichnisses 1938, als grüne Pins. Abwechselnd mit der bereinigten Variante unten.",
+  setB2ct: "Türkise Punkte — Vorschau Band 2 (1938, bereinigt)",
+  setB2cd: "Ungeprüftes OCR aus einem alternativen Bereinigungsdurchlauf, als türkise Pins.",
+  setResearchT: "Forschungsbereich in der Jahresauswahl anzeigen",
+  setResearchD: "Blendet Forschungsansichten wie die Familienmigrations-Demo im Jahres-Dropdown ein.",
+  setInferT: "Rosaring — abgeleitete Straßennamen",
+  setInferD: "Pins, deren Adresse über eine abgeleitete historisch→modern-Straßenzuordnung platziert wurde, erhalten einen rosafarbenen Ring. Die Pin-Farbe zeigt weiterhin die Trefferqualität.",
+  mapSection: "Karte",
+  pinFilter: "Pin-Qualitätsfilter",
+  fltAll: "Alle Pins", fltReg: "Register oder besser", fltExact: "Nur exakte",
+  licenseTitle: "Lizenz",
+  licenseText1: "Scans: <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Wienbibliothek im Rathaus — digitale Sammlung</a>. Die Lehmann-Bände 1938 und 1942 tragen die <a href=\"https://creativecommons.org/publicdomain/mark/1.0/\" target=\"_blank\" rel=\"noopener\">Public Domain Mark 1.0</a>; bitte nennen Sie bei Weiterverwendung der Scans die Wienbibliothek im Rathaus als besitzende Institution. <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Originalscan 1938</a> Seite für Seite durchblättern.",
+  licenseText2: "Die aus dem Adressbuch extrahierten Kartendaten stehen unter <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0 Universal</a>.",
+  siteVersion: "Website-Version",
+  sourceLine: "Quelle: <a href=\"https://github.com/MosheBerman/VienneseDataCrunch\" target=\"_blank\" rel=\"noopener\">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>52957194</code>",
+  codeLibs: "Code-Bibliotheken",
+  creditTitle: "Danksagung",
+  creditText: "Erstellt von Muse by Meta, in Zusammenarbeit mit Moshe Berman.",
+  researchOpt: "Forschung",
+  qExact: "exakter Registereintrag",
+  qDistrict: "Registertreffer · Bezirks-Fallback",
+  qRange: "Registertreffer · Nummernbereich",
+  qAlpha: "alphabetischer Fallback",
+  qFuzzy: "ungefähre Straßenübereinstimmung",
+  viewInScan: "Im Scan ansehen",
+  suggestCorrection: "Korrektur vorschlagen",
+  recordDetails: "Details zum Eintrag",
+  rescueLine: "Im Adressbuch {year} als {old} verzeichnet.",
+  followPerson: "Dieser Person folgen →",
+  moreInPreview: "{n} weitere in der Vorschau",
+  moreHidden1: "1 weiterer Bewohner durch Filter ausgeblendet",
+  moreHiddenN: "{n} weitere Bewohner durch Filter ausgeblendet",
+  noMatches: "Keine Treffer",
+  chipAll: "Alle", chipNames: "Namen", chipStreets: "Straßen", chipOccs: "Berufe",
+  prevPage: "‹ Zurück", nextPage: "Weiter ›",
+  pageInfo: "Seite {p} von {n}",
+  minimizeAria: "Ergebnisse minimieren", dismissAria: "Ergebnisse schließen",
+  b2alert: "Die Band-2-Vorschaudaten sind noch nicht erstellt — bitte nach der nächsten Verarbeitung erneut versuchen.",
+  b2label: "Ungeprüfte OCR-Vorschau · Band 2",
+  b2clabel: "Ungeprüfte OCR-Vorschau · Band 2 (bereinigt)",
+  fwSearching: "Suche {year}…",
+  fwStrong: "sichere Übereinstimmung", fwLikely: "wahrscheinliche Übereinstimmung", fwPossible: "möglich — bitte prüfen",
+  fwStart: "Ausgangspunkt", fwGap: "nicht verzeichnet",
+  fwOthers: "{n} weitere ▾",
+  fwAltsHead: "Weitere mögliche Treffer für {name} in {year} — zum Ansehen antippen:",
+  fwCurrentPick: "Aktuelle Auswahl: ",
+  playTimeline: "Zeitleiste abspielen", stopTimeline: "Stopp", closeFollow: "Folge-Ansicht schließen"
+}
+};
+let LANG = 'en';
+const locale = () => LANG === 'de' ? 'de-AT' : 'en-US';
+function t(key, vars){
+  let s = (I18N[LANG] && I18N[LANG][key] != null) ? I18N[LANG][key] : I18N.en[key];
+  if (s == null) return key;
+  if (vars) for (const k of Object.keys(vars)) s = s.split('{' + k + '}').join(vars[k]);
+  return s;
+}
+// "X matches": German "Treffer" is invariant; English inflects.
+const matchWord = n => LANG === 'de' ? 'Treffer' : (n === 1 ? 'match' : 'matches');
+function getLang(){
+  try { const s = localStorage.getItem('lehmann.lang'); if (s === 'de' || s === 'en') return s; } catch (e) {}
+  return (navigator.language || 'en').toLowerCase().indexOf('de') === 0 ? 'de' : 'en';
+}
+function refreshSearchPlaceholder(){
+  const q = document.getElementById('q');
+  if (q) q.placeholder = (document.activeElement === q) ? t('searchPhFocus') : t('searchPh');
+}
+function applyI18n(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.getAttribute('data-i18n-html')); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-ph')); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
+  const lb = document.getElementById('langBtn');
+  if (lb) { lb.textContent = LANG === 'de' ? 'EN' : 'DE'; lb.setAttribute('aria-label', t('langBtnAria')); }
+  const lp = document.getElementById('langPick');
+  if (lp) lp.value = LANG;
+  const fp = document.getElementById('fwPlay');
+  if (fp) fp.setAttribute('aria-label', t(fwPlaying ? 'stopTimeline' : 'playTimeline'));
+  refreshSearchPlaceholder();
+  buildYearPicker(); // rebuilds the Research optgroup label
+  updateCount(allFeatures);
+  if ($('results').style.display === 'block' && resIds.length) renderResPage(searchSeq);
+  else {
+    const pill = $('resPill');
+    if (pill.style.display === 'flex' && resIds.length) {
+      const lab = pill.querySelector('span');
+      if (lab) { const n = filteredIds().length; lab.textContent = n.toLocaleString(locale()) + ' ' + matchWord(n); }
+    }
+  }
+  if ($('followPanel').style.display === 'block' && fwStops.length) fwRefreshLang();
+}
+function setLang(l){
+  LANG = (l === 'de') ? 'de' : 'en';
+  try { localStorage.setItem('lehmann.lang', LANG); } catch (e) {}
+  document.title = t('docTitle', {year: YC().label});
+  applyI18n();
+}
 // ---- year manifest ------------------------------------------------------
 // Production layers (1938–1942) — the picker, share links and
 // layer loading all read from this manifest. kind:'layer' loads map data;
@@ -296,7 +556,7 @@ function buildYearPicker(){
   }
   if (showResearch()) {
     const g = document.createElement('optgroup');
-    g.label = 'Research';
+    g.label = t('researchOpt');
     for (const v of RESEARCH_VIEWS) {
       const o = document.createElement('option');
       o.value = 'link:' + v.id; o.textContent = v.label;
@@ -346,24 +606,24 @@ function tuerPill(r){
 function viewOriginalLink(r){
   const _pv = (r.pg != null) ? SCAN_PV[r.pg + 1] : null;
   if (VIEWER_URL && _pv)
-    return '<div class="pp-links"><div><a href="' + VIEWER_URL.split('{pageview}').join(_pv) + '" target="_blank" rel="noopener">View in scan</a></div></div>';
+    return '<div class="pp-links"><div><a href="' + VIEWER_URL.split('{pageview}').join(_pv) + '" target="_blank" rel="noopener">' + t('viewInScan') + '</a></div></div>';
   return '';
 }
 // Match quality + the correction link hide behind a circled-i toggle.
 function ppInfo(r){
   const meta = '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>';
   const corr = (CORRECT_URL && r._id != null)
-    ? '<div><a href="' + CORRECT_URL + encodeURIComponent(CUR_YEAR + ':' + r._id) + '" target="_blank" rel="noopener">Suggest correction</a></div>' : '';
-  return '<button class="pp-info" onclick="togglePpInfo(this)" aria-label="Record details">i</button>' +
+    ? '<div><a href="' + CORRECT_URL + encodeURIComponent(CUR_YEAR + ':' + r._id) + '" target="_blank" rel="noopener">' + t('suggestCorrection') + '</a></div>' : '';
+  return '<button class="pp-info" onclick="togglePpInfo(this)" aria-label="' + t('recordDetails') + '">i</button>' +
     '<div class="pp-info-body" style="display:none">' + meta + corr + '</div>';
 }
-// Inferred-street provenance: "Listed as Reichsbrückenstraße in the 1941 directory."
+// Inferred-street provenance, e.g. "Im Adressbuch 1941 als Reichsbrückenstraße verzeichnet."
 function rescueLine(r){
   const g = r.geo_rescue;
   if (!g) return '';
   const m = /^[^:]+:(.+)->(.+)$/.exec(g);
   if (!m) return '';
-  return '<div class="pp-rescue">Listed as ' + esc(m[1]) + ' in the ' + esc(YC().label) + ' directory.</div>';
+  return '<div class="pp-rescue">' + t('rescueLine', {old: esc(m[1]), year: esc(YC().label)}) + '</div>';
 }
 function togglePpInfo(btn){
   const body = btn.nextElementSibling;
@@ -374,7 +634,7 @@ function togglePpInfo(btn){
 function followBtn(r){
   if (r._id == null) return '';
   return '<button class="pp-follow" data-follow-year="' + esc(CUR_YEAR) + '" data-follow-id="' + r._id +
-    '">Follow this person &rarr;</button>';
+    '">' + t('followPerson') + '</button>';
 }
 let searchIdx = null;
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
@@ -409,12 +669,12 @@ function levLim(a, b, lim) {
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const qLabel = m => {
-  if (m === 'exact') return 'exact registry match';
-  if (!m) return 'fuzzy street match';
-  if (m.indexOf('district_fb') === 0) return 'registry match \u00b7 district fallback';
-  if (m.indexOf('range_in') === 0 || m.indexOf('wl_range') === 0) return 'registry match \u00b7 number range';
-  if (m === 'alpha_fallback') return 'alphabetical fallback';
-  return 'fuzzy street match';
+  if (m === 'exact') return t('qExact');
+  if (!m) return t('qFuzzy');
+  if (m.indexOf('district_fb') === 0) return t('qDistrict');
+  if (m.indexOf('range_in') === 0 || m.indexOf('wl_range') === 0) return t('qRange');
+  if (m === 'alpha_fallback') return t('qAlpha');
+  return t('qFuzzy');
 };
 
 async function loadYearData(){
@@ -424,14 +684,14 @@ async function loadYearData(){
   for (const f of allFeatures) for (const id of f.properties.m) featByRec.set(id, f);
   for (const k in shardCache) delete shardCache[k];
   searchIdx = null; searchKeys = null;
-  document.title = 'Lehmann ' + YC().label + ' · Vienna Address Map';
+  document.title = t('docTitle', {year: YC().label});
 }
 
 async function switchYear(year){
   if (year === CUR_YEAR || !YEARS[year] || YEARS[year].kind !== 'layer') return;
   CUR_YEAR = year;
   $('boot').classList.remove('gone');
-  $('boot').lastElementChild.textContent = 'Loading ' + YC().label + '…';
+  $('boot').lastElementChild.textContent = t('bootLoading', {year: YC().label});
   await loadYearData();
   const feats = allFeatures.filter(f => { const qc = f.properties.qc; return keepIdx.some(k => qc[k] > 0); });
   map.getSource('places').setData({type: 'FeatureCollection', features: feats});
@@ -511,8 +771,8 @@ map.on('load', async () => {
 function updateCount(feats){
   let n = 0;
   for (const f of feats) { const qc = f.properties.qc; for (const k of keepIdx) n += qc[k]; }
-  $('aboutCount').textContent = n.toLocaleString('en-US');
-  $('aboutAcount').textContent = feats.length.toLocaleString('en-US');
+  $('aboutCount').textContent = n.toLocaleString(locale());
+  $('aboutAcount').textContent = feats.length.toLocaleString(locale());
 }
 
 $('flt').addEventListener('change', e => {
@@ -537,15 +797,15 @@ $('shareBtn').addEventListener('click', async () => {
     btn.innerHTML = '&#10003;';
     btn.style.color = '#16a34a';
     setTimeout(() => { btn.innerHTML = old; btn.style.color = ''; }, 1600);
-  } catch (e) { prompt('Copy this link:', url); }
+  } catch (e) { prompt(t('copyLinkPrompt'), url); }
 });
 map.on('moveend', () => { try { history.replaceState(null, '', viewHash()); } catch (e) {} });
 // ---- 1938 Band 2 unreviewed preview layers ---------------------------------
 // Two alternate OCR passes of the 1938 Häuserverzeichnis, toggled from
 // Research settings. Mutually exclusive: green = raw pass, teal = clean-only.
 const B2LAYERS = {
-  b2:      {dir: 'data38b2',      color: '#059669', tag: 'Band 2',            label: 'Unreviewed OCR preview \u00b7 Band 2'},
-  b2clean: {dir: 'data38b2clean', color: '#0d9488', tag: 'Band 2 clean-only', label: 'Unreviewed OCR preview \u00b7 Band 2 clean-only'},
+  b2:      {dir: 'data38b2',      color: '#059669', tag: 'Band 2'},
+  b2clean: {dir: 'data38b2clean', color: '#0d9488', tag: 'Band 2 clean-only'},
 };
 let b2Which = null;
 const b2Ready = {b2: false, b2clean: false};
@@ -568,11 +828,11 @@ async function openB2Popup(which, f){
   if (!recs.length) return;
   const r0 = recs[0];
   let h = '<div class="pp"><div class="pp-addr"><b>' + esc(r0.st || '') + ' ' + esc(r0.hn || '') + '</b> ' + bezPill(r0) + '</div>' +
-    '<div class="pp-meta" style="margin:4px 0">' + esc(B2LAYERS[which].label) + '</div><div class="pp-list">';
+    '<div class="pp-meta" style="margin:4px 0">' + t(which === 'b2' ? 'b2label' : 'b2clabel') + '</div><div class="pp-list">';
   for (const r of recs.slice(0, 50))
     h += '<div class="pp-row"><div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + '</div>';
-  if (recs.length > 50) h += '<div class="pp-more">' + (recs.length - 50) + ' more in preview</div>';
+  if (recs.length > 50) h += '<div class="pp-more">' + t('moreInPreview', {n: recs.length - 50}) + '</div>';
   h += '</div></div>';
   new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(f.geometry.coordinates).setHTML(h).addTo(map);
 }
@@ -594,7 +854,7 @@ async function setB2Layer(which){
     b2Which = which;
     try { localStorage.setItem('lehmann.b2which', which || ''); } catch (e) {}
   } catch (err) {
-    alert('Band 2 preview data is not built yet \u2014 check back after the next processing batch.');
+    alert(t('b2alert'));
     return false;
   }
   return true;
@@ -744,7 +1004,7 @@ async function openGroupPopup(f, highlightId){
       snip + '<div class="pp-act">' + viewOriginalLink(r) + ppInfo(r) + followBtn(r) + '</div></div>';
   }
   h += '</div>';
-  if (hidden > 0) h += '<div class="pp-more">' + hidden + ' more resident' + (hidden > 1 ? 's' : '') + ' hidden by filter</div>';
+  if (hidden > 0) h += '<div class="pp-more">' + t(hidden === 1 ? 'moreHidden1' : 'moreHiddenN', {n: hidden}) + '</div>';
   h += '</div>';
   pop.setHTML(h);
   hydrateSnippets(pop.getElement());
@@ -786,7 +1046,7 @@ function minimizeResults(){
   pill.innerHTML = '';
   const label = document.createElement('span');
   const n = filteredIds().length;
-  label.textContent = n.toLocaleString('en-US') + ' match' + (n === 1 ? '' : 'es');
+  label.textContent = n.toLocaleString(locale()) + ' ' + matchWord(n);
   const x = document.createElement('button');
   x.className = 'rpx'; x.textContent = '\u2715'; x.setAttribute('aria-label', 'Dismiss results');
   x.addEventListener('click', ev => { ev.stopPropagation(); dismissResults(); });
@@ -801,6 +1061,12 @@ function expandResults(){
   const h = document.querySelector('header');
   box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
   box.style.display = 'block';
+}
+// Re-render follow-panel strings after a language switch.
+function fwRefreshLang(){
+  document.querySelector('.fw-name').textContent = fwSrcName;
+  renderFwCells();
+  if (fwAltsStop && document.querySelector('.fw-alts').style.display !== 'none') fwShowAlts(fwAltsStop);
 }
 function dismissResults(){
   $('results').style.display = 'none';
@@ -848,23 +1114,23 @@ async function renderResPage(seq){
   const head = document.createElement('div');
   head.id = 'resHead';
   const title = document.createElement('span');
-  title.textContent = ids.length.toLocaleString('en-US') + ' match' + (ids.length === 1 ? '' : 'es');
+  title.textContent = ids.length.toLocaleString(locale()) + ' ' + matchWord(ids.length);
   const hsp = document.createElement('span'); hsp.className = 'sp';
-  const hmin = document.createElement('button'); hmin.innerHTML = '&#8211;'; hmin.setAttribute('aria-label', 'Minimize results');
+  const hmin = document.createElement('button'); hmin.innerHTML = '&#8211;'; hmin.setAttribute('aria-label', t('minimizeAria'));
   hmin.addEventListener('click', ev => { ev.stopPropagation(); minimizeResults(); });
-  const hx = document.createElement('button'); hx.innerHTML = '&#215;'; hx.setAttribute('aria-label', 'Dismiss results');
+  const hx = document.createElement('button'); hx.innerHTML = '&#215;'; hx.setAttribute('aria-label', t('dismissAria'));
   hx.addEventListener('click', ev => { ev.stopPropagation(); dismissResults(); });
   head.appendChild(title); head.appendChild(hsp); head.appendChild(hmin); head.appendChild(hx);
   box.appendChild(head);
   // filter chips (enabled once background classification completes)
   const chips = document.createElement('div');
   chips.id = 'chips';
-  const defs = [['all', 'All'], ['n', 'Names'], ['s', 'Streets'], ['o', 'Occupations']];
+  const defs = [['all', t('chipAll')], ['n', t('chipNames')], ['s', t('chipStreets')], ['o', t('chipOccs')]];
   for (const [k, label] of defs) {
     const c = document.createElement('button');
     c.className = 'chip';
     c.setAttribute('aria-pressed', resFilter === k ? 'true' : 'false');
-    c.textContent = resCats ? label + ' (' + chipCount(k).toLocaleString('en-US') + ')' : label + ' …';
+    c.textContent = resCats ? label + ' (' + chipCount(k).toLocaleString(locale()) + ')' : label + ' …';
     c.disabled = !resCats;
     c.addEventListener('click', ev => { ev.stopPropagation(); resFilter = k; resPage = 0; renderResPage(seq); });
     chips.appendChild(c);
@@ -891,14 +1157,14 @@ async function renderResPage(seq){
   const pg = document.createElement('div');
   pg.id = 'pager';
   const prev = document.createElement('button');
-  prev.textContent = '\u2039 Prev'; prev.disabled = resPage === 0;
+  prev.textContent = t('prevPage'); prev.disabled = resPage === 0;
   prev.addEventListener('click', ev => { ev.stopPropagation(); if (resPage > 0) { resPage--; renderResPage(seq); } });
   const info = document.createElement('span');
   info.className = 'pginfo';
-  info.textContent = ids.length.toLocaleString('en-US') + ' match' + (ids.length === 1 ? '' : 'es') +
-    ' \u00b7 page ' + (resPage + 1) + ' of ' + pages;
+  info.textContent = ids.length.toLocaleString(locale()) + ' ' + matchWord(ids.length) +
+    ' \u00b7 ' + t('pageInfo', {p: resPage + 1, n: pages});
   const next = document.createElement('button');
-  next.textContent = 'Next \u203a'; next.disabled = resPage >= pages - 1;
+  next.textContent = t('nextPage'); next.disabled = resPage >= pages - 1;
   next.addEventListener('click', ev => { ev.stopPropagation(); if (resPage < pages - 1) { resPage++; renderResPage(seq); } });
   pg.appendChild(prev); pg.appendChild(info); pg.appendChild(next);
   box.appendChild(pg);
@@ -934,8 +1200,8 @@ async function classifyResults(toks, seq){
   }
   if (seq === searchSeq) renderResPage(seq); // re-render with chips enabled
 }
-$('q').addEventListener('focus', () => { $('q').placeholder = 'Surname, street, occupation…'; });
-$('q').addEventListener('blur', () => { $('q').placeholder = '/ to search'; });
+$('q').addEventListener('focus', refreshSearchPlaceholder);
+$('q').addEventListener('blur', refreshSearchPlaceholder);
 $('q').addEventListener('input', e => {
   clearTimeout(searchTimer);
   resRows = []; resHl = -1;
@@ -986,7 +1252,7 @@ $('q').addEventListener('input', e => {
     resIds.sort((a, b) => (b[2] - a[2]) || (b[1] - a[1]) || (a[0] - b[0]));
     resPage = 0; resFilter = 'all'; resCats = null;
     if (!resIds.length) {
-      box.innerHTML = '<div class="rrow">No matches</div>';
+      box.innerHTML = '<div class="rrow">' + t('noMatches') + '</div>';
       placeBox(); box.style.display = 'block';
       return;
     }
@@ -1174,27 +1440,28 @@ async function fwFind(src, year){
   return out;
 }
 const fwConfOf = s => s >= 7 ? 'strong' : s >= 4.5 ? 'likely' : s >= 3 ? 'possible' : null;
-const fwConfLabel = c => c === 'strong' ? 'strong match' : c === 'likely' ? 'likely match' : 'possible \u2014 verify';
+const fwConfLabel = c => c === 'strong' ? t('fwStrong') : c === 'likely' ? t('fwLikely') : t('fwPossible');
 let fwStops = [];      // [{year,id,rec,self,score,why,conf,alts[]}]
 let fwActiveYear = null;
 let fwPlaying = false;
 let fwSrcName = '';
+let fwAltsStop = null; // stop whose alternatives are currently shown
 function fwAddr(r){
   return ((r.st || '') + ' ' + (r.hn || '')).trim() + (r.d ? ', ' + r.d + '. Bez.' : '');
 }
 function fwStopPlay(){
   fwPlaying = false;
   const b = $('fwPlay');
-  if (b){ b.innerHTML = '&#9654;'; b.setAttribute('aria-label', 'Play timeline'); }
+  if (b){ b.innerHTML = '&#9654;'; b.setAttribute('aria-label', t('playTimeline')); }
 }
 function fwCellHTML(st){
   let addr, conf, cls = '';
-  if (st.self){ addr = fwAddr(st.rec); conf = 'starting point'; }
-  else if (!st.rec){ addr = st.conf === 'gap' ? 'not listed' : '\u2026'; conf = ''; cls = ' is-gap'; }
+  if (st.self){ addr = fwAddr(st.rec); conf = t('fwStart'); }
+  else if (!st.rec){ addr = st.conf === 'gap' ? t('fwGap') : '\u2026'; conf = ''; cls = ' is-gap'; }
   else { addr = fwAddr(st.rec); conf = fwConfLabel(st.conf); cls = st.conf ? '' : ' is-gap'; }
   if (st.year === fwActiveYear) cls += ' is-active';
   const alt = (st.alts && st.alts.length)
-    ? '<div class="fw-nalt">' + st.alts.length + ' other' + (st.alts.length > 1 ? 's' : '') + ' \u25be</div>' : '';
+    ? '<div class="fw-nalt">' + t('fwOthers', {n: st.alts.length}) + '</div>' : '';
   const cc = st.conf === 'strong' ? ' c-strong' : st.conf === 'likely' ? ' c-likely' : st.conf === 'possible' ? ' c-possible' : '';
   return '<div class="fw-yr">' + esc(st.year) + '</div><div class="fw-addr">' + esc(addr) + '</div>' +
     (conf ? '<div class="fw-conf' + cc + '">' + esc(conf) + '</div>' : '') + alt;
@@ -1224,6 +1491,7 @@ function fwApplyResult(st, cands){
 async function startFollow(year, id){
   fwStopPlay();
   fwActiveYear = null;
+  fwAltsStop = null;
   document.querySelector('.fw-alts').style.display = 'none';
   let src = null;
   try { src = await fwGetRec(year, id); } catch (e) { src = null; }
@@ -1242,7 +1510,7 @@ async function startFollow(year, id){
   renderFwCells();
   for (const st of fwStops){
     if (st.self) continue;
-    status.innerHTML = '<div class="spin sm"></div><span>Searching ' + esc(st.year) + '\u2026</span>';
+    status.innerHTML = '<div class="spin sm"></div><span>' + t('fwSearching', {year: esc(st.year)}) + '</span>';
     try {
       const cands = await fwFind(src, st.year);
       fwApplyResult(st, cands);
@@ -1272,9 +1540,9 @@ async function fwGoto(st){
   }
 }
 function fwShowAlts(st){
+  fwAltsStop = st;
   const box = document.querySelector('.fw-alts');
-  box.innerHTML = '<div class="fw-alts-h">Other possible matches for ' + esc(fwSrcName) +
-    ' in ' + esc(st.year) + ' \u2014 tap one to inspect it:</div>';
+  box.innerHTML = '<div class="fw-alts-h">' + t('fwAltsHead', {name: esc(fwSrcName), year: esc(st.year)}) + '</div>';
   const mk = (label, id, rec, conf, why, pick) => {
     const b = document.createElement('button');
     b.className = 'fw-alt' + (pick ? ' is-pick' : '');
@@ -1288,7 +1556,7 @@ function fwShowAlts(st){
     });
     return b;
   };
-  box.appendChild(mk('Current pick: ' + (st.rec.s || '') + (st.rec.g ? ', ' + st.rec.g : ''), st.id, st.rec, st.conf, st.why, true));
+  box.appendChild(mk(t('fwCurrentPick') + (st.rec.s || '') + (st.rec.g ? ', ' + st.rec.g : ''), st.id, st.rec, st.conf, st.why, true));
   for (const a of st.alts)
     box.appendChild(mk((a.rec.s || '') + (a.rec.g ? ', ' + a.rec.g : ''), a.id, a.rec, a.conf, a.why, false));
   box.style.display = 'block';
@@ -1308,7 +1576,7 @@ async function fwTogglePlay(){
   if (!seq.length) return;
   fwPlaying = true;
   $('fwPlay').innerHTML = '&#10074;&#10074;';
-  $('fwPlay').setAttribute('aria-label', 'Stop');
+  $('fwPlay').setAttribute('aria-label', t('stopTimeline'));
   for (const st of seq){
     if (!fwPlaying) break;
     await fwGoto(st);
@@ -1320,6 +1588,7 @@ function fwClose(){
   fwStopPlay();
   fwStops = [];
   fwActiveYear = null;
+  fwAltsStop = null;
   document.querySelector('.fw-alts').style.display = 'none';
   const p = $('followPanel');
   p.style.display = 'none';
@@ -1341,6 +1610,13 @@ document.addEventListener('click', e => {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }
+
+// ---- i18n init ------------------------------------------------------------
+// Header DE/EN pill + the Settings language row drive setLang(); the choice
+// persists in localStorage and defaults to the browser language.
+$('langBtn').addEventListener('click', () => setLang(LANG === 'de' ? 'en' : 'de'));
+$('langPick').addEventListener('change', e => setLang(e.target.value));
+setLang(getLang());
 </script>
 </body>
 </html>
