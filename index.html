@@ -89,6 +89,11 @@ header>*{pointer-events:auto;}
 .pp-info{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;font:italic 12px Georgia,serif;cursor:pointer;margin:0;padding:0;vertical-align:middle;flex:0 0 auto;}
 .pp-info:hover{border-color:#2563eb;color:#2563eb;}
 .pp-info-body{margin-top:4px;}
+/* record-details circled-i: pinned top-right of the record card, out of the
+   bottom actions row; tür rows keep their top-right pill, so the i drops
+   one line below it */
+.pp-act .pp-info{position:absolute;top:8px;right:4px;}
+.pp-tuer .pp-act .pp-info{top:34px;}
 
 #aboutBox h3{margin:16px 0 6px;font-size:15px;}
 #aboutBox p{font-size:14px;line-height:1.6;color:#1f2937;margin:8px 0;}
@@ -948,10 +953,15 @@ async function hydrateSnippets(root){
     img.onload = () => {
       const W = img.naturalWidth, H = img.naturalHeight;
       if (!W || !H || !bd.w || !bd.h) { el.remove(); return; }
-      const sx = W / bd.w, sy = H / bd.h;
+      // Boxes are stored in served-scan pixels (y already corrected for the
+      // old-vs-retro scan shift; see SCAN_DY in build_rowboxes.py). The served
+      // image is the same DPI, possibly cropped (1938 is 59px shorter than its
+      // ALTO page), so scale uniformly from the width — independent x/y
+      // scaling drifts the frame a full row too high by the page bottom.
+      const s = W / bd.w;
       const cw = el.clientWidth || 264;
-      const k = cw / Math.max(1, b.w * sx);
-      const ox = b.x * sx * k, oy = b.y * sy * k, oh = b.h * sy * k;
+      const k = cw / Math.max(1, b.w * s);
+      const ox = b.x * s * k, oy = b.y * s * k, oh = b.h * s * k;
       const ch = Math.max(72, Math.min(160, oh * 3.2));
       el.style.height = ch + 'px';
       img.style.width = (W * k) + 'px';
@@ -997,7 +1007,7 @@ async function openGroupPopup(f, highlightId){
   for (const r of list) {
     const hl = (highlightId !== null && r._id === highlightId ? ' hl' : '');
     const tp = r.u ? ' pp-tuer' : '';
-    const snip = (highlightId != null ? r._id === highlightId : r === list[0]) ? rowSnippetPH(r) : '';
+    const snip = rowSnippetPH(r);
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
