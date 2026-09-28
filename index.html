@@ -17,7 +17,7 @@ header>*{pointer-events:auto;}
 #q{flex:1;min-width:110px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:8px 10px;font-size:15px;}
 #q::placeholder{color:#9ca3af;}
 #q:focus{outline:none;border-color:#93c5fd;background:rgba(255,255,255,.14);}
-#yrPick{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:none;border-radius:8px;color:#111827;font-weight:700;font-size:15px;cursor:pointer;min-height:44px;padding:8px 28px 8px 12px;}
+#yrPick{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:none;border-radius:8px;color:#111827;font-weight:700;font-size:15px;cursor:pointer;min-height:44px;padding:8px 28px 8px 12px;max-width:180px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 #yrPick option{color:#111827;}
 #shareBtn{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid #d1d5db;background:#fff;
   font-size:22px;line-height:1;color:#111827;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0;}
@@ -51,7 +51,7 @@ header>*{pointer-events:auto;}
 #resHead{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#374151;font-weight:600;position:sticky;top:0;background:#fff;z-index:1;}
 #resHead .sp{flex:1;}
 #resHead button{border:1px solid #d1d5db;background:#f9fafb;border-radius:8px;min-width:34px;min-height:34px;font-size:15px;cursor:pointer;color:#374151;line-height:1;}
-.pp{font-size:14px;line-height:1.45;min-width:180px;}
+.pp{font-size:14px;line-height:1.45;min-width:264px;}
 .pp-name{font-weight:700;font-size:15px;margin:0 0 2px;}
 .pp-occ{color:#4b5563;font-style:italic;margin:0 0 4px;}
 .pp-rescue{font-size:11px;color:#9f1239;font-style:italic;margin:2px 0 0;}
@@ -360,6 +360,8 @@ en: {
   viewInScan: "View in scan",
   suggestCorrection: "Suggest correction",
   recordDetails: "Record details",
+  recLoadFail: "Couldn't load the records for this pin.",
+  retry: "Try again",
   rescueLine: "Listed as {old} in the {year} directory.",
   followPerson: "Follow this person →",
   moreInPreview: "{n} more in preview",
@@ -458,6 +460,8 @@ de: {
   viewInScan: "Im Scan ansehen",
   suggestCorrection: "Korrektur vorschlagen",
   recordDetails: "Details zum Eintrag",
+  recLoadFail: "Die Einträge für diese Markierung konnten nicht geladen werden.",
+  retry: "Erneut versuchen",
   rescueLine: "Im Adressbuch {year} als {old} verzeichnet.",
   followPerson: "Dieser Person folgen →",
   moreInPreview: "{n} weitere in der Vorschau",
@@ -979,6 +983,7 @@ async function hydrateSnippets(root){
   }
 }
 
+let lastGroupF = null; // stashed for the popup retry button
 async function openGroupPopup(f, highlightId){
   document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
   const pop = new mapboxgl.Popup({offset: 14, maxWidth: '300px'})
@@ -996,7 +1001,15 @@ async function openGroupPopup(f, highlightId){
     if (r) r._id = id;
     return r;
   }))).filter(Boolean);
-  if (!recs.length) { pop.remove(); return; }
+  if (!recs.length) {
+    // Record shard failed to load (common on flaky mobile) — say so with a
+    // retry instead of flashing a spinner and vanishing.
+    lastGroupF = f;
+    pop.setHTML('<div class="pp"><div class="pp-addr">' + esc(t('recLoadFail')) + '</div>' +
+      '<div class="pp-act"><button class="pp-follow" onclick="openGroupPopup(lastGroupF, null)">' +
+      esc(t('retry')) + '</button></div></div>');
+    return;
+  }
   const shown = recs.filter(r => keepIdx.includes(qCode(r.m)));
   const list = (shown.length ? shown : recs).slice()
     .sort((a, b) => qCode(a.m) - qCode(b.m) || String(a.s).localeCompare(String(b.s)));
