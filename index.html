@@ -184,7 +184,7 @@ header>*{pointer-events:auto;}
     <select id="yrPick" aria-label="Year" data-i18n-aria="yearAria"></select>
   </div>
   <div class="hctl">
-    <button id="langBtn" aria-label="Auf Deutsch umstellen">DE</button>
+    <button id="langBtn" aria-label="Switch language / Sprache wechseln">🇺🇸</button>
     <button id="shareBtn" aria-label="Copy link to this view" data-i18n-aria="shareAria">&#8599;</button>
     <button id="infoBtn" aria-label="About, research and settings" data-i18n-aria="infoAria">&#9432;</button>
   </div>
@@ -287,7 +287,7 @@ en: {
   shareAria: "Copy link to this view",
   infoAria: "About, research and settings",
   showResultsAria: "Show search results",
-  langBtnAria: "Auf Deutsch umstellen",
+  langBtnAria: "Auf Englisch umstellen",
   copyLinkPrompt: "Copy this link:",
   bootStatic: "Loading 481,219 people at 58,601 addresses…",
   bootLoading: "Loading {year}…",
@@ -385,7 +385,7 @@ de: {
   shareAria: "Link zu dieser Ansicht kopieren",
   infoAria: "Über, Forschung und Einstellungen",
   showResultsAria: "Suchergebnisse anzeigen",
-  langBtnAria: "Switch to English",
+  langBtnAria: "Switch to German",
   copyLinkPrompt: "Diesen Link kopieren:",
   bootStatic: "481.219 Personen an 58.601 Adressen werden geladen…",
   bootLoading: "{year} wird geladen…",
@@ -500,7 +500,7 @@ function applyI18n(){
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-ph')); });
   document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria'))); });
   const lb = document.getElementById('langBtn');
-  if (lb) { lb.textContent = LANG === 'de' ? 'EN' : 'DE'; lb.setAttribute('aria-label', t('langBtnAria')); }
+  if (lb) { lb.textContent = LANG === 'de' ? '🇦🇹' : '🇺🇸'; lb.setAttribute('aria-label', t('langBtnAria')); }
   const lp = document.getElementById('langPick');
   if (lp) lp.value = LANG;
   const fp = document.getElementById('fwPlay');

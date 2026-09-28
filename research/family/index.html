@@ -67,7 +67,7 @@ Press play to animate the migration — family trails follow named people across
 Kleine Pfarrgasse 13's pin is interpolated along the street — the house was gone by 1940 and the modern registry has no #13.
 1942 Band 1 surname hits come from noisy Tesseract OCR and are unverified — check page images before research use.
 Person trails match by surname + given-name initial across years. Map: Mapbox. Work in progress; corrections welcome.</footer>
-<script>window.MAPBOX_TOKEN="pk.eyJ1IjoibW9zaGViZXJtYW5uIiwiYSI6ImNtdHc5a21odDA0aGMzNG9vNnF6Z3Z6cjAifQ.iO_N_QmWcIANN2aRrfXl_Q";</script>
+<script>window.MAPBOX_TOKEN="__MAPBOX_TOKEN__";</script>
 <script>
 'use strict';
 /* Family migration demo — Mapbox rebuild + migration animation prototype.
@@ -263,6 +263,24 @@ function bldgPinFeatures(y) {
     };
   });
 }
+// Dashed ring around buildings whose pin position is interpolated (Kleine
+// Pfarrgasse 13 — the house was gone by 1940, so the pin sits on the street
+// centerline). Circle-layer strokes can't dash, so the ring is a LineString loop.
+function interpRingFeatures() {
+  const feats = [];
+  for (const b of BKEYS) {
+    if (!b.interp) continue;
+    const R = 45, pts = []; // 45 m radius ring
+    for (let i = 0; i <= 40; i++) {
+      const th = (i / 40) * Math.PI * 2;
+      pts.push([b.lon + (R * Math.cos(th)) / (111320 * Math.cos(b.lat * Math.PI / 180)),
+                b.lat + (R * Math.sin(th)) / 110540]);
+    }
+    feats.push({ type: 'Feature', properties: { bkey: b.key },
+      geometry: { type: 'LineString', coordinates: pts } });
+  }
+  return feats;
+}
 // One dot per resident, laid out by layoutResidentDots (collision-free rings in
 // screen space, deterministic per building+zoom). Returns {dots, leaders}.
 function residentDotFeatures(y) {
@@ -300,9 +318,13 @@ function residentDotFeatures(y) {
 // ---- map sources & layers ----
 function addSourcesAndLayers() {
   const empty = { type: 'FeatureCollection', features: [] };
-  for (const s of ['bldg', 'trails', 'people', 'residents', 'band1', 'dotLeaders'])
+  for (const s of ['bldg', 'trails', 'people', 'residents', 'band1', 'dotLeaders', 'interpRings'])
     map.addSource(s, { type: 'geojson', data: empty });
 
+  map.addLayer({
+    id: 'interpRings', type: 'line', source: 'interpRings',
+    paint: { 'line-color': '#4b5563', 'line-width': 2.5, 'line-opacity': 0.85, 'line-dasharray': [6, 4] }
+  });
   map.addLayer({
     id: 'trailLines', type: 'line', source: 'trails',
     paint: { 'line-color': ['get', 'color'], 'line-width': 3, 'line-opacity': 0.8 }
@@ -475,16 +497,17 @@ function captionFor(y) {
   return `<b>${y}</b> · ` + bits.join(' &nbsp;·&nbsp; ');
 }
 function renderLegend() {
+  const ringSwatch = `<span><span style="display:inline-block;width:12px;height:12px;border:2px dashed #4b5563;border-radius:50%;margin-right:5px;vertical-align:-2px"></span>interpolated position</span>`;
   if (mode === 'trails') {
     $('legend').innerHTML =
       PEOPLE.map(p => `<span><span class="dot" style="background:${p.color}"></span>${esc(p.label)} <span class="yrs">${p.stops[0].year}–${p.stops[p.stops.length - 1].year}</span></span>`).join('') +
       `<span><span class="dot" style="background:#dc2626"></span>family present</span>` +
-      `<span><span class="dot" style="background:#9ca3af"></span>house absent</span>`;
+      `<span><span class="dot" style="background:#9ca3af"></span>house absent</span>` + ringSwatch;
   } else {
     $('legend').innerHTML =
       `<span><span class="dot" style="background:#dc2626"></span>family resident</span>` +
       `<span><span class="dot" style="background:#64748b"></span>other resident</span>` +
-      `<span><span class="dot" style="background:#9ca3af"></span>house absent</span>`;
+      `<span><span class="dot" style="background:#9ca3af"></span>house absent</span>` + ringSwatch;
   }
 }
 function buildYearButtons() {
@@ -548,6 +571,7 @@ map.on('load', async () => {
   await loadAll();
   if (!YEARS.length) { $('caption').textContent = 'No yearly data found.'; return; }
   buildPeople(); buildBuildings();
+  setData('interpRings', interpRingFeatures());
   buildYearButtons(); renderLegend();
   setYear(0, false);
   const b = new mapboxgl.LngLatBounds();

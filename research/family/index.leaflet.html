@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Family addresses 1938–1942 — Lehmann's Vienna</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+body{font-family:-apple-system,Helvetica,Arial,sans-serif;margin:0;background:#f8fafc;color:#111827}
+header{background:#111827;color:#f9fafb;padding:20px 18px}
+header h1{margin:0 0 6px;font-size:21px}
+header p{margin:4px 0;max-width:760px;color:#d1d5db;font-size:13.5px;line-height:1.55}
+header a{color:#93c5fd}
+#controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 14px;background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:500}
+.yr{flex:1 1 0;min-width:64px;padding:12px 0;font-size:16px;font-weight:600;border:2px solid #d1d5db;border-radius:10px;background:#fff;color:#111827;cursor:pointer}
+.yr.active{background:#111827;color:#fff;border-color:#111827}
+#band1wrap{display:none;align-items:center;gap:8px;font-size:14px;padding:6px 4px;width:100%}
+#band1wrap.show{display:flex}
+#band1wrap input{width:22px;height:22px}
+#map{height:68vh;min-height:420px;width:100%}
+#legend{padding:10px 14px;font-size:12.5px;color:#4b5563;background:#fff;border-top:1px solid #e5e7eb;display:flex;flex-wrap:wrap;gap:6px 16px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+#summary{padding:10px 14px;font-size:13.5px;background:#fefce8;border-top:1px solid #fde68a;color:#713f12}
+footer{padding:14px;color:#6b7280;font-size:12px;line-height:1.6;max-width:760px}
+.leaflet-popup-content{font-size:13.5px;line-height:1.5;max-height:46vh;overflow:auto}
+.leaflet-popup-content h3{margin:0 0 4px;font-size:15px}
+.leaflet-popup-content .meta{color:#4b5563;font-size:12px;margin:2px 0}
+.leaflet-popup-content ul{margin:6px 0;padding-left:18px}
+.fam{font-weight:700;color:#b91c1c}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:20px;background:#eef2ff;color:#3730a3;margin:2px 4px 2px 0}
+.badge.warn{background:#fef3c7;color:#92400e}
+.badge.absent{background:#f3f4f6;color:#4b5563}
+</style></head><body>
+<header><h1>Family addresses, 1938–1942</h1>
+<p>Year-by-year view of three family addresses from Lehmann's <i>Wiener Adressbuch</i>, Band 2 (Häuserverzeichnis):
+<b>Wallensteinstraße 62</b> (XX., Bermann) · <b>Rueppgasse 18</b> (II., Biller) · <b>Kleine Pfarrgasse 13</b> (II.).
+Every resident listed at each address, each year — family surnames highlighted. Data extracted from the directory scans; see notes in each popup.</p>
+<p><a href="../../">← back to the map</a> · <a href="../">research index</a></p></header>
+<div id="controls" role="group" aria-label="Year picker">
+<button class="yr" data-y="1938">1938</button><button class="yr" data-y="1939">1939</button><button class="yr" data-y="1940">1940</button><button class="yr" data-y="1941">1941</button><button class="yr" data-y="1942">1942</button>
+<label id="band1wrap"><input type="checkbox" id="band1"> 1942 Band 1 surname hits <span style="color:#6b7280">(OCR-unverified, separate layer)</span></label>
+</div>
+<div id="map"></div>
+<div id="summary"></div>
+<div id="legend">
+<span><span class="dot" style="background:#2563eb"></span>address listed</span>
+<span><span class="dot" style="background:#dc2626"></span>family surname present</span>
+<span><span class="dot" style="background:#9ca3af"></span>house absent that year</span>
+<span><span class="dot" style="background:#7c3aed"></span>1942 Band 1 hit (unverified)</span>
+<span>◌ dashed ring = interpolated position</span>
+</div>
+<footer>Sources: Lehmann Band 2 IV. Teil scans via Wienbibliothek (Public Domain Mark 1.0);
+resident lists transcribed from the scans (1938–39, 1941–42) and the 1940 volume.
+Kleine Pfarrgasse 13's pin is interpolated along the street — the house was gone by 1940 and the modern registry has no #13.
+1942 Band 1 surname hits come from noisy Tesseract OCR and are unverified — check page images before research use.
+Work in progress; corrections welcome.</footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const FAM = /^(Bermann|Berman|Biller|Korn|Goldberg)\b/i;
+const map = L.map('map').setView([48.224, 16.381], 13);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+  {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>', maxZoom: 19}).addTo(map);
+
+let layers = {main: L.layerGroup().addTo(map), band1: L.layerGroup()};
+const cache = {};
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function popup(p){
+  let h = `<h3>${esc(p.street)} ${esc(p.house)} <span style="color:#6b7280">(${esc(p.district)})</span> · ${p.year}</h3>`;
+  if (p.status === 'absent'){
+    h += `<p><span class="badge absent">house absent this year</span></p><p class="meta">${esc(p.note||'')}</p>`;
+  } else {
+    if (p.house_line) h += `<p class="meta">${esc(p.house_line)}</p>`;
+    if (p.owner) h += `<p class="meta">Owner: ${esc(p.owner)}</p>`;
+    if (p.caretaker) h += `<p class="meta">Caretaker: ${esc(p.caretaker)}</p>`;
+    if (p.note) h += `<p class="meta">Note: ${esc(p.note)}</p>`;
+    h += '<ul>' + p.residents.map(r=>{
+      const fam = FAM.test(r.split(',')[0].trim());
+      return `<li${fam?' class="fam"':''}>${esc(r)}</li>`;
+    }).join('') + '</ul>';
+  }
+  if (p.geo_quality !== 'exact') h += `<span class="badge warn">position ${esc(p.geo_quality)}</span>`;
+  if (p.printed_page) h += `<p class="meta">Band 2, printed p. ${esc(p.printed_page)}${p.scan?`, scan ${esc(p.scan)}`:''}</p>`;
+  return h;
+}
+
+function markerFor(f){
+  const p = f.properties, [lon, lat] = f.geometry.coordinates;
+  let color = '#2563eb';
+  if (p.status === 'absent') color = '#9ca3af';
+  else if ((p.surname_hits||[]).length) color = '#dc2626';
+  const m = L.circleMarker([lat, lon], {radius: 11, color, weight: 3,
+    fillColor: color, fillOpacity: p.status==='absent'?0.25:0.55,
+    dashArray: p.geo_quality==='exact' ? null : '5 4'});
+  m.bindPopup(popup(p));
+  return m;
+}
+
+function summaryFor(year, feats){
+  const bits = feats.map(f=>{
+    const p = f.properties;
+    if (p.status === 'absent') return `${p.street} ${p.house}: gone`;
+    const hits = (p.surname_hits||[]).map(s=>s.split(',')[0]).join(', ');
+    return `${p.street} ${p.house}: ${p.residents.length} residents${hits?` — <b>${esc(hits)}</b>`:''}`;
+  });
+  document.getElementById('summary').innerHTML = `<b>${year}:</b> ` + bits.join(' · ');
+}
+
+const GEO = {"1938":{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[16.378253,48.219491]},"properties":{"year":1938,"street":"Kleine Pfarrgasse","house":"13","district":"II","status":"listed","residents":["Drobi\u00df R., Priv.","Hillmann J., Porzellanw. T.","Jeruchem Ch., Lebensm. T.","Seidenwurm M., Musiker"],"surname_hits":[],"owner":"E. A\u00dfelrad Dora u. Mitb.","caretaker":null,"house_line":"13 EZ 1308","note":null,"printed_page":107,"scan":"p596","geo_quality":"interpolated","geo_source":"interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.386740788219317,48.221540471996015]},"properties":{"year":1938,"street":"Rueppgasse","house":"18","district":"II","status":"listed","residents":["Auerbach J., Arbt.","Auerbach O., Schneider","B\u00e4cker S., Spengler","Biller C., Private","Biller B., Private","Buchwalter J., Dienstd.","Flachsiel R., Pensionist","Fockner M., Bedien.","Gober J., Gesch.Inh.","Heilgoff J., Private","Klein E., Private","Kowarz J., K\u00fcrschnermeister","Lehninger H., N\u00e4herin","Maya H., N\u00e4herin","Mayer K., Gesch.Inhb.","Meier Ch., Schuhm.","Mund R., Rentnerin","Spie\u00df F., H\u00fchneraugenoperateur","Sternberg J., Lebensm. T.","Thaler E., Kellner","Werner F., Private"],"surname_hits":["Biller C., Private","Biller B., Private"],"owner":"E. Mechtler J. (Ladendorf) u. Mitbes.","caretaker":"H. Urbany Marie","house_line":"18 EZ 1625","note":null,"printed_page":116,"scan":"p605","geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.375875193347547,48.231017270200134]},"properties":{"year":1938,"street":"Wallensteinstra\u00dfe","house":"62","district":"XX","status":"listed","residents":["Bermann J., Kfm.","Brodil A., Agent","Brodil B., Private","Czinglar Beatrix, Lebensm.","Eichner H., Gesch.Inh.","Fastl K., Schuhm.","Filch Th., Gesch.Inh.","Gr\u00fcn Ph., B\u00e4cker","Hackel M. u. M., Private","Holub R., Seifenfabr. T.","Hofst\u00e4tter Hermine, Hutbinderin","Jahoda A., Ww.","Jedlicka J., Agent","Jitka J., Kleidermach.","Jungermann S., Ges.Inhaber","Kaiser H., H\u00f6lsvertr. T.","Kelser F., Tischler","Kornenda F., Schlosser","Koza Marie, Pens.","Langhammer A., Private","Lapka J., Installateur","Luz C., Rundschleifer","P\u00f6chlaner R., Gesch\u00e4ftsinhaber","Roth J., Vertreter","Sanizer K., Monteur","Schleifer J., Markteur","Schl\u00e4ger R., Bautechn.","Schweig F., Private","Stadlinger J., Silberarb.","Tennenbaum J., Handelsag.","Wallert I., Fabrikder T","Wock L., Private","Waringer R., Private","Weber J., Verk\u00e4uferin","Weih S., H\u00f6lsangest.","Wei\u00df Stephanie, Witwe","Wolrowiec C., Mechaniker","Zejda M., Viktualienh\u00e4ndlerin"],"surname_hits":["Bermann J., Kfm."],"owner":"E. Tuchfeld Minna","caretaker":"H. Philipp Marie","house_line":"62 EZ 2352","note":null,"printed_page":1268,"scan":"p1757","geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}}]},"1939":{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[16.378253,48.219491]},"properties":{"year":1939,"street":"Kleine Pfarrgasse","house":"13","district":"II","status":"listed","residents":["Altmann J., Porzellanwaren T.","Jeruchem Ch., Lebensm.T.","Seidenwurm G., Private"],"surname_hits":[],"owner":"E. Aschkenas Dora u. Mitb.","caretaker":"H. Strau\u00df C\u00e4cilie","house_line":"13 EZ 1308","note":"Exists in 1939 (gone by 1940: '13 besteht nicht')","printed_page":95,"scan":500,"geo_quality":"interpolated","geo_source":"interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.386740788219317,48.221540471996015]},"properties":{"year":1939,"street":"Rueppgasse","house":"18","district":"II","status":"listed","residents":["B\u00e4cker S., Schneider","Biller S., Spengler","Biller L., Private","Buchwalter R., Dienstm.","Cypri\u00df I., Tischler","Drobil K., Bediener","Fodrek M., Gesch.Inh.","Gober J., Gesch.Inh.","Helsgott F., Vertreter","Klein C., Private","Kowarik L., K\u00fcrschnermstr.","Lehninger H., N\u00e4herin","Maza R., Harbrin.","Mayer K., Gsch.Inhbrin.","Mayrhofer O., Maler","Mund M., Rentnerin","Scherer Ch., Schuhmach.","Scherberg L., Lebensm. T.","Thaler C., Kellner","Werner F., Private"],"surname_hits":["Biller S., Spengler","Biller L., Private"],"owner":"E. Mechtler I. (Ladenbrunn bei M\u00f6dling)","caretaker":"H. Urbany Marie","house_line":"18 EZ 1625","note":null,"printed_page":104,"scan":509,"geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.375875193347547,48.231017270200134]},"properties":{"year":1939,"street":"Wallensteinstra\u00dfe","house":"62","district":"XX","status":"listed","residents":["Bermann J., Kfm.","Brodil A., Agent","Brodil B., Private","Tzinglober Beatrix, Lebensm.","Eichner H., Gesch.Inh.","Fail R., Schuhmmstr.","Flick Ch., Gesch.Inh.","Gr\u00fcn Ph., B\u00e4cker","Gutmann M., Private","Heide Malvine, Assist.","Hoffst\u00e4tter Hermine, Buchbinderin","Jahoda A., Bw.","Jedlicka J., Agent","Jirka J., Kleidermach.","Jungermann S., Gesch. Inhaber","K\u00e4mpf E., Hdlsvertr. T.","Kessel J., Tischler","Komenda F., Schlosser","Koza Marie, Pens.","Langhammer A., Private","Laska J., Installateur","Lux E., Kunstschleifer","L\u00f6schauer St., Gesch\u00e4ftsinhaberin","Roth J., Vertreter","Sanizer R., Monteur","Schickler J., Mark\u00f6r","Sch\u00fc\u00dfler W., Boutechnik.","Schweik F., Private","Stadlinger J., Silberarb.","Tennenbaum J., Kfm.","Ungar M., Fahrr\u00e4der T.","Wod S., Private","Waringer K., Private","Weber R., BernidlerIn","Wei\u00df E., Hdlsangest.","Wei\u00df Stephanie, Wirkwaren T.","Wolowiec E., Mechaniker","Zejda M., Viktualienh\u00e4ndlerin"],"surname_hits":["Bermann J., Kfm."],"owner":"E. Link J. (XVIII. Schopenhauerstr. 67) u. Mitbes.","caretaker":"H. Philipp Marie","house_line":"62 EZ 2352","note":"Bermann J., Kfm. PRESENT in 1939 (gone by 1940). Index reads 'Wallensteinstra\u00dfe ... 126' = abbreviated 1236 (street starts printed 1236, #62 on 1238).","printed_page":1238,"scan":1643,"geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}}]},"1940":{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[16.378253,48.219491]},"properties":{"year":1940,"street":"Kleine Pfarrgasse","house":"13","district":"II","status":"absent","residents":[],"surname_hits":[],"owner":null,"caretaker":null,"house_line":null,"note":"13 besteht nicht \u2014 house number 13 does not exist in 1940 (existed in 1938 as EZ 1308)","printed_page":92,"scan":539,"geo_quality":"interpolated","geo_source":"interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.386740788219317,48.221540471996015]},"properties":{"year":1940,"street":"Rueppgasse","house":"18","district":"II","status":"listed","residents":["B\u00e4cker Ismael, Schneidermeister","Biller T., Private","Buchwalter R., Dienstm.","Chpris A., Tischler","Fischl R., Pensionist","Frischer J., Kleidermach.","Groner B., Bmtn.","Hefsgott R. Sara, Priv.","Klein E., Private","Leininger H., N\u00e4herin","Maza R., Hdrbrin,","Mayer K., GeschInhbrin.","Mayrhofer O., Maler","Nowak M., Bedienerin","Steinhauser H., Ginm.T.","Thaler E., Kellner","Werner F., Private"],"surname_hits":["Biller T., Private"],"owner":"E. Mechsler R. u. Mitbes.","caretaker":"H. Urbany Marie","house_line":"18 EZ 1625","note":null,"printed_page":101,"scan":548,"geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.375875193347547,48.231017270200134]},"properties":{"year":1940,"street":"Wallensteinstra\u00dfe","house":"62","district":"XX","status":"listed","residents":["Balog E., Verk\u00e4uf.","Bauer M., zahn\u00e4rztl. Assistentin","Bergmann J., Bctelt.","Probil A., Agent","Probil B., Private","Szpni! A., Fr\u00e4ser","Sztinglober Beatriz, Lebensm.","Haitl K., Schuhmmstr.","Halouzek K., Kontoristin","Hofst\u00e4tter Hermine, Buchbinderin","Jaboda A., Ww.","Jedlika J., Agent","Jirka I., Kleidermach.","Kastner F., Tischler","Knopp J., Spengler","Komenda R., Schlosser","Roza H., Hrb.","Roza Marie, Pens.","Kritschka B., B\u00e4cker","Lapfa F., Installateur","Llsy F., Hrb.","Lutz E., Rundschleifer","Matas R., Btrtr.","Nester R., Pensionistin","Nitsche G., GeschInh.","Resak A., Feuerwehrspr.","Robtek J., Gasmonteur","Rosner R., Fleischhau.","Santner K., Monteur","Sch\u00fc\u00dfler W., Bautechnik.","Schweit F., Private","Sola J., SpengIermstr.","Solan I., Elektromont.","Ungar M. Israel, Priv.","Vot J., Private","Winkelbauer M., Kellnerin","Wolowiec E., Mechaniker"],"surname_hits":[],"owner":"E. Lock J. u. Mitbes.","caretaker":"H. Philipp Marie","house_line":"62 EZ 2350","note":"NO Bermann at #62 in 1940 (present in 1938 as Bermann J., Kfm.); owner changed Tuchfeld Minna -> Lock J.; EZ 2352 -> 2350","printed_page":1221,"scan":1668,"geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}}]},"1941":{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[16.378253,48.219491]},"properties":{"year":1941,"street":"Kleine Pfarrgasse","house":"13","district":"II","status":"absent","residents":[],"surname_hits":[],"owner":null,"caretaker":null,"house_line":null,"note":"Street NOT in 1941 street index (index scan 476, P-section checked: Pe- to Pest- to Pet-, no Pfa-). House 13 therefore not listed. Cf. 1940 '13 besteht nicht'; street relisted in 1942.","printed_page":null,"scan":476,"geo_quality":"interpolated","geo_source":"interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.386740788219317,48.221540471996015]},"properties":{"year":1941,"street":"Rueppgasse","house":"18","district":"II","status":"listed","residents":["Brunner F HArb","Fadrek M Private","Fritscher J Kleidermach","Gaida F HArb","Gr\u00f6ger B Arb","Maxa F HArbtrn","Mayer K GeschInhbrin","Mayrhofer O Maler","Sajdik A HArb","Steinhauser G Zimmerm","Wambula H Schlosser","Werner F Private"],"surname_hits":[],"owner":"E. ungenannt","caretaker":"H. Urbany Marie","house_line":"18 EZ 1625","note":null,"printed_page":804,"scan":1288,"geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.375875193347547,48.231017270200134]},"properties":{"year":1941,"street":"Wallensteinstra\u00dfe","house":"62","district":"XX","status":"listed","residents":["Balog L Verk\u00e4uf","Baugr M zahn\u00e4rztl","Assistentin","Berger R BetrLeit","Brodil A Agent","\u010cepnik A Fr\u00e4ser","Ezinglober Beatrix","Lebensm","D\u00fcchler F Maurer","Faitl K Arb","Gruber M Private","Jedlicka J Agent","Jirka J Kleidermach","Knapp J Spengler","Komenda F Auto=","mechanik","Langhammer A Frau","Lux E Rundschleifer","Ratyl J Vertr","Meier F Pensionistin","Redak T Feuerschutzpol","Reitter F Galvaniseurin","Sanitzer R Monteur","Sch\u00fc\u00dfler W Bautechnik","Schweiz F Private","Solau J Elektromont","Bock L Private","Winklbauer M Kellnerin","Wolowiec E Mechaniker"],"surname_hits":[],"owner":"E. Link J Kaufm","caretaker":"H. Jahoda Antonia","house_line":"62 EZ 2352","note":"No Bermann listed; owner E. Link J. Kaufm (same as 1942)","printed_page":1018,"scan":1502,"geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}}]},"1942":{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[16.378253,48.219491]},"properties":{"year":1942,"street":"Kleine Pfarrgasse","house":"13","district":"II","status":"absent","residents":[],"surname_hits":[],"owner":null,"caretaker":null,"house_line":null,"note":"Street listed but only houses 1, 3, 5, 7, 9 present (EZ 1297-1304). House 13 does not exist in 1942.","printed_page":698,"scan":1169,"geo_quality":"interpolated","geo_source":"interpolated along OGD street centerline; modern registry has no #13 (house gone by 1940)"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.386740788219317,48.221540471996015]},"properties":{"year":1942,"street":"Rueppgasse","house":"18","district":"II","status":"listed","residents":["Augustin J Rentner","Cypris H WehrmAngeh","Jadrek M Private","Flachsel R Pens","Forgovits J Milch","Galda J HArb","Maha F HArbtin","Mayer K GeschInhbrin","Mayerhofer O Maler","Mund M Angestellte","Steinhauser G Zimmerm","Wampula H Schlosser","Werner F Private"],"surname_hits":[],"owner":"E. Mechtler J (Laden-dorf 362)","caretaker":null,"house_line":"18 EZ 1625","note":"No caretaker (H.) line listed; no Biller","printed_page":784,"scan":1255,"geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.375875193347547,48.231017270200134]},"properties":{"year":1942,"street":"Wallensteinstra\u00dfe","house":"62","district":"XX","status":"listed","residents":["Amberger L Hdlsmt","Balog L Verk\u00e4uf","Bauer H Stra\u00dfbBedienst","Berger R BetrLeit","Brodil A Priv","Christl K Priv","Czinglober J GeschInh","Czinglober Beatriz","Lebensm","Faitl K Arb","Gruber M Private","Jedlicka M Telephonistin","Jirka J Kleidermach","Knapp J Spengler","Komenda F Autos","mechanik","Koza L Metallarb","Koza M Private","Krischka B B\u00e4cker","Langhammer A Frau","Lug E Vorarb","Matok J Vertr","Meier F Pensionistin","Metz M Frau","Nitsche G GeschInh T.","Pat M Verk\u00e4uferin","Redak F Feuerschutzpol","Reitter F Galvaniseurin","Reiter K HArb","Rohrer H Fleischer","Sanitzer K Monteur","Sch\u00fc\u00dfler W Bautechnik","Schweiz F Private","Seidl H Postangest","Solan J Schlosser","Stadlmaier R Frau","Vock L Private","Winklbauer M Kellnerin","Wolowicz E Mechaniker"],"surname_hits":[],"owner":"E. Link J. Kaufm","caretaker":"H. Jahoda Antonia","house_line":"62 EZ 2352","note":"No Bermann listed. Transcript crop bled into house 64/Wallgasse; only house-62 lines retained here.","printed_page":994,"scan":1465,"geo_quality":"exact","geo_source":"geo1942_matched.json (1938-derived geocode tier), exact house-number match"}}]}};
+const BAND1 = {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[16.304181273704568,48.20113545062008]},"properties":{"year":1942,"layer":"band1_surnames","label":"Bermann, Pens.","raw":"Bermann, Pens., XIV. Spallartg. 26.","geo_quality":"exact","confidence":"medium","note":"geo1942_matched exact house match; OCR-unverified"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.374621513350437,48.18256698148128]},"properties":{"year":1942,"layer":"band1_surnames","label":"Goldberg Alois, G\u00e4rtner","raw":"Goldberg Alois, G\u00e4rtner, X. Favoritenstr. 84.","geo_quality":"exact","confidence":"medium","note":"geo1942_matched exact house match; OCR-unverified"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.314524,48.192918]},"properties":{"year":1942,"layer":"band1_surnames","label":"Biller, Ambros (?)","raw":"= Ambros, Biller, XIV. Linzer Str. 21.","geo_quality":"interpolated","confidence":"low","note":"parse uncertain (Ambros Biller vs firm); position interpolated between Linzer Str. 18 and 49; OCR-unverified"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[16.374076267600067,48.17754541390556]},"properties":{"year":1942,"layer":"band1_surnames","label":"Bermann, Kellner","raw":"Bermann, Kellner, X. Lagendurger Str. 49","geo_quality":"approximate","confidence":"low","note":"\"Lagendurger\" read as Laxenburger Str.; pinned to Laxenburger Str. 49-57 range centroid; OCR-unverified"}}]};
+async function loadYear(year){
+  layers.main.clearLayers(); layers.band1.clearLayers();
+  document.getElementById('band1').checked = false;
+  document.getElementById('band1wrap').classList.toggle('show', year==='1942');
+  if (!cache[year]){
+    cache[year] = GEO[year];
+  }
+  const feats = cache[year].features;
+  feats.forEach(f=>markerFor(f).addTo(layers.main));
+  summaryFor(year, feats);
+  const b = L.latLngBounds(feats.map(f=>{const [lo,la]=f.geometry.coordinates;return [la,lo];}));
+  map.fitBounds(b.pad(0.35));
+  document.querySelectorAll('.yr').forEach(el=>el.classList.toggle('active', el.dataset.y===String(year)));
+}
+
+document.getElementById('band1').addEventListener('change', async e=>{
+  layers.band1.clearLayers();
+  if (!e.target.checked) return;
+  const gj = BAND1;
+  gj.features.forEach(f=>{
+    const p = f.properties, [lon, lat] = f.geometry.coordinates;
+    const m = L.circleMarker([lat, lon], {radius: 9, color:'#7c3aed', weight: 3, fillColor:'#7c3aed', fillOpacity:0.5,
+      dashArray: p.geo_quality==='exact'?null:'5 4'});
+    m.bindPopup(`<h3>${esc(p.label)}</h3><p class="meta">${esc(p.raw)}</p>`+
+      `<p><span class="badge warn">OCR-unverified</span>`+
+      (p.geo_quality!=='exact'?`<span class="badge warn">${esc(p.geo_quality)} position</span>`:'')+`</p>`+
+      `<p class="meta">${esc(p.note)}</p><p class="meta">OCR confidence: ${esc(p.confidence)}</p>`);
+    m.addTo(layers.band1);
+  });
+  layers.band1.addTo(map);
+});
+
+document.querySelectorAll('.yr').forEach(el=>el.addEventListener('click', ()=>loadYear(el.dataset.y)));
+loadYear('1938');
+</script></body></html>
