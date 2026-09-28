@@ -47,7 +47,7 @@ header>*{pointer-events:auto;}
 #results .rrow:hover{background:#f9fafb;}
 #results .rrow.r-hl{background:#dbeafe;}
 #results .r-sub{color:#6b7280;font-size:12px;}
-#resPill{position:absolute;top:56px;left:10px;z-index:6;background:#1f2937;color:#fff;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none;align-items:center;gap:4px;padding:6px 6px 6px 14px;font-size:14px;cursor:pointer;max-width:calc(100vw - 20px);white-space:nowrap;}
+#resPill{position:static;flex:0 0 auto;background:#1f2937;color:#fff;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25);display:none;align-items:center;gap:4px;padding:5px 5px 5px 12px;font-size:13px;cursor:pointer;white-space:nowrap;}
 #resPill .rpx{border:none;background:rgba(255,255,255,.16);color:#fff;border-radius:999px;min-width:30px;min-height:30px;font-size:13px;cursor:pointer;line-height:1;}
 #resHead{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;color:#374151;font-weight:600;position:sticky;top:0;background:#fff;z-index:1;}
 #resHead .sp{flex:1;}
@@ -144,6 +144,9 @@ header>*{pointer-events:auto;}
   cursor:pointer;min-height:42px;color:#111827;}
 #results #pager button:disabled{opacity:.35;cursor:default;}
 #results #pager .pginfo{font-size:12px;color:#6b7280;text-align:center;}
+#results #pagejump{display:flex;align-items:center;justify-content:center;gap:6px;padding:0 10px 10px;font-size:13px;color:#6b7280;}
+#results #pagejump input{width:64px;border:1px solid #d1d5db;border-radius:8px;padding:7px 8px;font-size:14px;text-align:center;font-family:inherit;}
+#results #pagejump button{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:7px 12px;font-size:14px;cursor:pointer;font-family:inherit;}
 /* ---- Follow this person: cross-year timeline --------------------------- */
 .pp-follow{display:inline-block;margin:0;padding:8px 12px;min-height:38px;border:1px solid #2563eb;
   background:#eff6ff;color:#1d4ed8;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
@@ -158,6 +161,10 @@ header>*{pointer-events:auto;}
 #fwPlay,#fwClose{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1px solid #d1d5db;background:#fff;
   font-size:17px;cursor:pointer;color:#111827;padding:0;}
 #fwPlay{background:#111827;color:#fff;border-color:#111827;}
+.fw-dot{width:22px;height:22px;border-radius:50%;background:#e11d48;border:3px solid #fff;
+  box-shadow:0 2px 10px rgba(0,0,0,.4);animation:fwPulse 1.6s ease-out infinite;}
+@keyframes fwPulse{0%{box-shadow:0 0 0 0 rgba(225,29,72,.55);}70%{box-shadow:0 0 0 16px rgba(225,29,72,0);}100%{box-shadow:0 0 0 0 rgba(225,29,72,0);}}
+.mapboxgl-popup.fw-arrive .mapboxgl-popup-content{font-size:13px;line-height:1.35;text-align:center;}
 .fw-status{display:flex;align-items:center;gap:8px;color:#6b7280;font-size:13px;margin:8px 2px 0;}
 .fw-years{display:flex;gap:6px;margin-top:8px;}
 .fw-cell{flex:1;min-width:0;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;padding:8px 4px;
@@ -186,6 +193,7 @@ header>*{pointer-events:auto;}
 <header>
   <div class="brand">
     <input id="q" type="search" placeholder="/ to search" autocomplete="off" data-i18n-ph="searchPh">
+    <div id="resPill" role="button" aria-label="Show search results" data-i18n-aria="showResultsAria"></div>
     <span class="brand-name">Lehmann <small data-i18n="brandVienna">· Vienna</small></span>
     <select id="yrPick" aria-label="Year" data-i18n-aria="yearAria"></select>
   </div>
@@ -196,7 +204,6 @@ header>*{pointer-events:auto;}
   </div>
 </header>
 <div id="results"></div>
-<div id="resPill" role="button" aria-label="Show search results" data-i18n-aria="showResultsAria"></div>
 <div id="followPanel" style="display:none" aria-hidden="true">
   <div class="fw-head">
     <div class="fw-title"><div class="fw-name"></div><div class="fw-sub"></div></div>
@@ -210,9 +217,9 @@ header>*{pointer-events:auto;}
 <div id="aboutOverlay"><div id="aboutBox">
 <button id="aboutClose" data-i18n="aboutClose">Close</button>
 <div class="tabs" role="tablist">
+<button class="tab" data-tab="settings" role="tab" data-i18n="tabSettings">Settings</button>
 <button class="tab active" data-tab="about" role="tab" data-i18n="tabAbout">About</button>
 <button class="tab" data-tab="research" role="tab" data-i18n="tabResearch">Research</button>
-<button class="tab" data-tab="settings" role="tab" data-i18n="tabSettings">Settings</button>
 <button class="tab" data-tab="license" role="tab" data-i18n="tabLicense">Licensing</button>
 </div>
 <div class="tabpage active" id="tab-about">
@@ -372,6 +379,7 @@ en: {
   chipAll: "All", chipNames: "Names", chipStreets: "Streets", chipOccs: "Occupations",
   prevPage: "‹ Prev", nextPage: "Next ›",
   pageInfo: "page {p} of {n}",
+  jumpPage: "Page", goBtn: "Go",
   minimizeAria: "Minimize results", dismissAria: "Dismiss results",
   b2alert: "Band 2 preview data is not built yet — check back after the next processing batch.",
   b2label: "Unreviewed OCR preview · Band 2",
@@ -472,6 +480,7 @@ de: {
   chipAll: "Alle", chipNames: "Namen", chipStreets: "Straßen", chipOccs: "Berufe",
   prevPage: "‹ Zurück", nextPage: "Weiter ›",
   pageInfo: "Seite {p} von {n}",
+  jumpPage: "Seite", goBtn: "Los",
   minimizeAria: "Ergebnisse minimieren", dismissAria: "Ergebnisse schließen",
   b2alert: "Die Band-2-Vorschau ist noch nicht aufbereitet — bitte schauen Sie nach dem nächsten Verarbeitungslauf wieder vorbei.",
   b2label: "Ungeprüfte OCR-Vorschau · Band 2",
@@ -649,6 +658,7 @@ function followBtn(r){
 }
 let searchIdx = null;
 let searchFields = null; // folded token -> field bitmask (1 name, 2 street, 4 occupation)
+let nameRank = null; // record id -> name-sort rank (surname, then given name)
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
 const foldUmlaut = s => s.replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's').replace(/(^|[^a-z])zosef/g, '$1josef'); // systematic OCR misread: Zosef = Josef (also Zosefa, Zosefine)
 // Given-name spelling variants: the book's spelling isn't always the family's
@@ -696,7 +706,7 @@ async function loadYearData(){
   for (const f of allFeatures) for (const id of f.properties.m) featByRec.set(id, f);
   for (const k in shardCache) delete shardCache[k];
   for (const k in shardFlight) delete shardFlight[k];
-  searchIdx = null; searchKeys = null; searchFields = null;
+  searchIdx = null; searchKeys = null; searchFields = null; nameRank = null;
   document.title = t('docTitle', {year: YC().label});
 }
 
@@ -1084,8 +1094,6 @@ function minimizeResults(){
   x.className = 'rpx'; x.textContent = '\u2715'; x.setAttribute('aria-label', 'Dismiss results');
   x.addEventListener('click', ev => { ev.stopPropagation(); dismissResults(); });
   pill.appendChild(label); pill.appendChild(x);
-  const h = document.querySelector('header');
-  pill.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
   pill.style.display = 'flex';
 }
 // Position the results sheet under the header and show it. On a fresh open
@@ -1214,6 +1222,28 @@ async function renderResPage(seq){
   next.addEventListener('click', ev => { ev.stopPropagation(); if (resPage < pages - 1) { resPage++; renderResPage(seq); } });
   pg.appendChild(prev); pg.appendChild(info); pg.appendChild(next);
   box.appendChild(pg);
+  // page jump
+  const pj = document.createElement('div');
+  pj.id = 'pagejump';
+  const jl = document.createElement('label');
+  jl.textContent = t('jumpPage');
+  const ji = document.createElement('input');
+  ji.type = 'number'; ji.min = '1'; ji.max = String(pages); ji.value = String(resPage + 1);
+  ji.setAttribute('aria-label', t('jumpPage'));
+  const go = document.createElement('button');
+  go.textContent = t('goBtn');
+  const doJump = ev => {
+    ev.stopPropagation();
+    let n = parseInt(ji.value, 10);
+    if (isNaN(n)) return;
+    n = Math.max(1, Math.min(pages, n));
+    if (n - 1 !== resPage){ resPage = n - 1; renderResPage(seq); }
+  };
+  go.addEventListener('click', doJump);
+  ji.addEventListener('keydown', ev => { if (ev.key === 'Enter') doJump(ev); ev.stopPropagation(); });
+  ji.addEventListener('click', ev => ev.stopPropagation());
+  pj.appendChild(jl); pj.appendChild(ji); pj.appendChild(go);
+  box.appendChild(pj);
   showResultsBox();
 }
 $('q').addEventListener('focus', refreshSearchPlaceholder);
@@ -1231,11 +1261,12 @@ $('q').addEventListener('input', e => {
       box.innerHTML = '<div class="r-load"><div class="spin sm"></div></div>';
       showResultsBox();
       try {
-        const [ix, fl] = await Promise.all([
+        const [ix, fl, nr] = await Promise.all([
           fetch(YC().dir + '/search.idx.json').then(r => r.json()),
-          fetch(YC().dir + '/search.fields.json').then(r => r.json()).catch(() => null)
+          fetch(YC().dir + '/search.fields.json').then(r => r.json()).catch(() => null),
+          fetch(YC().dir + '/search.namerank.json').then(r => r.json()).catch(() => null)
         ]);
-        searchIdx = ix; searchFields = fl;
+        searchIdx = ix; searchFields = fl; nameRank = nr;
       }
       catch (err) { box.style.display = 'none'; return; }
     }
@@ -1271,9 +1302,14 @@ $('q').addEventListener('input', e => {
       }
     }
     if (seq !== searchSeq) return;
-    // sort: exact matches first, then by score, then stable by id
+    // sort: by surname, then given name (precomputed rank); fallback to score order
     resIds = Object.keys(hits).map(id => [+id, hits[id], exactHit[id] ? 1 : 0]);
-    resIds.sort((a, b) => (b[2] - a[2]) || (b[1] - a[1]) || (a[0] - b[0]));
+    if (nameRank) {
+      const rk = id => { const r = nameRank[id]; return (r == null) ? 2147483647 : r; };
+      resIds.sort((a, b) => rk(a[0]) - rk(b[0]));
+    } else {
+      resIds.sort((a, b) => (b[2] - a[2]) || (b[1] - a[1]) || (a[0] - b[0]));
+    }
     resPage = 0; resFilter = 'all'; resFieldHits = searchFields ? fHits : null;
     if (!resIds.length) {
       box.innerHTML = '<div class="rrow">' + t('noMatches') + '</div>';
@@ -1474,8 +1510,85 @@ function fwAddr(r){
 }
 function fwStopPlay(){
   fwPlaying = false;
+  fwClearAnim();
   const b = $('fwPlay');
   if (b){ b.innerHTML = '&#9654;'; b.setAttribute('aria-label', t('playTimeline')); }
+}
+// ---- animated journey ---------------------------------------------------
+// Continuous on-map animation of the person's path through the year stops:
+// a line through every stop, a dot that travels it, camera following along.
+let fwAnim = null;
+let fwAnimMarker = null;
+let fwArrivePop = null;
+function fwClearAnim(){
+  if (fwAnim && fwAnim.raf) cancelAnimationFrame(fwAnim.raf);
+  fwAnim = null;
+  if (fwAnimMarker){ fwAnimMarker.remove(); fwAnimMarker = null; }
+  if (fwArrivePop){ fwArrivePop.remove(); fwArrivePop = null; }
+  for (const l of ['fw-path-line', 'fw-stop-dots', 'fw-stop-labels']) if (map.getLayer(l)) map.removeLayer(l);
+  if (map.getSource('fw-path')) map.removeSource('fw-path');
+}
+function fwPathCoords(){
+  return fwStops.filter(s => s.rec && s.rec.lo && s.rec.la)
+    .map(s => ({year: s.year, addr: fwAddr(s.rec), lng: +s.rec.la, lat: +s.rec.lo}));
+}
+function fwLeg(p0, p1, ms){
+  return new Promise(res => {
+    const t0 = performance.now();
+    try { map.easeTo({center: [p1.lng, p1.lat], duration: ms, easing: t => t}); } catch (e) {}
+    function fr(now){
+      if (!fwPlaying) return res();
+      const t = Math.min(1, (now - t0) / ms);
+      const e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      if (fwAnimMarker) fwAnimMarker.setLngLat([p0.lng + (p1.lng - p0.lng) * e, p0.lat + (p1.lat - p0.lat) * e]);
+      if (t < 1) fwAnim.raf = requestAnimationFrame(fr); else res();
+    }
+    fwAnim.raf = requestAnimationFrame(fr);
+  });
+}
+async function fwAnimateJourney(pts){
+  fwClearAnim();
+  fwAnim = {raf: 0};
+  document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+  const fc = {type: 'FeatureCollection', features: [
+    {type: 'Feature', properties: {}, geometry: {type: 'LineString', coordinates: pts.map(p => [p.lng, p.lat])}},
+    ...pts.map(p => ({type: 'Feature', properties: {year: String(p.year)},
+      geometry: {type: 'Point', coordinates: [p.lng, p.lat]}}))
+  ]};
+  map.addSource('fw-path', {type: 'geojson', data: fc});
+  map.addLayer({id: 'fw-path-line', type: 'line', source: 'fw-path', filter: ['==', '$type', 'LineString'],
+    paint: {'line-color': '#e11d48', 'line-width': 3, 'line-opacity': 0.9}});
+  map.addLayer({id: 'fw-stop-dots', type: 'circle', source: 'fw-path', filter: ['==', '$type', 'Point'],
+    paint: {'circle-radius': 7, 'circle-color': '#e11d48', 'circle-stroke-color': '#fff', 'circle-stroke-width': 2.5}});
+  map.addLayer({id: 'fw-stop-labels', type: 'symbol', source: 'fw-path', filter: ['==', '$type', 'Point'],
+    layout: {'text-field': ['get', 'year'], 'text-size': 11, 'text-offset': [0, 1.5], 'text-allow-overlap': true},
+    paint: {'text-color': '#881337', 'text-halo-color': '#fff', 'text-halo-width': 1.5}});
+  const el = document.createElement('div');
+  el.className = 'fw-dot';
+  fwAnimMarker = new mapboxgl.Marker({element: el}).setLngLat([pts[0].lng, pts[0].lat]).addTo(map);
+  const b = new mapboxgl.LngLatBounds();
+  pts.forEach(p => b.extend([p.lng, p.lat]));
+  map.fitBounds(b, {padding: 70, duration: 900});
+  await new Promise(r => setTimeout(r, 950));
+  const LEG = 1600, PAUSE = 900;
+  for (let i = 0; i < pts.length; i++){
+    if (!fwPlaying) break;
+    const p = pts[i];
+    fwActiveYear = p.year;
+    renderFwCells();
+    if (fwArrivePop) fwArrivePop.remove();
+    fwArrivePop = new mapboxgl.Popup({closeButton: false, closeOnClick: false, className: 'fw-arrive', offset: 20})
+      .setLngLat([p.lng, p.lat])
+      .setHTML('<b>' + esc(String(p.year)) + '</b><br>' + esc(p.addr))
+      .addTo(map);
+    if (i < pts.length - 1){
+      for (let k = 0; k * 120 < PAUSE && fwPlaying; k++) await new Promise(r => setTimeout(r, 120));
+      if (!fwPlaying) break;
+      await fwLeg(p, pts[i + 1], LEG);
+    } else {
+      for (let k = 0; k < 8 && fwPlaying; k++) await new Promise(r => setTimeout(r, 300));
+    }
+  }
 }
 function fwCellHTML(st){
   let addr, conf, cls = '';
@@ -1600,10 +1713,15 @@ async function fwTogglePlay(){
   fwPlaying = true;
   $('fwPlay').innerHTML = '&#10074;&#10074;';
   $('fwPlay').setAttribute('aria-label', t('stopTimeline'));
-  for (const st of seq){
-    if (!fwPlaying) break;
-    await fwGoto(st);
-    for (let i = 0; i < 8 && fwPlaying; i++) await new Promise(r => setTimeout(r, 300));
+  const pts = fwPathCoords();
+  const moves = pts.filter((p, i, a) => i === 0 || p.lng !== a[i - 1].lng || p.lat !== a[i - 1].lat);
+  if (moves.length >= 2) await fwAnimateJourney(moves);
+  else {
+    for (const st of seq){
+      if (!fwPlaying) break;
+      await fwGoto(st);
+      for (let i = 0; i < 8 && fwPlaying; i++) await new Promise(r => setTimeout(r, 300));
+    }
   }
   fwStopPlay();
 }
