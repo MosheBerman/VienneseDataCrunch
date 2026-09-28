@@ -660,7 +660,7 @@ let searchIdx = null;
 let searchFields = null; // folded token -> field bitmask (1 name, 2 street, 4 occupation)
 let nameRank = null; // record id -> name-sort rank (surname, then given name)
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
-const foldUmlaut = s => s.replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's').replace(/(^|[^a-z])zosef/g, '$1josef'); // systematic OCR misread: Zosef = Josef (also Zosefa, Zosefine)
+const foldUmlaut = s => s.replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's').replace(/ck/g, 'k').replace(/c/g, 'k').replace(/y/g, 'j').replace(/^i/, 'j').replace(/(^|[^a-z])zosef/g, '$1josef'); // systematic OCR misread: Zosef = Josef (also Zosefa, Zosefine). Folds: long-s/ss/ß→s, ck/c→k (Carl/Karl, Jacob/Jakob), y→j and initial i→j (Yosef/Josef)
 // Given-name spelling variants: the book's spelling isn't always the family's
 // (e.g. Josef Bermann is listed as "Jossel Bermann" in 1938). Variant tokens
 // match at half weight so exact spellings still rank first.
@@ -1278,7 +1278,8 @@ $('q').addEventListener('input', e => {
     }
     if (!searchKeys) searchKeys = Object.keys(searchIdx).map(k => [k, foldUmlaut(k)]);
     const hits = {};
-    const exactHit = {};
+    const exactCnt = {}; // id -> number of query tokens matched exactly (full weight)
+    const ntok = toks.length;
     const fHits = {}; // id -> field bitmask (1 name, 2 street, 4 occupation)
     for (const [t, mul] of xtoks) {
       const thr = t.length <= 5 ? 1 : 2;
@@ -1297,18 +1298,22 @@ $('q').addEventListener('input', e => {
           const id = ids[i];
           hits[id] = (hits[id] || 0) + w * mul;
           if (fm) fHits[id] = (fHits[id] || 0) | fm;
-          if (ex && mul === 1) exactHit[id] = 1;
+          if (ex && mul === 1) exactCnt[id] = (exactCnt[id] || 0) + 1;
         }
       }
     }
     if (seq !== searchSeq) return;
-    // sort: by surname, then given name (precomputed rank); fallback to score order
-    resIds = Object.keys(hits).map(id => [+id, hits[id], exactHit[id] ? 1 : 0]);
+    // sort: exact matches first (all query tokens, then some), then near matches;
+    // within each tier by surname, then given name (precomputed rank)
+    resIds = Object.keys(hits).map(id => {
+      const n = +id, ec = exactCnt[id] || 0;
+      return [n, hits[id], ec >= ntok ? 0 : ec > 0 ? 1 : 2];
+    });
     if (nameRank) {
       const rk = id => { const r = nameRank[id]; return (r == null) ? 2147483647 : r; };
-      resIds.sort((a, b) => rk(a[0]) - rk(b[0]));
+      resIds.sort((a, b) => (a[2] - b[2]) || (rk(a[0]) - rk(b[0])));
     } else {
-      resIds.sort((a, b) => (b[2] - a[2]) || (b[1] - a[1]) || (a[0] - b[0]));
+      resIds.sort((a, b) => (a[2] - b[2]) || (b[1] - a[1]) || (a[0] - b[0]));
     }
     resPage = 0; resFilter = 'all'; resFieldHits = searchFields ? fHits : null;
     if (!resIds.length) {
