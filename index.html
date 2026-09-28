@@ -12,12 +12,12 @@ html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSyste
 header{position:absolute;top:10px;left:10px;right:10px;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none;}
 header>*{pointer-events:auto;}
 .brand{background:#111827;color:#fff;padding:6px 8px 6px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;flex:1;min-width:0;max-width:540px;}
-.brand-name{font-weight:700;font-size:15px;white-space:nowrap;}
+.brand-name{font-weight:700;font-size:15px;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;}
 .brand-name small{font-weight:400;color:#9ca3af;}
-#q{flex:1;min-width:110px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:8px 10px;font-size:15px;}
+#q{flex:1;min-width:110px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:8px 10px;font-size:15px;transition:flex-grow .22s ease;}
 #q::placeholder{color:#9ca3af;}
-#q:focus{outline:none;border-color:#93c5fd;background:rgba(255,255,255,.14);}
-#yrPick{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:none;border-radius:8px;color:#111827;font-weight:700;font-size:15px;cursor:pointer;min-height:44px;padding:8px 28px 8px 12px;max-width:180px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#q:focus{outline:none;border-color:#93c5fd;background:rgba(255,255,255,.14);flex-grow:5;}
+#yrPick{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:none;border-radius:8px;color:#111827;font-weight:700;font-size:15px;cursor:pointer;min-height:44px;padding:8px 28px 8px 12px;}
 #yrPick option{color:#111827;}
 #shareBtn{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid #d1d5db;background:#fff;
   font-size:22px;line-height:1;color:#111827;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0;}
@@ -38,9 +38,10 @@ header>*{pointer-events:auto;}
   .brand{max-width:none;flex-wrap:wrap;}
   #q{flex:1 1 100%;min-width:0;}
   .hctl{align-self:flex-end;}
-  #results{left:10px;right:10px;max-width:none;}
 }
-#results{position:absolute;top:56px;left:10px;z-index:6;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:360px;max-height:50vh;overflow:auto;display:none;}
+#results{position:absolute;top:56px;left:10px;right:10px;z-index:6;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-height:50vh;overflow:auto;display:none;}
+@keyframes unfurl{from{transform:scaleY(0);opacity:0;}to{transform:scaleY(1);opacity:1;}}
+#results.unfurl{animation:unfurl .3s ease-out;transform-origin:top center;}
 #results .rrow{padding:9px 12px;border-bottom:1px solid #f3f4f6;cursor:pointer;font-size:14px;}
 #results .rrow:last-child{border-bottom:none;}
 #results .rrow:hover{background:#f9fafb;}
@@ -593,6 +594,7 @@ let allFeatures = [];
 let featByRec = new Map();
 let keepIdx = [0, 1, 2];
 const shardCache = {};
+const shardFlight = {}; // shard name -> in-flight fetch promise (dedupes concurrent getRecord calls)
 const qCode = m => m === 'exact' ? 0 : (m && m.indexOf('fuzzy_street') === 0 ? 2 : 1);
 // Per-record links: scan viewer page template (with {pageview} = Wienbibliothek
 // pageview ID) and correction form prefill base (entry id appended URL-encoded).
@@ -646,6 +648,7 @@ function followBtn(r){
     '">' + t('followPerson') + '</button>';
 }
 let searchIdx = null;
+let searchFields = null; // folded token -> field bitmask (1 name, 2 street, 4 occupation)
 let searchKeys = null; // [rawKey, foldedKey] pairs, built lazily on first search
 const foldUmlaut = s => s.replace(/ſ/g, 's').replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 's').replace(/ss/g, 's').replace(/(^|[^a-z])zosef/g, '$1josef'); // systematic OCR misread: Zosef = Josef (also Zosefa, Zosefine)
 // Given-name spelling variants: the book's spelling isn't always the family's
@@ -692,7 +695,8 @@ async function loadYearData(){
   featByRec.clear();
   for (const f of allFeatures) for (const id of f.properties.m) featByRec.set(id, f);
   for (const k in shardCache) delete shardCache[k];
-  searchIdx = null; searchKeys = null;
+  for (const k in shardFlight) delete shardFlight[k];
+  searchIdx = null; searchKeys = null; searchFields = null;
   document.title = t('docTitle', {year: YC().label});
 }
 
@@ -1034,12 +1038,18 @@ async function openGroupPopup(f, highlightId){
 }
 
 async function getRecord(id){
+  const dir = YC().dir;
   const sh = 'r' + String(Math.floor(id / YC().shard)).padStart(4, '0');
-  if (!shardCache[sh]) {
-    try { shardCache[sh] = await (await fetch(YC().dir + '/records/' + sh + '.json')).json(); }
-    catch (e) { return null; }
+  const key = dir + '/' + sh; // dir-keyed: a late fetch from a previous year can't poison this year's cache
+  if (shardCache[key] === undefined) {
+    if (!shardFlight[key]) {
+      shardFlight[key] = fetch(dir + '/records/' + sh + '.json')
+        .then(r => r.ok ? r.json() : null).catch(() => null);
+    }
+    shardCache[key] = await shardFlight[key];
   }
-  return shardCache[sh][String(id)] || null;
+  const c = shardCache[key];
+  return (c && c[String(id)]) || null;
 }
 
 // ---- search -------------------------------------------------------------
@@ -1052,7 +1062,7 @@ let resHl = -1;   // highlighted row index (-1 = none)
 let resIds = [];  // [[id, score, exact], ...] sorted, uncapped
 let resPage = 0;
 let resFilter = 'all'; // all | n | s | o
-let resCats = null;    // id -> {n,s,o} once background classification lands
+let resFieldHits = null; // id -> field bitmask (1 name, 2 street, 4 occupation), set during the search loop
 let searchSeq = 0;
 let renderSeq = 0;
 const PAGE_SIZE = 100;
@@ -1078,12 +1088,24 @@ function minimizeResults(){
   pill.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
   pill.style.display = 'flex';
 }
-function expandResults(){
-  $('resPill').style.display = 'none';
+// Position the results sheet under the header and show it. On a fresh open
+// the sheet unfurls from the top (split view, results above the map);
+// re-renders (page/filter changes) just appear.
+function showResultsBox(){
   const box = $('results');
+  const wasHidden = box.style.display !== 'block';
   const h = document.querySelector('header');
   box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
   box.style.display = 'block';
+  if (wasHidden) {
+    box.classList.remove('unfurl');
+    void box.offsetWidth;
+    box.classList.add('unfurl');
+  }
+}
+function expandResults(){
+  $('resPill').style.display = 'none';
+  showResultsBox();
 }
 // Re-render follow-panel strings after a language switch.
 function fwRefreshLang(){
@@ -1115,14 +1137,15 @@ function selectResRow(row){
   });
 }
 function filteredIds(){
-  if (resFilter === 'all' || !resCats) return resIds;
-  const k = resFilter;
-  return resIds.filter(e => { const c = resCats[e[0]]; return c && c[k]; });
+  if (resFilter === 'all' || !resFieldHits) return resIds;
+  const bit = {n: 1, s: 2, o: 4}[resFilter];
+  return resIds.filter(e => (resFieldHits[e[0]] & bit));
 }
 function chipCount(k){
   if (k === 'all') return resIds.length;
+  const bit = {n: 1, s: 2, o: 4}[k];
   let n = 0;
-  for (const e of resIds) { const c = resCats[e[0]]; if (c && c[k]) n++; }
+  for (const e of resIds) { if (resFieldHits[e[0]] & bit) n++; }
   return n;
 }
 async function renderResPage(seq){
@@ -1153,8 +1176,8 @@ async function renderResPage(seq){
     const c = document.createElement('button');
     c.className = 'chip';
     c.setAttribute('aria-pressed', resFilter === k ? 'true' : 'false');
-    c.textContent = resCats ? label + ' (' + chipCount(k).toLocaleString(locale()) + ')' : label + ' …';
-    c.disabled = !resCats;
+    c.textContent = resFieldHits ? label + ' (' + chipCount(k).toLocaleString(locale()) + ')' : label + ' …';
+    c.disabled = !resFieldHits;
     c.addEventListener('click', ev => { ev.stopPropagation(); resFilter = k; resPage = 0; renderResPage(seq); });
     chips.appendChild(c);
   }
@@ -1191,37 +1214,7 @@ async function renderResPage(seq){
   next.addEventListener('click', ev => { ev.stopPropagation(); if (resPage < pages - 1) { resPage++; renderResPage(seq); } });
   pg.appendChild(prev); pg.appendChild(info); pg.appendChild(next);
   box.appendChild(pg);
-  const h = document.querySelector('header');
-  box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
-  box.style.display = 'block';
-}
-async function classifyResults(toks, seq){
-  // Background pass: fetch every result record (shard-cached, so each shard
-  // loads once) and note which field each query token hit, so the chips can
-  // filter the full uncapped result set.
-  resCats = {};
-  const CH = 1500;
-  for (let i = 0; i < resIds.length; i += CH) {
-    if (seq !== searchSeq) return;
-    const chunk = resIds.slice(i, i + CH);
-    const recs = await Promise.all(chunk.map(e => getRecord(+e[0])));
-    if (seq !== searchSeq) return;
-    for (let j = 0; j < chunk.length; j++) {
-      const rec = recs[j];
-      if (!rec) continue;
-      const fn = foldUmlaut(((rec.s || '') + ' ' + (rec.g || '')).toLowerCase());
-      const fs = foldUmlaut((rec.st || '').toLowerCase());
-      const fo = foldUmlaut((rec.o || '').toLowerCase());
-      const c = {n: false, s: false, o: false};
-      for (const t of toks) {
-        if (!c.n && fn.indexOf(t) >= 0) c.n = true;
-        if (!c.s && fs.indexOf(t) >= 0) c.s = true;
-        if (!c.o && fo.indexOf(t) >= 0) c.o = true;
-      }
-      resCats[chunk[j][0]] = c;
-    }
-  }
-  if (seq === searchSeq) renderResPage(seq); // re-render with chips enabled
+  showResultsBox();
 }
 $('q').addEventListener('focus', refreshSearchPlaceholder);
 $('q').addEventListener('blur', refreshSearchPlaceholder);
@@ -1233,12 +1226,17 @@ $('q').addEventListener('input', e => {
     const seq = ++searchSeq;
     const q = e.target.value.trim().toLowerCase();
     const box = $('results');
-    const placeBox = () => { const h = document.querySelector('header'); box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px'; };
     if (q.length < 2) { box.style.display = 'none'; return; }
     if (!searchIdx) {
       box.innerHTML = '<div class="r-load"><div class="spin sm"></div></div>';
-      placeBox(); box.style.display = 'block';
-      try { searchIdx = await (await fetch(YC().dir + '/search.idx.json')).json(); }
+      showResultsBox();
+      try {
+        const [ix, fl] = await Promise.all([
+          fetch(YC().dir + '/search.idx.json').then(r => r.json()),
+          fetch(YC().dir + '/search.fields.json').then(r => r.json()).catch(() => null)
+        ]);
+        searchIdx = ix; searchFields = fl;
+      }
       catch (err) { box.style.display = 'none'; return; }
     }
     const toks = q.split(/[^a-zäöüßſ]+/).filter(t => t.length >= 2).map(foldUmlaut);
@@ -1250,6 +1248,7 @@ $('q').addEventListener('input', e => {
     if (!searchKeys) searchKeys = Object.keys(searchIdx).map(k => [k, foldUmlaut(k)]);
     const hits = {};
     const exactHit = {};
+    const fHits = {}; // id -> field bitmask (1 name, 2 street, 4 occupation)
     for (const [t, mul] of xtoks) {
       const thr = t.length <= 5 ? 1 : 2;
       for (let ki = 0; ki < searchKeys.length; ki++) {
@@ -1262,9 +1261,11 @@ $('q').addEventListener('input', e => {
         else if (Math.abs(fk.length - t.length) <= thr && levLim(fk, t, thr) <= thr) w = 1;
         if (!w) continue;
         const ids = searchIdx[key];
+        const fm = searchFields ? (searchFields[key] || 0) : 0;
         for (let i = 0; i < ids.length; i++) {
           const id = ids[i];
           hits[id] = (hits[id] || 0) + w * mul;
+          if (fm) fHits[id] = (fHits[id] || 0) | fm;
           if (ex && mul === 1) exactHit[id] = 1;
         }
       }
@@ -1273,15 +1274,14 @@ $('q').addEventListener('input', e => {
     // sort: exact matches first, then by score, then stable by id
     resIds = Object.keys(hits).map(id => [+id, hits[id], exactHit[id] ? 1 : 0]);
     resIds.sort((a, b) => (b[2] - a[2]) || (b[1] - a[1]) || (a[0] - b[0]));
-    resPage = 0; resFilter = 'all'; resCats = null;
+    resPage = 0; resFilter = 'all'; resFieldHits = searchFields ? fHits : null;
     if (!resIds.length) {
       box.innerHTML = '<div class="rrow">' + t('noMatches') + '</div>';
-      placeBox(); box.style.display = 'block';
+      showResultsBox();
       return;
     }
     await renderResPage(seq);
     if (seq !== searchSeq) return;
-    classifyResults(toks, seq); // background; chips enable when done
   }, 220);
 });
 // ---- keyboard shortcuts -------------------------------------------------
