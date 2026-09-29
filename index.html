@@ -8,7 +8,7 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.css" rel="stylesheet">
 <style>
 html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
-#map{position:absolute;top:0;bottom:0;width:100%;}
+#map{position:absolute;top:0;bottom:0;left:0;right:0;transition:left .28s ease;}
 header{position:absolute;top:10px;left:10px;right:10px;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none;}
 header>*{pointer-events:auto;}
 .brand{background:#111827;color:#fff;padding:6px 8px 6px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;flex:1;min-width:0;max-width:540px;}
@@ -40,6 +40,27 @@ header>*{pointer-events:auto;}
   .hctl{align-self:flex-end;}
 }
 #results{position:absolute;top:56px;left:10px;right:10px;z-index:6;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-height:50vh;overflow:auto;display:none;}
+/* Desktop split view: results become a left sidebar and the map is pushed
+   right (body.split-on). The unfurl animation is replaced by a slide-in. */
+@media(min-width:641px){
+  body.split-on #map{left:min(380px,42vw);}
+  body.split-on #results{left:0;right:auto;width:min(380px,42vw);bottom:10px;max-height:none;
+    border-radius:0 12px 12px 0;box-shadow:2px 0 14px rgba(0,0,0,.18);}
+  body.split-on #results.unfurl{animation:slidein .28s ease-out;transform-origin:left center;}
+}
+@keyframes slidein{from{transform:translateX(-102%);opacity:.4;}to{transform:translateX(0);opacity:1;}}
+/* Mobile: Apple Maps-style bottom sheet with grabber. Drag the header to
+   resize between detents; drag down past the peek height to collapse. */
+@media(max-width:640px){
+  #results{position:fixed;left:0;right:0;bottom:0;top:auto;height:52vh;height:52dvh;max-height:82vh;max-height:82dvh;
+    border-radius:16px 16px 0 0;box-shadow:0 -6px 28px rgba(0,0,0,.28);padding-top:6px;}
+  #results::before{content:'';display:block;width:40px;height:5px;border-radius:3px;
+    background:#d1d5db;margin:2px auto 6px;}
+  #resHead{touch-action:none;cursor:grab;}
+  #resHead:active{cursor:grabbing;}
+  #results.unfurl{animation:sheetup .3s ease-out;transform-origin:bottom center;}
+}
+@keyframes sheetup{from{transform:translateY(100%);}to{transform:translateY(0);}}
 @keyframes unfurl{from{transform:scaleY(0);opacity:0;}to{transform:scaleY(1);opacity:1;}}
 #results.unfurl{animation:unfurl .3s ease-out;transform-origin:top center;}
 #results .rrow{padding:9px 12px;border-bottom:1px solid #f3f4f6;cursor:pointer;font-size:14px;}
@@ -720,7 +741,7 @@ async function switchYear(year){
   map.getSource('places').setData({type: 'FeatureCollection', features: feats});
   updateCount(feats);
   $('boot').classList.add('gone');
-  $('q').value = ''; $('results').style.display = 'none'; $('resPill').style.display = 'none';
+  $('q').value = ''; dismissResults();
 }
 $('yrPick').addEventListener('change', e => {
   const v = e.target.value;
@@ -785,6 +806,10 @@ map.on('load', async () => {
     map.on('mouseenter', lyr, () => map.getCanvas().style.cursor = 'pointer');
     map.on('mouseleave', lyr, () => map.getCanvas().style.cursor = '');
   }
+  // Tapping the map (pins included) collapses open results to the pill.
+  // Popup/panel HTML clicks don't reach the canvas, so follow buttons and
+  // the follow panel no longer collapse results out from under themselves.
+  map.on('click', () => minimizeResults());
   updateCount(allFeatures);
   const hideBoot = () => $('boot').classList.add('gone');
   map.once('idle', hideBoot);
@@ -1081,11 +1106,29 @@ function paintResHl(){
 }
 // Persistent results: tapping the map collapses the panel to a pill
 // (count + dismiss) instead of losing the results; the pill re-expands
-// on tap and ✕ dismisses it outright.
+// on tap and ✕ dismisses it outright. On desktop the open panel is a
+// left split-view sidebar (body.split-on pushes the map right).
+const isDesktop = () => window.matchMedia && matchMedia('(min-width: 641px)').matches;
+function splitOn(){
+  if (!isDesktop()) return;
+  if (!document.body.classList.contains('split-on')){
+    document.body.classList.add('split-on');
+    try { map.resize(); } catch (e) {}
+  }
+}
+function splitOff(){
+  if (document.body.classList.contains('split-on')){
+    document.body.classList.remove('split-on');
+    try { map.resize(); } catch (e) {}
+  }
+}
 function minimizeResults(){
   const box = $('results'), pill = $('resPill');
-  if (box.style.display !== 'block' || !resIds.length) { box.style.display = 'none'; pill.style.display = 'none'; return; }
+  const open = box.style.display === 'block' && resIds.length > 0;
   box.style.display = 'none';
+  box.style.height = '';
+  splitOff();
+  if (!open) { pill.style.display = 'none'; return; }
   pill.innerHTML = '';
   const label = document.createElement('span');
   const n = filteredIds().length;
@@ -1096,14 +1139,19 @@ function minimizeResults(){
   pill.appendChild(label); pill.appendChild(x);
   pill.style.display = 'flex';
 }
-// Position the results sheet under the header and show it. On a fresh open
-// the sheet unfurls from the top (split view, results above the map);
-// re-renders (page/filter changes) just appear.
+// Position the results sheet and show it. Desktop: left split-view sidebar
+// (map pushed right); mobile: Apple-style bottom sheet. The sheet unfurls
+// on a fresh open; re-renders (page/filter changes) just appear.
 function showResultsBox(){
   const box = $('results');
   const wasHidden = box.style.display !== 'block';
-  const h = document.querySelector('header');
-  box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
+  if (isDesktop()){
+    const h = document.querySelector('header');
+    box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
+    splitOn();
+  } else {
+    box.style.top = '';
+  }
   box.style.display = 'block';
   if (wasHidden) {
     box.classList.remove('unfurl');
@@ -1122,11 +1170,59 @@ function fwRefreshLang(){
   if (fwAltsStop && document.querySelector('.fw-alts').style.display !== 'none') fwShowAlts(fwAltsStop);
 }
 function dismissResults(){
-  $('results').style.display = 'none';
+  // Full state reset: invalidates any in-flight search/render, drops the
+  // cached result set, and restores the map to full width.
+  searchSeq++;
+  resIds = []; resRows = []; resHl = -1; resPage = 0; resFilter = 'all'; resFieldHits = null;
+  const box = $('results');
+  box.innerHTML = ''; box.style.display = 'none'; box.style.height = ''; box.style.top = '';
   $('resPill').style.display = 'none';
-  resRows = []; resHl = -1;
+  splitOff();
 }
 $('resPill').addEventListener('click', () => expandResults());
+// Mobile bottom-sheet drag: drag the sheet header to resize between
+// detents (peek / half / tall); drag down hard to collapse to the pill.
+// Buttons and inputs inside the header keep their normal behavior.
+(function(){
+  const sheet = () => $('results');
+  const mobile = () => window.matchMedia && matchMedia('(max-width: 640px)').matches;
+  let drag = null;
+  document.addEventListener('pointerdown', e => {
+    if (!mobile()) return;
+    const head = e.target.closest ? e.target.closest('#resHead') : null;
+    if (!head) return;
+    if (e.target.closest('button, input, a, select, textarea')) return;
+    const box = sheet();
+    if (box.style.display !== 'block') return;
+    drag = {y0: e.clientY, h0: box.getBoundingClientRect().height, moved: false};
+    e.preventDefault();
+  });
+  document.addEventListener('pointermove', e => {
+    if (!drag || !mobile()) return;
+    const dy = e.clientY - drag.y0;
+    if (Math.abs(dy) > 8) drag.moved = true;
+    const vh = window.innerHeight;
+    const h = Math.max(vh * 0.16, Math.min(vh * 0.84, drag.h0 - dy));
+    sheet().style.height = h + 'px';
+  });
+  const endDrag = e => {
+    if (!drag || !mobile()) { drag = null; return; }
+    const d = drag; drag = null;
+    const box = sheet();
+    if (box.style.display !== 'block') return;
+    const vh = window.innerHeight;
+    const h = box.getBoundingClientRect().height;
+    const dy = e.clientY - d.y0;
+    if (d.moved && dy > 90 && h < vh * 0.34) { minimizeResults(); return; }
+    // snap to the nearest detent
+    const detents = [0.30, 0.52, 0.80];
+    let best = detents[0];
+    for (const dt of detents) if (Math.abs(h / vh - dt) < Math.abs(h / vh - best)) best = dt;
+    box.style.height = Math.round(best * 100) + 'dvh';
+  };
+  document.addEventListener('pointerup', endDrag);
+  document.addEventListener('pointercancel', endDrag);
+})();
 function selectResRow(row){
   minimizeResults();
   resRows = []; resHl = -1;
@@ -1256,7 +1352,7 @@ $('q').addEventListener('input', e => {
     const seq = ++searchSeq;
     const q = e.target.value.trim().toLowerCase();
     const box = $('results');
-    if (q.length < 2) { box.style.display = 'none'; return; }
+    if (q.length < 2) { dismissResults(); return; }
     if (!searchIdx) {
       box.innerHTML = '<div class="r-load"><div class="spin sm"></div></div>';
       showResultsBox();
@@ -1358,10 +1454,7 @@ document.addEventListener('keydown', e => {
     navPins((e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : -1);
   }
 });
-document.addEventListener('click', e => {
-  if ($('resPill').contains(e.target)) return;
-  if (!$('results').contains(e.target) && e.target.id !== 'q') minimizeResults();
-});
+
 
 // ---- info popup (circled-i): About / Research / Settings / Licensing -----
 function switchTab(name){
@@ -1534,8 +1627,9 @@ function fwClearAnim(){
   if (map.getSource('fw-path')) map.removeSource('fw-path');
 }
 function fwPathCoords(){
+  // rec.la = latitude, rec.lo = longitude; Mapbox wants [lng, lat].
   return fwStops.filter(s => s.rec && s.rec.lo && s.rec.la)
-    .map(s => ({year: s.year, addr: fwAddr(s.rec), lng: +s.rec.la, lat: +s.rec.lo}));
+    .map(s => ({year: s.year, addr: fwAddr(s.rec), lng: +s.rec.lo, lat: +s.rec.la}));
 }
 function fwLeg(p0, p1, ms){
   return new Promise(res => {
@@ -1631,6 +1725,7 @@ function fwApplyResult(st, cands){
 }
 async function startFollow(year, id){
   fwStopPlay();
+  dismissResults(); // following a person replaces the search context; clear it fully
   fwActiveYear = null;
   fwAltsStop = null;
   document.querySelector('.fw-alts').style.display = 'none';
