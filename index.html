@@ -283,6 +283,9 @@ header>*{pointer-events:auto;}
 <div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b data-i18n="setB2ct">Teal dots — 1938 Band 2 clean-only preview</b><small data-i18n="setB2cd">Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b data-i18n="setResearchT">Show Research section in the year picker</b><small data-i18n="setResearchD">Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b data-i18n="setInferT">Rose ring — inferred street names</b><small data-i18n="setInferD">Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setRenames"><label for="setRenames"><b data-i18n="setRenamesT">Renamed streets — Nazi-era &rarr; modern</b><small data-i18n="setRenamesD">Streets the Nazis renamed, plotted where directory addresses used the old name.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setBookNames"><label for="setBookNames"><b data-i18n="setBookNamesT">Nazi-era names from the book</b><small data-i18n="setBookNamesD">Pins for addresses listed under their Nazi-era street name in the current year.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setSites"><label for="setSites"><b data-i18n="setSitesT">Historical sites — Sammellager &amp; deportations</b><small data-i18n="setSitesD">Hand-picked: collection camps, the Aspangbahnhof deportation point, Gestapo HQ.</small></label></div>
 <h3 data-i18n="mapSection">Map</h3>
 <p><label for="flt"><b data-i18n="pinFilter">Pin quality filter</b></label><br>
 <select id="flt">
@@ -369,6 +372,14 @@ en: {
   setResearchD: "Reveals research views such as the family migration demo in the year dropdown.",
   setInferT: "Rose ring — inferred street names",
   setInferD: "Pins whose address was placed through an inferred historical→modern street mapping get a rose ring. The pin's own color still shows match quality.",
+  setRenamesT: "Renamed streets — Nazi-era → modern",
+  setRenamesD: "Streets the Nazis renamed, plotted where directory addresses used the old name.",
+  setBookNamesT: "Nazi-era names from the book",
+  setBookNamesD: "Pins for addresses listed under their Nazi-era street name in the current year.",
+  setSitesT: "Historical sites — Sammellager & deportations",
+  setSitesD: "Hand-picked: collection camps, the Aspangbahnhof deportation point, Gestapo HQ.",
+  renamedMeta: "{n} book addresses rescued through this rename",
+  bookNameMeta: "Listed under its Nazi-era name in {year} · {n} records · modern: {new}",
   mapSection: "Map",
   pinFilter: "Pin quality filter",
   fltAll: "All pins", fltReg: "Registry or better", fltExact: "Exact only",
@@ -470,6 +481,14 @@ de: {
   setResearchD: "Blendet Rechercheansichten wie die Demo zur Familienmigration in der Jahresauswahl ein.",
   setInferT: "Rosaring — abgeleitete Straßennamen",
   setInferD: "Markierungen, deren Adresse über eine abgeleitete historisch→modern-Straßenzuordnung verortet wurde, erhalten einen rosafarbenen Ring. Die Farbe der Markierung zeigt weiterhin die Trefferqualität.",
+  setRenamesT: "Umbenannte Straßen — NS-Zeit → heute",
+  setRenamesD: "Von den Nazis umbenannte Straßen, dort eingezeichnet, wo Buchadressen den alten Namen tragen.",
+  setBookNamesT: "NS-Straßennamen aus dem Buch",
+  setBookNamesD: "Markierungen für Adressen, die im aktuellen Jahrgang unter ihrem NS-Straßennamen stehen.",
+  setSitesT: "Historische Orte — Sammellager u. Deportationen",
+  setSitesD: "Handverlesen: Sammellager, Deportationsbahnhof Aspangbahnhof, Gestapo-Zentrale.",
+  renamedMeta: "{n} Buchadressen über diese Umbenennung zugeordnet",
+  bookNameMeta: "Im {year}-er Buch unter NS-Namen verzeichnet · {n} Einträge · heute: {new}",
   mapSection: "Karte",
   pinFilter: "Filter nach Trefferqualität",
   fltAll: "Alle Markierungen", fltReg: "Registertreffer oder besser", fltExact: "Nur exakte Treffer",
@@ -740,6 +759,7 @@ async function switchYear(year){
   const feats = allFeatures.filter(f => { const qc = f.properties.qc; return keepIdx.some(k => qc[k] > 0); });
   map.getSource('places').setData({type: 'FeatureCollection', features: feats});
   updateCount(feats);
+  if (overlayOn('booknames')) setOverlayLayer('booknames', true); // per-year layer follows the picker
   $('boot').classList.add('gone');
   $('q').value = ''; dismissResults();
 }
@@ -800,6 +820,13 @@ map.on('load', async () => {
     if (b2Which) {
       const b2 = near(e.point, 'b2-' + b2Which, TAP_R)[0];
       if (b2) { openB2Popup(b2Which, b2); return; }
+    }
+    for (const id of Object.keys(OVERLAYS)){
+      const st = overlayState[id];
+      if (st && st.ready && map.getLayoutProperty('ovl-' + id, 'visibility') === 'visible'){
+        const hit = near(e.point, 'ovl-' + id, TAP_R)[0];
+        if (hit) { openOverlayPopup(id, hit); return; }
+      }
     }
   });
   for (const lyr of ['clusters', 'unclustered-point']) {
@@ -936,11 +963,73 @@ $('setInfer').addEventListener('change', e => {
   try { localStorage.setItem('lehmann.showInfer', e.target.checked ? '1' : '0'); } catch (err) {}
   applyInferToggle();
 });
+// ---- overlay layers: renames, Nazi-era book names (per year), historic sites
+const OVERLAYS = {
+  renames:   {box: 'setRenames',   key: 'lehmann.showRenames',   file: 'layers/renames.geojson',         color: '#7c3aed', r: 5},
+  booknames: {box: 'setBookNames', key: 'lehmann.showBookNames', perYear: 'renamed.geojson',             color: '#92400e', r: 5},
+  sites:     {box: 'setSites',     key: 'lehmann.showSites',     file: 'layers/historic-sites.geojson',  color: '#111827', r: 7},
+};
+const overlayState = {};
+function overlayOn(id){
+  try { return localStorage.getItem(OVERLAYS[id].key) === '1'; } catch (e) { return false; }
+}
+async function setOverlayLayer(id, on){
+  const def = OVERLAYS[id];
+  const st = overlayState[id] || (overlayState[id] = {ready: false});
+  try {
+    const url = def.perYear ? YEARS[CUR_YEAR].dir + '/' + def.perYear : def.file;
+    if (on && !st.ready){
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('no data');
+      map.addSource('ov-' + id, {type: 'geojson', data: await res.json()});
+      map.addLayer({id: 'ovl-' + id, type: 'circle', source: 'ov-' + id,
+        paint: {'circle-color': def.color, 'circle-radius': def.r,
+                'circle-stroke-width': 2, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
+      map.on('mouseenter', 'ovl-' + id, () => map.getCanvas().style.cursor = 'pointer');
+      map.on('mouseleave', 'ovl-' + id, () => map.getCanvas().style.cursor = '');
+      st.ready = true;
+    } else if (on && st.ready && def.perYear){
+      const res = await fetch(url);
+      if (res.ok) map.getSource('ov-' + id).setData(await res.json());
+    }
+    if (st.ready) map.setLayoutProperty('ovl-' + id, 'visibility', on ? 'visible' : 'none');
+    try { localStorage.setItem(def.key, on ? '1' : '0'); } catch (err) {}
+  } catch (err) { return false; }
+  return true;
+}
+function openOverlayPopup(id, f){
+  const p = f.properties;
+  let h;
+  if (id === 'renames'){
+    h = '<div class="pp"><div class="pp-name">' + esc(p.old) + ' → ' + esc(p.new) + '</div>' +
+      '<div class="pp-meta">' + esc(t('renamedMeta', {n: p.n})) + '</div></div>';
+  } else if (id === 'booknames'){
+    const addr = [p.st, p.hn].filter(Boolean).join(' ');
+    h = '<div class="pp"><div class="pp-name">' + esc(p.old) + '</div>' +
+      (addr ? '<div class="pp-addr">' + esc(addr) + '</div>' : '') +
+      '<div class="pp-meta">' + esc(t('bookNameMeta', {year: p.year, n: p.n, new: p.new})) + '</div></div>';
+  } else {
+    const desc = (LANG === 'de' && p.desc_de) ? p.desc_de : p.desc;
+    h = '<div class="pp"><div class="pp-name">' + esc(p.name) + '</div>' +
+      '<div class="pp-addr">' + esc(p.addr) + '</div>' +
+      '<div class="pp-meta">' + esc(desc) + '</div></div>';
+  }
+  new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(f.geometry.coordinates).setHTML(h).addTo(map);
+}
+for (const id of Object.keys(OVERLAYS)){
+  $(OVERLAYS[id].box).addEventListener('change', async e => {
+    const ok = await setOverlayLayer(id, e.target.checked);
+    if (!ok) e.target.checked = false;
+  });
+}
 // Restore persisted research settings once the map is up.
 map.on('load', async () => {
   $('setResearch').checked = showResearch();
   $('setInfer').checked = showInfer();
   applyInferToggle();
+  for (const id of Object.keys(OVERLAYS)){
+    if (overlayOn(id)){ $(OVERLAYS[id].box).checked = true; setOverlayLayer(id, true); }
+  }
   buildYearPicker();
   let w = null;
   try { w = localStorage.getItem('lehmann.b2which') || null; } catch (e) {}
