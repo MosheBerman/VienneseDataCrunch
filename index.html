@@ -849,7 +849,15 @@ map.on('load', async () => {
       for (const lid of overlayLayerIds(id)){
         if (map.getLayoutProperty(lid, 'visibility') !== 'visible') continue;
         const hit = near(e.point, lid, TAP_R)[0];
-        if (hit) { openOverlayPopup(id, hit); return; }
+        if (hit) {
+          // Touch devices have no hover: tapping a landmark toggles its label.
+          if (id === 'sites' && !(window.matchMedia && matchMedia('(pointer:fine)').matches)){
+            const nm = hit.properties.name || '';
+            st.tapLabel = (st.tapLabel === nm) ? '' : nm;
+            map.setFilter('ovl-sites-label-hover', ['==', ['get', 'name'], st.tapLabel]);
+          }
+          openOverlayPopup(id, hit); return;
+        }
       }
     }
   });
@@ -1023,6 +1031,7 @@ async function setOverlayLayer(id, on){
           paint: {'circle-color': def.color, 'circle-radius': def.r,
                   'circle-stroke-width': 2, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
         st.layers = ['ovl-' + id];
+        if (id === 'sites') addSiteLabels(id, st);
       }
       for (const lid of st.layers){
         map.on('mouseenter', lid, () => map.getCanvas().style.cursor = 'pointer');
@@ -1037,6 +1046,29 @@ async function setOverlayLayer(id, on){
     try { localStorage.setItem(def.key, on ? '1' : '0'); } catch (err) {}
   } catch (err) { return false; }
   return true;
+}
+function addSiteLabels(id, st){
+  // Landmark labels: always visible when zoomed in; on desktop hover the
+  // hovered site's label shows at any zoom; on touch, tapping a pin toggles it.
+  const src = 'ov-' + id, HL = 'ovl-sites-label-hover';
+  const layout = {'text-field': ['get', 'name'], 'text-size': 12,
+    'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
+    'text-offset': [0, 1.4], 'text-anchor': 'top'};
+  const paint = {'text-color': '#111827', 'text-halo-color': '#fff', 'text-halo-width': 1.5};
+  map.addLayer({id: 'ovl-sites-label', type: 'symbol', source: src, minzoom: 13,
+    layout: Object.assign({'text-allow-overlap': false}, layout), paint: paint});
+  map.addLayer({id: HL, type: 'symbol', source: src,
+    filter: ['==', ['get', 'name'], ''],
+    layout: Object.assign({'text-allow-overlap': true}, layout), paint: paint});
+  st.layers.push('ovl-sites-label', HL);
+  st.tapLabel = '';
+  if (window.matchMedia && matchMedia('(pointer:fine)').matches){
+    map.on('mouseenter', 'ovl-' + id, e => {
+      const f = e.features && e.features[0];
+      if (f) map.setFilter(HL, ['==', ['get', 'name'], f.properties.name || '']);
+    });
+    map.on('mouseleave', 'ovl-' + id, () => map.setFilter(HL, ['==', ['get', 'name'], '']));
+  }
 }
 function openOverlayPopup(id, f){
   const p = f.properties;
