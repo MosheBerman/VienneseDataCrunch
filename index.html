@@ -44,7 +44,12 @@ header>*{pointer-events:auto;}
     display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.94);
     -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
     border-radius:16px;padding:8px;box-shadow:0 6px 24px rgba(0,0,0,.28);}
-  body.res-open #searchDock,body.follow-open #searchDock{display:none;}
+  body.follow-open #searchDock{display:none;}
+  /* When the results sheet is open, the search dock lives at the top of the
+     sheet (Apple Maps-style) instead of floating at the bottom. */
+  #searchDock.in-sheet{position:static;left:auto;right:auto;bottom:auto;z-index:auto;
+    box-shadow:none;border-radius:0;padding:8px 12px 2px;background:#fff;
+    -webkit-backdrop-filter:none;backdrop-filter:none;}
   #searchDock #q{flex:1 1 auto;min-width:0;background:#eef0f3;border:none;color:#111827;border-radius:10px;
     padding:12px 14px;font-size:16px;}
   #searchDock #q::placeholder{color:#6b7280;}
@@ -1252,7 +1257,7 @@ function minimizeResults(){
   const open = box.style.display === 'block' && resIds.length > 0;
   box.style.display = 'none';
   box.style.height = '';
-  document.body.classList.remove('res-open');
+  dockToHeader();
   splitOff();
   if (!open) { pill.style.display = 'none'; return; }
   pill.innerHTML = '';
@@ -1277,9 +1282,11 @@ function showResultsBox(){
     splitOn();
   } else {
     box.style.top = '';
+    // Apple Maps-style: the search dock moves into the top of the sheet.
+    const dock = $('searchDock');
+    if (dock.parentElement !== box){ box.prepend(dock); dock.classList.add('in-sheet'); }
   }
   box.style.display = 'block';
-  document.body.classList.add('res-open');
   if (wasHidden) {
     box.classList.remove('unfurl');
     void box.offsetWidth;
@@ -1296,14 +1303,23 @@ function fwRefreshLang(){
   renderFwCells();
   if (fwAltsStop && document.querySelector('.fw-alts').style.display !== 'none') fwShowAlts(fwAltsStop);
 }
+// Returns the search dock to the header (from the results sheet, if it moved there).
+function dockToHeader(){
+  const dock = $('searchDock');
+  dock.classList.remove('in-sheet');
+  const brand = document.querySelector('.brand');
+  const name = document.querySelector('.brand-name');
+  if (dock.parentElement !== brand || dock.nextElementSibling !== name)
+    brand.insertBefore(dock, name);
+}
 function dismissResults(){
   // Full state reset: invalidates any in-flight search/render, drops the
   // cached result set, and restores the map to full width.
   searchSeq++;
   resIds = []; resRows = []; resHl = -1; resPage = 0; resFilter = 'all'; resFieldHits = null;
+  dockToHeader();
   const box = $('results');
   box.innerHTML = ''; box.style.display = 'none'; box.style.height = ''; box.style.top = '';
-  document.body.classList.remove('res-open');
   $('resPill').style.display = 'none';
   splitOff();
 }
