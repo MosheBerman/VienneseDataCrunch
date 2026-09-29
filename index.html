@@ -1626,10 +1626,38 @@ function fwClearAnim(){
   for (const l of ['fw-path-line', 'fw-stop-dots', 'fw-stop-labels']) if (map.getLayer(l)) map.removeLayer(l);
   if (map.getSource('fw-path')) map.removeSource('fw-path');
 }
-function fwPathCoords(){
-  // rec.la = latitude, rec.lo = longitude; Mapbox wants [lng, lat].
-  return fwStops.filter(s => s.rec && s.rec.lo && s.rec.la)
-    .map(s => ({year: s.year, addr: fwAddr(s.rec), lng: +s.rec.lo, lat: +s.rec.la}));
+function fwPause(ms){
+  // Interruptible pause: resolves early when playback stops.
+  return (async () => {
+    for (let k = 0; k * 120 < ms && fwPlaying; k++) await new Promise(r => setTimeout(r, 120));
+  })();
+}
+function fwSamePlace(p, q){
+  // Geocode jitter can put the same building a few metres apart across years.
+  const d = fwHav({la: p.lat, lo: p.lng}, {la: q.lat, lo: q.lng});
+  return d != null && d < 50;
+}
+function fwMarkerFade(show, p){
+  // Shrink-and-fade the travelling dot (disappearance) or fade it back in.
+  return new Promise(res => {
+    if (!fwAnimMarker) return res();
+    const el = fwAnimMarker.getElement();
+    el.style.transition = 'opacity .7s ease, transform .7s ease';
+    if (show && p) fwAnimMarker.setLngLat([p.lng, p.lat]);
+    requestAnimationFrame(() => {
+      el.style.opacity = show ? '1' : '0';
+      el.style.transform = show ? 'scale(1)' : 'scale(.15)';
+    });
+    setTimeout(res, 760);
+  });
+}
+function fwArrive(st, p, note){
+  if (fwArrivePop) fwArrivePop.remove();
+  const addr = st.rec ? fwAddr(st.rec) : (note || '');
+  fwArrivePop = new mapboxgl.Popup({closeButton: false, closeOnClick: false, className: 'fw-arrive', offset: 20})
+    .setLngLat([p.lng, p.lat])
+    .setHTML('<b>' + esc(String(st.year)) + '</b><br>' + esc(addr))
+    .addTo(map);
 }
 function fwLeg(p0, p1, ms){
   return new Promise(res => {
@@ -1645,12 +1673,25 @@ function fwLeg(p0, p1, ms){
     fwAnim.raf = requestAnimationFrame(fr);
   });
 }
-async function fwAnimateJourney(pts){
+async function fwAnimateJourney(){
   fwClearAnim();
   fwAnim = {raf: 0};
   document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+  // rec.la = latitude, rec.lo = longitude; Mapbox wants [lng, lat].
+  const pts = fwStops.filter(s => s.rec && s.rec.lo && s.rec.la)
+    .map(s => ({year: s.year, lng: +s.rec.lo, lat: +s.rec.la}));
+  // Path line: one LineString per contiguous run of listed years, so a gap
+  // never draws an unverified leg across the missing years.
+  const runs = [];
+  let run = [];
+  for (const st of fwStops){
+    const p = st.rec && st.rec.lo && st.rec.la ? {lng: +st.rec.lo, lat: +st.rec.la} : null;
+    if (p) run.push(p); else if (run.length){ runs.push(run); run = []; }
+  }
+  if (run.length) runs.push(run);
   const fc = {type: 'FeatureCollection', features: [
-    {type: 'Feature', properties: {}, geometry: {type: 'LineString', coordinates: pts.map(p => [p.lng, p.lat])}},
+    ...runs.map(r => ({type: 'Feature', properties: {},
+      geometry: {type: 'LineString', coordinates: r.map(p => [p.lng, p.lat])}})),
     ...pts.map(p => ({type: 'Feature', properties: {year: String(p.year)},
       geometry: {type: 'Point', coordinates: [p.lng, p.lat]}}))
   ]};
@@ -1664,28 +1705,40 @@ async function fwAnimateJourney(pts){
     paint: {'text-color': '#881337', 'text-halo-color': '#fff', 'text-halo-width': 1.5}});
   const el = document.createElement('div');
   el.className = 'fw-dot';
+  el.style.opacity = '0'; // starts hidden; fades in at the first listed year
   fwAnimMarker = new mapboxgl.Marker({element: el}).setLngLat([pts[0].lng, pts[0].lat]).addTo(map);
   const b = new mapboxgl.LngLatBounds();
   pts.forEach(p => b.extend([p.lng, p.lat]));
   map.fitBounds(b, {padding: 70, duration: 900});
-  await new Promise(r => setTimeout(r, 950));
-  const LEG = 1600, PAUSE = 900;
-  for (let i = 0; i < pts.length; i++){
+  await fwPause(950);
+  let last = null, visible = false;
+  for (const st of fwStops){
     if (!fwPlaying) break;
-    const p = pts[i];
-    fwActiveYear = p.year;
+    fwActiveYear = st.year;
     renderFwCells();
-    if (fwArrivePop) fwArrivePop.remove();
-    fwArrivePop = new mapboxgl.Popup({closeButton: false, closeOnClick: false, className: 'fw-arrive', offset: 20})
-      .setLngLat([p.lng, p.lat])
-      .setHTML('<b>' + esc(String(p.year)) + '</b><br>' + esc(p.addr))
-      .addTo(map);
-    if (i < pts.length - 1){
-      for (let k = 0; k * 120 < PAUSE && fwPlaying; k++) await new Promise(r => setTimeout(r, 120));
-      if (!fwPlaying) break;
-      await fwLeg(p, pts[i + 1], LEG);
+    const p = st.rec && st.rec.lo && st.rec.la ? {lng: +st.rec.lo, lat: +st.rec.la} : null;
+    if (p){
+      if (!visible){
+        await fwMarkerFade(true, p);
+        visible = true;
+      } else if (!fwSamePlace(last, p)){
+        await fwLeg(last, p, 1600);
+      } else {
+        // Same building across years: no leg, just re-centre gently.
+        try { map.easeTo({center: [p.lng, p.lat], duration: 600}); } catch (e) {}
+        await fwPause(650);
+      }
+      fwArrive(st, p);
+      last = p;
+      await fwPause(900);
     } else {
-      for (let k = 0; k < 8 && fwPlaying; k++) await new Promise(r => setTimeout(r, 300));
+      // Not listed this year: the dot shrinks and fades out where last seen.
+      if (visible && last){
+        fwArrive({year: st.year, rec: null}, last, t('fwGap'));
+        await fwMarkerFade(false);
+        visible = false;
+      }
+      await fwPause(900);
     }
   }
 }
@@ -1808,21 +1861,11 @@ document.querySelector('.fw-years').addEventListener('click', e => {
 });
 async function fwTogglePlay(){
   if (fwPlaying){ fwStopPlay(); return; }
-  const seq = fwStops.filter(s => s.rec);
-  if (!seq.length) return;
+  if (!fwStops.filter(s => s.rec).length) return;
   fwPlaying = true;
   $('fwPlay').innerHTML = '&#10074;&#10074;';
   $('fwPlay').setAttribute('aria-label', t('stopTimeline'));
-  const pts = fwPathCoords();
-  const moves = pts.filter((p, i, a) => i === 0 || p.lng !== a[i - 1].lng || p.lat !== a[i - 1].lat);
-  if (moves.length >= 2) await fwAnimateJourney(moves);
-  else {
-    for (const st of seq){
-      if (!fwPlaying) break;
-      await fwGoto(st);
-      for (let i = 0; i < 8 && fwPlaying; i++) await new Promise(r => setTimeout(r, 300));
-    }
-  }
+  await fwAnimateJourney();
   fwStopPlay();
 }
 function fwClose(){
