@@ -1,1 +1,96 @@
-{"type": "FeatureCollection", "features": [{"type": "Feature", "properties": {"name": "Sammellager Kleine Sperlgasse 2a", "addr": "Kleine Sperlgasse 2a, 1020 Wien", "desc": "Collection camp in the former Rothschild hospital; Jews were held here before deportation.", "desc_de": "Sammellager im ehemaligen Rothschild-Spital; hier wurden Juden vor der Deportation festgehalten.", "kind": "sammellager"}, "geometry": {"type": "Point", "coordinates": [16.37746, 48.21602]}}, {"type": "Feature", "properties": {"name": "Sammellager Castellezgasse 35", "addr": "Castellezgasse 35, 1020 Wien", "desc": "Collection camp used to concentrate Jews for deportation.", "desc_de": "Sammellager zur Konzentrierung von Juden vor der Deportation.", "kind": "sammellager"}, "geometry": {"type": "Point", "coordinates": [16.38035, 48.21969]}}, {"type": "Feature", "properties": {"name": "Sammellager Malzgasse 16", "addr": "Malzgasse 16, 1020 Wien", "desc": "Collection camp in the former Jewish school building.", "desc_de": "Sammellager im ehemaligen jüdischen Schulgebäude.", "kind": "sammellager"}, "geometry": {"type": "Point", "coordinates": [16.37686, 48.22048]}}, {"type": "Feature", "properties": {"name": "Aspangbahnhof (former)", "addr": "Aspangstraße, 1030 Wien", "desc": "Deportation trains to ghettos and camps departed from here (station demolished 1977).", "desc_de": "Von hier fuhren die Deportationszüge in Ghettos und Lager (Bahnhof 1977 abgerissen).", "kind": "deportation", "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Vienna_aspangbahnhof1905.jpg?width=600", "imgCap": "Aspangbahnhof c. 1905", "imgCredit": "Wikimedia Commons, public domain"}, "geometry": {"type": "Point", "coordinates": [16.39036, 48.19285]}}, {"type": "Feature", "properties": {"name": "Gestapo HQ Morzinplatz", "addr": "Morzinplatz 4, 1010 Wien", "desc": "Gestapo headquarters in the former Hotel Metropole.", "desc_de": "Gestapo-Zentrale im ehemaligen Hotel Metropole.", "kind": "perpetrator", "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Exterieur_van_Hotel_Metropole_te_Wenen,_RP-F-2001-7-732-4.jpg?width=600", "imgCap": "Hotel Métropole c. 1873–78", "imgCredit": "Rijksmuseum via Wikimedia Commons, CC0 1.0"}, "geometry": {"type": "Point", "coordinates": [16.3743, 48.21332]}}]}
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Sammellager Kleine Sperlgasse 2a",
+    "addr": "Kleine Sperlgasse 2a, 1020 Wien",
+    "desc": "Collection camp in the former Rothschild hospital; Jews were held here before deportation.",
+    "desc_de": "Sammellager im ehemaligen Rothschild-Spital; hier wurden Juden vor der Deportation festgehalten.",
+    "kind": "sammellager"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.37746,
+     48.21602
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Sammellager Castellezgasse 35",
+    "addr": "Castellezgasse 35, 1020 Wien",
+    "desc": "Collection camp used to concentrate Jews for deportation.",
+    "desc_de": "Sammellager zur Konzentrierung von Juden vor der Deportation.",
+    "kind": "sammellager"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.38035,
+     48.21969
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Sammellager Malzgasse 16",
+    "addr": "Malzgasse 16, 1020 Wien",
+    "desc": "Collection camp in the former Jewish school building.",
+    "desc_de": "Sammellager im ehemaligen jüdischen Schulgebäude.",
+    "kind": "sammellager"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.37686,
+     48.22048
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Aspangbahnhof (former)",
+    "addr": "Aspangstraße, 1030 Wien",
+    "desc": "Deportation trains to ghettos and camps departed from here (station demolished 1977).",
+    "desc_de": "Von hier fuhren die Deportationszüge in Ghettos und Lager (Bahnhof 1977 abgerissen).",
+    "kind": "deportation",
+    "img": "https://commons.wikimedia.org/wiki/Special:FilePath/Vienna_aspangbahnhof1905.jpg?width=600",
+    "imgCap": "Aspangbahnhof c. 1905",
+    "imgCredit": "Wikimedia Commons, public domain"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.39036,
+     48.19285
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Gestapo HQ Morzinplatz",
+    "addr": "Morzinplatz 4, 1010 Wien",
+    "desc": "Gestapo headquarters in the former Hotel Metropole.",
+    "desc_de": "Gestapo-Zentrale im ehemaligen Hotel Metropole.",
+    "kind": "perpetrator",
+    "img": "layers/img/hotel-metropole.jpg",
+    "imgCap": "Hotel Métropole c. 1873–78",
+    "imgCredit": "Rijksmuseum via Wikimedia Commons, CC0 1.0"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     16.3743,
+     48.21332
+    ]
+   }
+  }
+ ]
+}
