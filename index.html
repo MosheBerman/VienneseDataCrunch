@@ -1435,7 +1435,9 @@ async function renderResPage(seq){
   const pages = Math.max(1, Math.ceil(ids.length / PAGE_SIZE));
   if (resPage >= pages) resPage = pages - 1;
   const slice = ids.slice(resPage * PAGE_SIZE, (resPage + 1) * PAGE_SIZE);
-  box.innerHTML = '';
+  // Clear the sheet but keep the in-sheet search dock (mobile moves it here).
+  const dock = $('searchDock');
+  for (const c of Array.from(box.children)) if (c !== dock) c.remove();
   // header: count + minimize + dismiss (persistent, re-rendered per page)
   const head = document.createElement('div');
   head.id = 'resHead';
