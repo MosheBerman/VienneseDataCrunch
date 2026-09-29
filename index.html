@@ -98,6 +98,9 @@ header>*{pointer-events:auto;}
 .pp-occ{color:#4b5563;font-style:italic;margin:0 0 4px;}
 .pp-rescue{font-size:11px;color:#9f1239;font-style:italic;margin:2px 0 0;}
 .pp-addr{margin:0 0 2px;padding-bottom:8px;border-bottom:1px solid #eef0f2;font-size:16px;}
+.pp-img{margin:6px 0;}
+.pp-img img{width:100%;border-radius:8px;display:block;}
+.pp-img figcaption{font-size:11px;color:#6b7280;margin-top:3px;}
 .pp-meta{color:#6b7280;font-size:12px;margin-top:4px;}
 /* NOTE: .pp-list intentionally has NO top border. It is a scrollable region;
    a border pinned to its top edge reads as a line striking through the first
@@ -406,7 +409,7 @@ en: {
   pinFilter: "Pin quality filter",
   fltAll: "All pins", fltReg: "Registry or better", fltExact: "Exact only",
   licenseTitle: "Licensing",
-  licenseText1: "Scans: <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href=\"https://creativecommons.org/publicdomain/mark/1.0/\" target=\"_blank\" rel=\"noopener\">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution. <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Browse the original 1938 scan</a> page by page.",
+  licenseText1: "Scans: <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href=\"https://creativecommons.org/publicdomain/mark/1.0/\" target=\"_blank\" rel=\"noopener\">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution. <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Browse the original 1938 scan</a> page by page. Landmark images via <a href=\"https://commons.wikimedia.org\" target=\"_blank\" rel=\"noopener\">Wikimedia Commons</a>: Aspangbahnhof c.1905 (public domain); Hotel Métropole c.1873, Rijksmuseum (<a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0</a>).",
   licenseText2: "Map data extracted from the directory is released under <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0 Universal</a>.",
   siteVersion: "Site version",
   sourceLine: "Source: <a href=\"https://github.com/MosheBerman/VienneseDataCrunch\" target=\"_blank\" rel=\"noopener\">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>52957194</code>",
@@ -515,7 +518,7 @@ de: {
   pinFilter: "Filter nach Trefferqualität",
   fltAll: "Alle Markierungen", fltReg: "Registertreffer oder besser", fltExact: "Nur exakte Treffer",
   licenseTitle: "Lizenz",
-  licenseText1: "Scans: <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Wienbibliothek im Rathaus — Digitale Sammlung</a>. Die Lehmann-Bände von 1938 und 1942 sind mit der <a href=\"https://creativecommons.org/publicdomain/mark/1.0/\" target=\"_blank\" rel=\"noopener\">Public Domain Mark 1.0</a> gekennzeichnet; bitte nennen Sie bei einer Weiterverwendung der Scans die Wienbibliothek im Rathaus als besitzende Institution. <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Den Originalscan von 1938</a> Seite für Seite durchblättern.",
+  licenseText1: "Scans: <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Wienbibliothek im Rathaus — Digitale Sammlung</a>. Die Lehmann-Bände von 1938 und 1942 sind mit der <a href=\"https://creativecommons.org/publicdomain/mark/1.0/\" target=\"_blank\" rel=\"noopener\">Public Domain Mark 1.0</a> gekennzeichnet; bitte nennen Sie bei einer Weiterverwendung der Scans die Wienbibliothek im Rathaus als besitzende Institution. <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/21579\" target=\"_blank\" rel=\"noopener\">Den Originalscan von 1938</a> Seite für Seite durchblättern. Bilder der Landmarken via <a href=\"https://commons.wikimedia.org\" target=\"_blank\" rel=\"noopener\">Wikimedia Commons</a>: Aspangbahnhof um 1905 (gemeinfrei); Hotel Métropole um 1873, Rijksmuseum (<a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0</a>).",
   licenseText2: "Die aus dem Adressbuch extrahierten Kartendaten stehen unter <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0 Universal</a>.",
   siteVersion: "Website-Version",
   sourceLine: "Quelle: <a href=\"https://github.com/MosheBerman/VienneseDataCrunch\" target=\"_blank\" rel=\"noopener\">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>52957194</code>",
@@ -1021,11 +1024,15 @@ async function setOverlayLayer(id, on){
         map.addLayer({id: 'ovl-' + id, type: 'line', source: 'ov-' + id,
           filter: ['==', ['geometry-type'], 'LineString'],
           paint: {'line-color': def.color, 'line-width': 5, 'line-opacity': 0.55}});
+        // invisible fat line underneath: reliable tap target on touch screens
+        map.addLayer({id: 'ovl-' + id + '-hit', type: 'line', source: 'ov-' + id,
+          filter: ['==', ['geometry-type'], 'LineString'],
+          paint: {'line-color': def.color, 'line-width': 24, 'line-opacity': 0}});
         map.addLayer({id: 'ovl-' + id + '-pt', type: 'circle', source: 'ov-' + id,
           filter: ['==', ['geometry-type'], 'Point'],
           paint: {'circle-color': def.color, 'circle-radius': def.r,
                   'circle-stroke-width': 2, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
-        st.layers = ['ovl-' + id, 'ovl-' + id + '-pt'];
+        st.layers = ['ovl-' + id, 'ovl-' + id + '-hit', 'ovl-' + id + '-pt'];
       } else {
         map.addLayer({id: 'ovl-' + id, type: 'circle', source: 'ov-' + id,
           paint: {'circle-color': def.color, 'circle-radius': def.r,
@@ -1085,6 +1092,8 @@ function openOverlayPopup(id, f){
     const desc = (LANG === 'de' && p.desc_de) ? p.desc_de : p.desc;
     h = '<div class="pp"><div class="pp-name">' + esc(p.name) + '</div>' +
       '<div class="pp-addr">' + esc(p.addr) + '</div>' +
+      (p.img ? '<figure class="pp-img"><img src="' + esc(p.img) + '" alt="' + esc(p.imgCap || p.name) + '" loading="lazy">' +
+        '<figcaption>' + esc(p.imgCap || '') + (p.imgCredit ? ' · ' + esc(p.imgCredit) : '') + '</figcaption></figure>' : '') +
       '<div class="pp-meta">' + esc(desc) + '</div></div>';
   }
   new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(f.geometry.coordinates).setHTML(h).addTo(map);
