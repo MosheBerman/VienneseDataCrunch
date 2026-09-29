@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Lehmann 1938 · Vienna Address Map</title>
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.js"></script>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.css" rel="stylesheet">
@@ -17,6 +17,8 @@ header>*{pointer-events:auto;}
 #q{flex:1;min-width:110px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:8px 10px;font-size:15px;transition:flex-grow .22s ease;}
 #q::placeholder{color:#9ca3af;}
 #q:focus{outline:none;border-color:#93c5fd;background:rgba(255,255,255,.14);flex-grow:5;}
+/* Desktop: the dock wrapper vanishes so #q/#resPill lay out in the header as before. */
+#searchDock{display:contents;}
 #yrPick{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:none;border-radius:8px;color:#111827;font-weight:700;font-size:15px;cursor:pointer;min-height:44px;padding:8px 28px 8px 12px;}
 #yrPick option{color:#111827;}
 #shareBtn{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid #d1d5db;background:#fff;
@@ -34,10 +36,23 @@ header>*{pointer-events:auto;}
 .rowsnip img{position:absolute;max-width:none;}
 .rowsnip-frame{position:absolute;left:0;right:0;border:2px solid #dc2626;box-sizing:border-box;pointer-events:none;}
 @media (max-width:640px){
-  header{flex-direction:column;align-items:stretch;}
-  .brand{max-width:none;flex-wrap:wrap;}
-  #q{flex:1 1 100%;min-width:0;}
-  .hctl{align-self:flex-end;}
+  /* iOS-style: slim top bar (brand + year + buttons), search in a bottom dock. */
+  header{flex-direction:row;align-items:center;top:8px;left:8px;right:8px;}
+  .brand{max-width:none;padding:6px 8px 6px 12px;}
+  .brand-name{font-size:13px;}
+  #searchDock{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:7;
+    display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.94);
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+    border-radius:16px;padding:8px;box-shadow:0 6px 24px rgba(0,0,0,.28);}
+  body.res-open #searchDock,body.follow-open #searchDock{display:none;}
+  #searchDock #q{flex:1 1 auto;min-width:0;background:#eef0f3;border:none;color:#111827;border-radius:10px;
+    padding:12px 14px;font-size:16px;}
+  #searchDock #q::placeholder{color:#6b7280;}
+  #searchDock #q:focus{background:#e8ebef;flex-grow:1;}
+  #searchDock #resPill{flex:0 0 auto;}
+  .hctl{align-self:center;}
+  /* Lift Mapbox's bottom-right controls above the search dock. */
+  .mapboxgl-ctrl-bottom-right{bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;}
 }
 #results{position:absolute;top:56px;left:10px;right:10px;z-index:6;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);max-height:50vh;overflow:auto;display:none;}
 /* Desktop split view: results become a left sidebar and the map is pushed
@@ -213,8 +228,10 @@ header>*{pointer-events:auto;}
 <div id="boot"><div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div></div>
 <header>
   <div class="brand">
+    <div id="searchDock">
     <input id="q" type="search" placeholder="/ to search" autocomplete="off" data-i18n-ph="searchPh">
     <div id="resPill" role="button" aria-label="Show search results" data-i18n-aria="showResultsAria"></div>
+    </div>
     <span class="brand-name">Lehmann <small data-i18n="brandVienna">· Vienna</small></span>
     <select id="yrPick" aria-label="Year" data-i18n-aria="yearAria"></select>
   </div>
@@ -238,12 +255,12 @@ header>*{pointer-events:auto;}
 <div id="aboutOverlay"><div id="aboutBox">
 <button id="aboutClose" data-i18n="aboutClose">Close</button>
 <div class="tabs" role="tablist">
-<button class="tab" data-tab="settings" role="tab" data-i18n="tabSettings">Settings</button>
-<button class="tab active" data-tab="about" role="tab" data-i18n="tabAbout">About</button>
+<button class="tab active" data-tab="settings" role="tab" data-i18n="tabSettings">Settings</button>
+<button class="tab" data-tab="about" role="tab" data-i18n="tabAbout">About</button>
 <button class="tab" data-tab="research" role="tab" data-i18n="tabResearch">Research</button>
 <button class="tab" data-tab="license" role="tab" data-i18n="tabLicense">Licensing</button>
 </div>
-<div class="tabpage active" id="tab-about">
+<div class="tabpage" id="tab-about">
 <h2 data-i18n="aboutTitle">About this map</h2>
 <p class="about-stats"><b id="aboutCount">—</b> <span data-i18n="peopleWord">people</span> · <b id="aboutAcount">—</b> <span data-i18n="addressesWord">addresses</span><br>
 <span class="about-legend"><span style="color:#2563eb">●</span> <span data-i18n="legendExact">exact registry match</span> · <span style="color:#7c3aed">●</span> <span data-i18n="legendRegistry">registry match</span> · <span style="color:#d97706">●</span> <span data-i18n="legendFuzzy">fuzzy street match</span> · <span style="color:#e11d48">◯</span> <span data-i18n="legendInferred">inferred street name</span></span></p>
@@ -276,7 +293,7 @@ header>*{pointer-events:auto;}
 <li><a href="research/lighting/" data-i18n="r4t">Scan preprocessing experiments</a><br><span data-i18n="r4d">Gallery of the lighting-correction algorithms tested to improve OCR, each labeled under its images.</span></li>
 </ul>
 </div>
-<div class="tabpage" id="tab-settings">
+<div class="tabpage active" id="tab-settings">
 <h2 data-i18n="settingsTitle">Research settings</h2>
 <div class="setrow"><label for="langPick" style="flex:1"><b data-i18n="languageLabel">Language</b><small data-i18n="languageDesc">Interface language.</small></label><select id="langPick" aria-label="Language"><option value="en">English</option><option value="de">Deutsch</option></select></div>
 <div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b data-i18n="setB2t">Green dots — 1938 Band 2 preview</b><small data-i18n="setB2d">Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
@@ -1235,6 +1252,7 @@ function minimizeResults(){
   const open = box.style.display === 'block' && resIds.length > 0;
   box.style.display = 'none';
   box.style.height = '';
+  document.body.classList.remove('res-open');
   splitOff();
   if (!open) { pill.style.display = 'none'; return; }
   pill.innerHTML = '';
@@ -1261,6 +1279,7 @@ function showResultsBox(){
     box.style.top = '';
   }
   box.style.display = 'block';
+  document.body.classList.add('res-open');
   if (wasHidden) {
     box.classList.remove('unfurl');
     void box.offsetWidth;
@@ -1284,6 +1303,7 @@ function dismissResults(){
   resIds = []; resRows = []; resHl = -1; resPage = 0; resFilter = 'all'; resFieldHits = null;
   const box = $('results');
   box.innerHTML = ''; box.style.display = 'none'; box.style.height = ''; box.style.top = '';
+  document.body.classList.remove('res-open');
   $('resPill').style.display = 'none';
   splitOff();
 }
@@ -1570,7 +1590,7 @@ function switchTab(name){
   document.querySelectorAll('.tabpage').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
-$('infoBtn').addEventListener('click', () => { switchTab('about'); $('aboutOverlay').style.display = 'flex'; });
+$('infoBtn').addEventListener('click', () => { switchTab('settings'); $('aboutOverlay').style.display = 'flex'; });
 $('aboutClose').addEventListener('click', () => $('aboutOverlay').style.display = 'none');
 $('aboutOverlay').addEventListener('click', e => {
   if (e.target.id === 'aboutOverlay') $('aboutOverlay').style.display = 'none';
@@ -1898,6 +1918,7 @@ async function startFollow(year, id){
   const panel = $('followPanel');
   panel.style.display = 'block';
   panel.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('follow-open');
   document.querySelector('.fw-name').textContent = fwSrcName;
   document.querySelector('.fw-sub').textContent =
     [src.o, fwAddr(src)].filter(Boolean).join(' \u00b7 ') + ' \u00b7 ' + year;
@@ -1985,6 +2006,7 @@ function fwClose(){
   const p = $('followPanel');
   p.style.display = 'none';
   p.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('follow-open');
 }
 $('fwPlay').addEventListener('click', fwTogglePlay);
 $('fwClose').addEventListener('click', fwClose);
