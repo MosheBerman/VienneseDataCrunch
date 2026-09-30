@@ -279,6 +279,16 @@ header>*{pointer-events:auto;}
 #corrMsg{font-size:13px;margin-top:10px;min-height:18px;color:#065f46;}
 #corrMsg.err{color:#b91c1c;}
 .corr-link{background:none;border:none;padding:0;color:#2563eb;font-size:13px;cursor:pointer;text-decoration:underline;font-family:inherit;}
+.corr-pill{display:inline-block;font-size:10px;font-weight:700;color:#065f46;background:#d1fae5;border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:middle;white-space:nowrap;}
+/* ---- Mobile record-details bottom sheet (iOS-style) ------------------------ */
+#infoSheet{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-radius:16px 16px 0 0;
+  box-shadow:0 -4px 24px rgba(0,0,0,.25);padding:8px 18px calc(18px + env(safe-area-inset-bottom));
+  max-height:62vh;overflow:auto;animation:sheetup .25s ease-out;}
+.is-grab{width:40px;height:5px;border-radius:3px;background:#d1d5db;margin:4px auto 10px;}
+#infoSheetClose{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:1px solid #d1d5db;background:#fff;font-size:16px;cursor:pointer;color:#111827;padding:0;}
+.is-name{font-weight:700;font-size:17px;padding-right:44px;}
+.is-meta{color:#6b7280;font-size:13px;margin:4px 0 12px;}
+@media(min-width:641px){#infoSheet{display:none !important;}}
 </style>
 </head>
 <body>
@@ -309,6 +319,11 @@ header>*{pointer-events:auto;}
   <div class="fw-status"></div>
   <div class="fw-years"></div>
   <div class="fw-alts" style="display:none"></div>
+</div>
+<div id="infoSheet" style="display:none" aria-hidden="true">
+  <div class="is-grab"></div>
+  <button id="infoSheetClose" aria-label="Close">&#10005;</button>
+  <div class="is-body"></div>
 </div>
 <div id="aboutOverlay"><div id="aboutBox">
 <div class="sheet-head">
@@ -479,6 +494,8 @@ en: {
   qFuzzy: "fuzzy street match",
   viewInScan: "View in scan",
   suggestCorrection: "Suggest correction",
+  corrPill: "corrected",
+  corrPillTitle: "This entry includes an approved correction",
   corrTitle: "Suggest a correction",
   corrCurrent: "Current entry:",
   corrOriginal: "Original:",
@@ -599,6 +616,8 @@ de: {
   qFuzzy: "ungefähre Straßenübereinstimmung",
   viewInScan: "Im Scan ansehen",
   suggestCorrection: "Korrektur vorschlagen",
+  corrPill: "korrigiert",
+  corrPillTitle: "Dieser Eintrag enthält eine übernommene Korrektur",
   corrTitle: "Korrektur vorschlagen",
   corrCurrent: "Aktueller Eintrag:",
   corrOriginal: "Original:",
@@ -695,6 +714,35 @@ const YEARS = {
   '1941': {kind: 'layer', dir: 'data41', shard: 1000, geojson: 'data41/points.geojson', label: '1941'},
   '1942': {kind: 'layer', dir: 'data42', shard: 1000, geojson: 'data42/points.geojson', label: '1942'},
 };
+// ---- corrections overlay --------------------------------------------------
+// corrections.json maps "<year>:<lineid>" -> {s,g,o,u,st,hn}. It is merged
+// into records at shard-load time so popups, search rows and follow-this-person
+// all see corrected values. Corrected records get r._corr = 1 (pill badge).
+let CORR = null;
+const corrReady = fetch('corrections.json').then(r => r.ok ? r.json() : {}).catch(() => ({}))
+  .then(j => { CORR = j || {}; });
+function corrYearOfDir(dir){
+  for (const y in YEARS) if (YEARS[y].dir === dir) return y;
+  return null;
+}
+async function applyCorrToShard(dir, sh){
+  if (!sh) return sh;
+  await corrReady;
+  const y = corrYearOfDir(dir);
+  if (y == null) return sh;
+  for (const id in sh){
+    const o = CORR[y + ':' + id];
+    if (o && typeof o === 'object'){
+      const r = sh[id];
+      for (const k of ['s','g','o','u','st','hn']) if (o[k] != null && o[k] !== '') r[k] = o[k];
+      r._corr = 1;
+    }
+  }
+  return sh;
+}
+function corrPill(r){
+  return (r && r._corr) ? ' <span class="corr-pill" title="' + esc(t('corrPillTitle')) + '">' + esc(t('corrPill')) + '</span>' : '';
+}
 const RESEARCH_VIEWS = [
   {id: 'family', label: 'Family migration demo (1938–1942)', url: 'research/family/index.html'},
 ];
@@ -784,15 +832,16 @@ function corrDisplay(r){
 function corrKeyFor(r){
   if (r._id == null) return null;
   const key = CUR_YEAR + ':' + r._id;
-  corrCache.set(key, {s: r.s, g: r.g, o: r.o, st: r.st, hn: r.hn, u: r.u, d: r.d, pg: r.pg, rid: r._id});
+  corrCache.set(key, {s: r.s, g: r.g, o: r.o, st: r.st, hn: r.hn, u: r.u, d: r.d, pg: r.pg, rid: r._id, m: r.m});
   return key;
 }
 // circled-i button (lives in the .pp-act row). The info body is rendered
 // separately by ppInfoBody() as a direct child of the record card, so it can
 // reserve its width even while collapsed.
 function ppInfoBtn(r){
-  if (!corrKeyFor(r)) return '';
-  return '<button class="pp-info" onclick="togglePpInfo(this)" aria-label="' + t('recordDetails') + '">i</button>';
+  const key = corrKeyFor(r);
+  if (!key) return '';
+  return '<button class="pp-info" data-key="' + esc(key) + '" onclick="infoTap(this)" aria-label="' + t('recordDetails') + '">i</button>';
 }
 function ppInfoBody(r){
   if (r._id == null) return '';
@@ -813,6 +862,25 @@ function togglePpInfo(btn){
   const wrap = btn.closest('.pp-row, .pp-single');
   const body = wrap && wrap.querySelector('.pp-info-body');
   if (body) body.classList.toggle('open');
+}
+// Mobile: the circled-i opens the record details in a bottom sheet (iOS-style),
+// like the search results sheet, instead of the expanding popover.
+function infoTap(btn){
+  if (!isDesktop()) openInfoSheet(btn.getAttribute('data-key'));
+  else togglePpInfo(btn);
+}
+function openInfoSheet(key){
+  const r = corrCache.get(key) || {};
+  const body = $('infoSheet').querySelector('.is-body');
+  body.innerHTML = '<div class="is-name">' + esc(corrDisplay(r)) + '</div>' +
+    '<div class="is-meta">' + esc(YC().label) + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>' +
+    '<div><button class="corr-link" onclick="openCorr(\'' + String(key).replace(/'/g, "\\'") + '\');closeInfoSheet();">' + t('suggestCorrection') + '</button></div>';
+  $('infoSheet').style.display = 'block';
+  $('infoSheet').setAttribute('aria-hidden', 'false');
+}
+function closeInfoSheet(){
+  $('infoSheet').style.display = 'none';
+  $('infoSheet').setAttribute('aria-hidden', 'true');
 }
 // "Follow this person" button for record popups. data-follow-year/id are read
 // by the delegated handler in the follow-person section below.
@@ -1359,7 +1427,7 @@ map.on('load', async () => {
 
 function popupHTML(r){
   let h = '<div class="pp pp-single' + (r.u ? ' pp-tuer' : '') + '">' + tuerPill(r) +
-    '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>';
+    '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
   h += rescueLine(r) + rowSnippetPH(r) + '<div class="pp-act">' + viewOriginalLink(r) + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
@@ -1471,7 +1539,7 @@ async function openGroupPopup(f, highlightId){
     const tp = r.u ? ' pp-tuer' : '';
     const snip = rowSnippetPH(r);
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
-      '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + '</div>' +
+      '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
       snip + '<div class="pp-act">' + viewOriginalLink(r) + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
   }
@@ -1489,7 +1557,8 @@ async function getRecord(id){
   if (shardCache[key] === undefined) {
     if (!shardFlight[key]) {
       shardFlight[key] = fetch(dir + '/records/' + sh + '.json')
-        .then(r => r.ok ? r.json() : null).catch(() => null);
+        .then(r => r.ok ? r.json() : null).catch(() => null)
+        .then(recs => applyCorrToShard(dir, recs));
     }
     shardCache[key] = await shardFlight[key];
   }
@@ -1743,7 +1812,7 @@ async function renderResPage(seq){
     if (!rec) continue;
     const d = document.createElement('div');
     d.className = 'rrow';
-    d.innerHTML = '<b>' + esc(rec.s || '') + '</b>' + (rec.g ? ', ' + esc(rec.g) : '') + ezPill(rec) +
+    d.innerHTML = '<b>' + esc(rec.s || '') + '</b>' + (rec.g ? ', ' + esc(rec.g) : '') + ezPill(rec) + corrPill(rec) +
       '<div class="r-sub">' + esc(rec.st || '') + ' ' + esc(rec.hn || '') +
       (rec.d ? ' ' + bezPill(rec) : '') + (rec.o ? ' \u00b7 ' + esc(rec.o) : '') + '</div>';
     const row = {el: d, id: +id, rec: rec};
@@ -2086,7 +2155,7 @@ async function fwGetRec(year, id){
   if (!c[sh]){
     const res = await fetch(dir + '/records/' + sh + '.json');
     if (!res.ok) return null;
-    c[sh] = await res.json();
+    c[sh] = await applyCorrToShard(dir, await res.json());
   }
   return c[sh][String(id)] || null;
 }
@@ -2596,8 +2665,10 @@ function fwClose(){
 }
 $('fwPlay').addEventListener('click', fwTogglePlay);
 $('fwClose').addEventListener('click', fwClose);
+$('infoSheetClose').addEventListener('click', closeInfoSheet);
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('followPanel').style.display === 'block') fwClose();
+  if (e.key === 'Escape' && $('infoSheet').style.display === 'block') closeInfoSheet();
 });
 document.addEventListener('click', e => {
   const b = e.target.closest ? e.target.closest('[data-follow-id]') : null;
