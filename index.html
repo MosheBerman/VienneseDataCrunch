@@ -2601,6 +2601,7 @@ async function fwAnimateJourney(){
     const c = [];
     for (let j = 0; j + 1 < rn.length; j++){
       const p0 = stopPt(fwStops[rn[j]]), p1 = stopPt(fwStops[rn[j + 1]]);
+      if (fwSamePlace(p0, p1)) continue; // same building: no leg, like the animation
       const leg = legPaths[rn[j]] || [[p0.lng, p0.lat], [p1.lng, p1.lat]];
       for (let k = 0; k < leg.length; k++){
         if (c.length && k === 0) continue; // skip the joint duplicate
@@ -2611,7 +2612,8 @@ async function fwAnimateJourney(){
   };
   const fc = {type: 'FeatureCollection', features: [
     ...runs.filter(r => r.length > 1).map(r => ({type: 'Feature', properties: {},
-      geometry: {type: 'LineString', coordinates: runCoords(r)}})),
+      geometry: {type: 'LineString', coordinates: runCoords(r)}}))
+      .filter(f => f.geometry.coordinates.length > 1),
     ...pts.map(p => ({type: 'Feature', properties: {year: String(p.year)},
       geometry: {type: 'Point', coordinates: [p.lng, p.lat]}}))
   ]};
