@@ -127,8 +127,25 @@ header>*{pointer-events:auto;}
 .pp-single.pp-tuer{padding-right:74px;}
 .pp-links div{margin:0;}
 #aboutOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;display:none;align-items:center;justify-content:center;padding:18px;}
-#aboutBox{background:#fff;border-radius:14px;max-width:620px;max-height:85vh;overflow:auto;padding:24px 26px;box-shadow:0 8px 40px rgba(0,0,0,.35);}
-#aboutBox h2{margin:0 0 4px;font-size:20px;}
+#aboutOverlay.open{display:flex;}
+#aboutBox{background:#fff;border-radius:14px;width:100%;max-width:620px;max-height:85vh;max-height:85dvh;
+  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.35);
+  transform:translateY(48px);opacity:0;transition:transform .32s cubic-bezier(.32,.72,0,1),opacity .25s ease;}
+#aboutOverlay.open #aboutBox{transform:translateY(0);opacity:1;}
+.sheet-head{flex:0 0 auto;background:#fff;padding:10px 14px 0;border-bottom:1px solid #e5e7eb;z-index:3;position:relative;}
+.sheet-head .tabs{border-bottom:none;margin:0;padding-right:76px;}
+#aboutClose{position:absolute;top:12px;right:14px;border:none;background:#f3f4f6;border-radius:8px;padding:8px 14px;font-size:14px;cursor:pointer;z-index:4;}
+.sheet-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 26px 26px;}
+.tabpage>h2{position:sticky;top:0;background:#fff;z-index:2;padding:14px 0 8px;margin:0 0 4px;font-size:20px;}
+@media (max-width:640px){
+  /* Mobile: the sheet slides up full-screen, like a native popover sheet. */
+  #aboutOverlay{padding:0;align-items:stretch;justify-content:stretch;}
+  #aboutBox{max-width:none;max-height:none;height:100%;height:100dvh;border-radius:0;
+    transform:translateY(100%);}
+  #aboutOverlay.open #aboutBox{transform:translateY(0);}
+  .sheet-head{padding-top:calc(10px + env(safe-area-inset-top));}
+  .sheet-body{padding:0 18px calc(24px + env(safe-area-inset-bottom));}
+}
 #aboutBox h3{margin:12px 0 4px;font-size:13px;}
 .about-stats{margin:8px 0;}
 .about-legend{font-size:12px;color:#4b5563;}
@@ -143,7 +160,6 @@ header>*{pointer-events:auto;}
 
 #aboutBox h3{margin:16px 0 6px;font-size:15px;}
 #aboutBox p{font-size:14px;line-height:1.6;color:#1f2937;margin:8px 0;}
-#aboutClose{float:right;border:none;background:#f3f4f6;border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer;}
 @media (max-width:640px){.brand-name{font-size:13px;}#q{font-size:16px;}}
 .spin{width:34px;height:34px;border-radius:50%;border:4px solid rgba(0,0,0,.12);border-top-color:#1a73e8;animation:spn .8s linear infinite;}
 .spin.sm{width:20px;height:20px;border-width:3px;}
@@ -291,6 +307,7 @@ header>*{pointer-events:auto;}
   <div class="fw-alts" style="display:none"></div>
 </div>
 <div id="aboutOverlay"><div id="aboutBox">
+<div class="sheet-head">
 <button id="aboutClose" data-i18n="aboutClose">Close</button>
 <div class="tabs" role="tablist">
 <button class="tab active" data-tab="settings" role="tab" data-i18n="tabSettings">Settings</button>
@@ -298,6 +315,8 @@ header>*{pointer-events:auto;}
 <button class="tab" data-tab="research" role="tab" data-i18n="tabResearch">Research</button>
 <button class="tab" data-tab="license" role="tab" data-i18n="tabLicense">Licensing</button>
 </div>
+</div>
+<div class="sheet-body">
 <div class="tabpage" id="tab-about">
 <h2 data-i18n="aboutTitle">About this map</h2>
 <p class="about-stats"><b id="aboutCount">—</b> <span data-i18n="peopleWord">people</span> · <b id="aboutAcount">—</b> <span data-i18n="addressesWord">addresses</span><br>
@@ -339,7 +358,7 @@ header>*{pointer-events:auto;}
 <div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b data-i18n="setResearchT">Show Research section in the year picker</b><small data-i18n="setResearchD">Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b data-i18n="setInferT">Rose ring — inferred street names</b><small data-i18n="setInferD">Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setRenames"><label for="setRenames"><b data-i18n="setRenamesT">Renamed streets — Nazi-era &rarr; modern</b><small data-i18n="setRenamesD">Streets the Nazis renamed, traced as lines through directory addresses that used the old name.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setBookNames"><label for="setBookNames"><b data-i18n="setBookNamesT">Nazi-era names from the book</b><small data-i18n="setBookNamesD">Streets listed under their Nazi-era name in the current year's book, traced as lines along the modern street.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setBookNames"><label for="setBookNames"><b data-i18n="setBookNamesT">Nazi-era names from the book</b><small data-i18n="setBookNamesD">The Nazi street renames, traced for the current year's book — 1938 shows what the book's streets were renamed to; 1939–41 show the book's Nazi-era names against modern names.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setSites"><label for="setSites"><b data-i18n="setSitesT">Historical sites — Sammellager &amp; deportations</b><small data-i18n="setSitesD">Hand-picked: collection camps, the Aspangbahnhof deportation point, Gestapo HQ.</small></label></div>
 <h3 data-i18n="mapSection">Map</h3>
 <p><label for="flt"><b data-i18n="pinFilter">Pin quality filter</b></label><br>
@@ -359,6 +378,7 @@ header>*{pointer-events:auto;}
 <p><a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">Mapbox GL JS</a> v3.30.0 — BSD 3-Clause.</p>
 <h3 data-i18n="creditTitle">Credit</h3>
 <p data-i18n="creditText">Built by Muse by Meta, working with Moshe Berman.</p>
+</div>
 </div>
 </div></div>
 <script>window.MAPBOX_TOKEN="pk.eyJ1IjoibW9zaGViZXJtYW5uIiwiYSI6ImNtdHc5a21odDA0aGMzNG9vNnF6Z3Z6cjAifQ.iO_N_QmWcIANN2aRrfXl_Q";</script>
@@ -430,11 +450,12 @@ en: {
   setRenamesT: "Renamed streets — Nazi-era → modern",
   setRenamesD: "Streets the Nazis renamed, traced along the modern street.",
   setBookNamesT: "Nazi-era names from the book",
-  setBookNamesD: "Streets listed under their Nazi-era name in the current year's book, traced as lines along the modern street.",
+  setBookNamesD: "The Nazi street renames, traced for the current year's book — 1938 shows what the book's streets were renamed to; 1939–41 show the book's Nazi-era names against modern names.",
   setSitesT: "Historical sites — Sammellager & deportations",
   setSitesD: "Hand-picked: collection camps, the Aspangbahnhof deportation point, Gestapo HQ.",
   renamedMeta: "{n} book addresses rescued through this rename",
   bookNameMeta: "Listed under its Nazi-era name in {year} · {n} records · modern: {new}",
+  bookNameMeta38: "Nazi rename of this 1938 street name · {n} directory addresses",
   mapSection: "Map",
   pinFilter: "Pin quality filter",
   fltAll: "All pins", fltReg: "Registry or better", fltExact: "Exact only",
@@ -548,11 +569,12 @@ de: {
   setRenamesT: "Umbenannte Straßen — NS-Zeit → heute",
   setRenamesD: "Von den Nazis umbenannte Straßen, entlang der heutigen Straße nachgezeichnet.",
   setBookNamesT: "NS-Straßennamen aus dem Buch",
-  setBookNamesD: "Straßen, die im aktuellen Jahrgang unter ihrem NS-Namen verzeichnet sind, als Linien entlang der heutigen Straße.",
+  setBookNamesD: "Die NS-Straßenumbenennungen, eingezeichnet für den aktuellen Jahrgang — 1938 zeigt, wie die Straßen des Buches umbenannt wurden; 1939–41 zeigen die NS-Namen des Buches gegenüber den heutigen Namen.",
   setSitesT: "Historische Orte — Sammellager u. Deportationen",
   setSitesD: "Handverlesen: Sammellager, Deportationsbahnhof Aspangbahnhof, Gestapo-Zentrale.",
   renamedMeta: "{n} Buchadressen über diese Umbenennung zugeordnet",
   bookNameMeta: "Im {year}-er Buch unter NS-Namen verzeichnet · {n} Einträge · heute: {new}",
+  bookNameMeta38: "NS-Umbenennung dieses Straßennamens von 1938 · {n} Bucheinträge",
   mapSection: "Karte",
   pinFilter: "Filter nach Trefferqualität",
   fltAll: "Alle Markierungen", fltReg: "Registertreffer oder besser", fltExact: "Nur exakte Treffer",
@@ -1230,12 +1252,16 @@ async function setOverlayLayer(id, on){
   return true;
 }
 // (old,new) pair keys for the line features in a booknames year file.
+// Both directions are keyed: the 1938 file stores (book name -> Nazi rename),
+// reversed against the label source's (Nazi -> modern) pairs.
 function booknamePairs(data){
   const s = new Set();
   for (const f of (data.features || [])){
     const g = f.geometry && f.geometry.type;
-    if (g === 'LineString' || g === 'MultiLineString')
+    if (g === 'LineString' || g === 'MultiLineString'){
       s.add(f.properties.old + '|' + f.properties.new);
+      s.add(f.properties.new + '|' + f.properties.old);
+    }
   }
   return [...s];
 }
@@ -1248,17 +1274,16 @@ function booknameLabelFilter(lid, st){
     booknamePairFilter(st)];
 }
 function addSiteLabels(id, st){
-  // Landmark labels: visible from z11 (hand-picked, only five); on desktop
-  // hover the hovered site's label shows at any zoom; on touch, tapping a pin
-  // toggles it.
+  // Landmark labels: persistent — always rendered while the sites overlay is
+  // on, at any zoom (hand-picked, only five). On desktop hover the hovered
+  // site's label shows at any zoom; on touch, tapping a pin toggles it.
   const src = 'ov-' + id, HL = 'ovl-sites-label-hover';
   const layout = {'text-field': ['get', 'name'], 'text-size': 12,
     'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
     'text-offset': [0, 1.4], 'text-anchor': 'top'};
   const paint = {'text-color': '#111827', 'text-halo-color': '#fff', 'text-halo-width': 1.5};
   map.addLayer({id: 'ovl-sites-label', type: 'symbol', source: src,
-    filter: ['<=', ['get', 'zmin'], ['zoom']],
-    layout: Object.assign({'text-allow-overlap': false}, layout), paint: paint});
+    layout: Object.assign({'text-allow-overlap': true, 'text-ignore-placement': true}, layout), paint: paint});
   map.addLayer({id: HL, type: 'symbol', source: src,
     filter: ['==', ['get', 'name'], ''],
     layout: Object.assign({'text-allow-overlap': true}, layout), paint: paint});
@@ -1280,9 +1305,12 @@ function openOverlayPopup(id, f, lngLat){
       '<div class="pp-meta">' + esc(t('renamedMeta', {n: p.n})) + '</div></div>';
   } else if (id === 'booknames'){
     const addr = [p.st, p.hn].filter(Boolean).join(' ');
-    h = '<div class="pp"><div class="pp-name">' + esc(p.old) + '</div>' +
+    // 1938 pairs are reversed (book name -> Nazi rename); later years are
+    // (Nazi name in book -> modern name).
+    const rev = String(p.year || '') === '1938';
+    h = '<div class="pp"><div class="pp-name">' + esc(p.old) + ' → ' + esc(p.new) + '</div>' +
       (addr ? '<div class="pp-addr">' + esc(addr) + '</div>' : '') +
-      '<div class="pp-meta">' + esc(t('bookNameMeta', {year: p.year, n: p.n, new: p.new})) + '</div></div>';
+      '<div class="pp-meta">' + esc(t(rev ? 'bookNameMeta38' : 'bookNameMeta', {year: p.year, n: p.n, new: p.new})) + '</div></div>';
   } else {
     const desc = (LANG === 'de' && p.desc_de) ? p.desc_de : p.desc;
     h = '<div class="pp"><div class="pp-name">' + esc(p.name) + '</div>' +
@@ -1905,7 +1933,7 @@ $('q').addEventListener('keydown', e => {
 });
 let pinNavIdx = -1;
 function navPins(dir){
-  if ($('aboutOverlay').style.display === 'flex') return;
+  if (sheetOpen()) return;
   let feats = [];
   try { feats = map.queryRenderedFeatures({layers: ['unclustered-point']}); } catch (err) { return; }
   if (!feats.length) return;
@@ -1917,7 +1945,7 @@ document.addEventListener('keydown', e => {
   const t = e.target;
   const editable = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
   if (e.metaKey || e.ctrlKey || e.altKey) return;
-  if ($('aboutOverlay').style.display === 'flex') return;
+  if (sheetOpen()) return;
   if (e.key === '/' && !editable) { e.preventDefault(); $('q').focus(); return; }
   if (!editable && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
     e.preventDefault();
@@ -1932,10 +1960,23 @@ function switchTab(name){
   document.querySelectorAll('.tabpage').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
-$('infoBtn').addEventListener('click', () => { switchTab('settings'); $('aboutOverlay').style.display = 'flex'; });
-$('aboutClose').addEventListener('click', () => $('aboutOverlay').style.display = 'none');
+// Sheet open/close with a slide-up animation (native sheet feel on mobile).
+function openSheet(){
+  const ov = $('aboutOverlay');
+  ov.style.display = 'flex';
+  void ov.offsetWidth; // reflow so the transform transition runs
+  ov.classList.add('open');
+}
+function closeSheet(){
+  const ov = $('aboutOverlay');
+  ov.classList.remove('open');
+  setTimeout(() => { if (!ov.classList.contains('open')) ov.style.display = 'none'; }, 340);
+}
+function sheetOpen(){ return $('aboutOverlay').classList.contains('open'); }
+$('infoBtn').addEventListener('click', () => { switchTab('settings'); openSheet(); });
+$('aboutClose').addEventListener('click', closeSheet);
 $('aboutOverlay').addEventListener('click', e => {
-  if (e.target.id === 'aboutOverlay') $('aboutOverlay').style.display = 'none';
+  if (e.target.id === 'aboutOverlay') closeSheet();
 });
 
 // ---- Follow this person: cross-year person matching ------------------------
