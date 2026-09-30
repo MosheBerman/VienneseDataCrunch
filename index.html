@@ -1592,11 +1592,27 @@ function showPointSheet(html){
   sh.style.display = 'block';
   sh.setAttribute('aria-hidden', 'false');
   hydrateSnippets(body);
+  dockFollowPanel(); // keep the follow panel above the sheet while it's open
+}
+// While the point sheet is open on mobile, the follow panel docks above it;
+// when the sheet closes it drops back to the bottom of the screen.
+function dockFollowPanel(){
+  const panel = $('followPanel');
+  if (panel.style.display !== 'block') return;
+  const sh = $('pointSheet');
+  if (!isDesktop() && sh.style.display === 'block') {
+    panel.style.zIndex = '45';
+    panel.style.bottom = (sh.offsetHeight + 10) + 'px';
+  } else {
+    panel.style.zIndex = '';
+    panel.style.bottom = '';
+  }
 }
 function closePointSheet(){
   pointSheetSeq++;
   $('pointSheet').style.display = 'none';
   $('pointSheet').setAttribute('aria-hidden', 'true');
+  dockFollowPanel(); // sheet closed: follow panel drops back to the bottom
 }
 // Builds the group-popup HTML (shared by the desktop popover and the mobile
 // bottom sheet). Returns null when the record shard failed to load.
@@ -2692,6 +2708,7 @@ async function startFollow(year, id){
   panel.style.display = 'block';
   panel.setAttribute('aria-hidden', 'false');
   document.body.classList.add('follow-open');
+  dockFollowPanel(); // if launched from the sheet, sit above it
   document.querySelector('.fw-name').textContent = fwSrcName;
   document.querySelector('.fw-sub').textContent =
     [src.o, fwAddr(src)].filter(Boolean).join(' \u00b7 ') + ' \u00b7 ' + year;
