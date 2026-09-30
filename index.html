@@ -1424,7 +1424,7 @@ function addSiteLabels(id, st){
     map.on('mouseleave', 'ovl-' + id, () => map.setFilter(HL, ['==', ['get', 'name'], '']));
   }
 }
-function openOverlayPopup(id, f, lngLat){
+function overlayPopupHTML(id, f){
   const p = f.properties;
   let h;
   if (id === 'renames'){
@@ -1446,7 +1446,17 @@ function openOverlayPopup(id, f, lngLat){
         '<figcaption>' + esc(p.imgCap || '') + (p.imgCredit ? ' · ' + esc(p.imgCredit) : '') + '</figcaption></figure>' : '') +
       '<div class="pp-meta">' + esc(desc) + '</div></div>';
   }
-  new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(popupAt(f, lngLat)).setHTML(h).addTo(map);
+  return h;
+}
+function openOverlayPopup(id, f, lngLat){
+  // Mobile gets the bottom sheet, like address popups; desktop gets the popover.
+  if (!isDesktop()){
+    document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+    closeInfoSheet();
+    showPointSheet(overlayPopupHTML(id, f));
+    return;
+  }
+  new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(popupAt(f, lngLat)).setHTML(overlayPopupHTML(id, f)).addTo(map);
 }
 for (const id of Object.keys(OVERLAYS)){
   $(OVERLAYS[id].box).addEventListener('change', async e => {
