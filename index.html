@@ -177,6 +177,22 @@ header>*{pointer-events:auto;}
 .setrow{display:flex;gap:10px;align-items:flex-start;margin:12px 0;font-size:14px;line-height:1.5;color:#1f2937;}
 .setrow input{width:22px;height:22px;margin-top:1px;flex:0 0 auto;}
 .setrow small{display:block;color:#6b7280;font-size:12px;margin-top:2px;}
+/* Mobile: settings rows look native — iOS-style toggle switches in place of
+   checkboxes, label on the left, switch on the right like iOS Settings. */
+@media (pointer: coarse){
+  .setrow{justify-content:space-between;align-items:center;gap:14px;}
+  .setrow > label{flex:1 1 auto;order:1;}
+  .setrow > input[type=checkbox]{order:2;appearance:none;-webkit-appearance:none;
+    width:51px;height:31px;margin:0;padding:0;border:none;border-radius:999px;
+    background:#e5e5ea;position:relative;flex:0 0 auto;cursor:pointer;
+    transition:background-color .2s ease;}
+  .setrow > input[type=checkbox]:checked{background:#34c759;}
+  .setrow > input[type=checkbox]::after{content:"";position:absolute;top:2px;left:2px;
+    width:27px;height:27px;border-radius:50%;background:#fff;
+    box-shadow:0 3px 8px rgba(0,0,0,.15),0 1px 1px rgba(0,0,0,.1);
+    transition:left .2s ease;}
+  .setrow > input[type=checkbox]:checked::after{left:22px;}
+}
 /* search filter chips + pager */
 #results #chips{display:flex;gap:6px;overflow-x:auto;padding:10px 10px 4px;-webkit-overflow-scrolling:touch;
   position:sticky;top:0;background:#fff;z-index:1;cursor:default;}
@@ -323,13 +339,13 @@ header>*{pointer-events:auto;}
 <div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b data-i18n="setResearchT">Show Research section in the year picker</b><small data-i18n="setResearchD">Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b data-i18n="setInferT">Rose ring — inferred street names</b><small data-i18n="setInferD">Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setRenames"><label for="setRenames"><b data-i18n="setRenamesT">Renamed streets — Nazi-era &rarr; modern</b><small data-i18n="setRenamesD">Streets the Nazis renamed, traced as lines through directory addresses that used the old name.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setBookNames"><label for="setBookNames"><b data-i18n="setBookNamesT">Nazi-era names from the book</b><small data-i18n="setBookNamesD">Pins for addresses listed under their Nazi-era street name in the current year.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setBookNames"><label for="setBookNames"><b data-i18n="setBookNamesT">Nazi-era names from the book</b><small data-i18n="setBookNamesD">Streets listed under their Nazi-era name in the current year's book, traced as lines along the modern street.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setSites"><label for="setSites"><b data-i18n="setSitesT">Historical sites — Sammellager &amp; deportations</b><small data-i18n="setSitesD">Hand-picked: collection camps, the Aspangbahnhof deportation point, Gestapo HQ.</small></label></div>
 <h3 data-i18n="mapSection">Map</h3>
 <p><label for="flt"><b data-i18n="pinFilter">Pin quality filter</b></label><br>
 <select id="flt">
 <option value="all" data-i18n="fltAll">All pins</option>
-<option value="reg" data-i18n="fltReg">Registry or better</option>
+<option value="reg" data-i18n="fltReg" selected>Registry or better</option>
 <option value="exact" data-i18n="fltExact">Exact only</option>
 </select></p>
 </div>
@@ -414,7 +430,7 @@ en: {
   setRenamesT: "Renamed streets — Nazi-era → modern",
   setRenamesD: "Streets the Nazis renamed, traced along the modern street.",
   setBookNamesT: "Nazi-era names from the book",
-  setBookNamesD: "Pins for addresses listed under their Nazi-era street name in the current year.",
+  setBookNamesD: "Streets listed under their Nazi-era name in the current year's book, traced as lines along the modern street.",
   setSitesT: "Historical sites — Sammellager & deportations",
   setSitesD: "Hand-picked: collection camps, the Aspangbahnhof deportation point, Gestapo HQ.",
   renamedMeta: "{n} book addresses rescued through this rename",
@@ -532,7 +548,7 @@ de: {
   setRenamesT: "Umbenannte Straßen — NS-Zeit → heute",
   setRenamesD: "Von den Nazis umbenannte Straßen, entlang der heutigen Straße nachgezeichnet.",
   setBookNamesT: "NS-Straßennamen aus dem Buch",
-  setBookNamesD: "Markierungen für Adressen, die im aktuellen Jahrgang unter ihrem NS-Straßennamen stehen.",
+  setBookNamesD: "Straßen, die im aktuellen Jahrgang unter ihrem NS-Namen verzeichnet sind, als Linien entlang der heutigen Straße.",
   setSitesT: "Historische Orte — Sammellager u. Deportationen",
   setSitesD: "Handverlesen: Sammellager, Deportationsbahnhof Aspangbahnhof, Gestapo-Zentrale.",
   renamedMeta: "{n} Buchadressen über diese Umbenennung zugeordnet",
@@ -698,7 +714,7 @@ map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 let allFeatures = [];
 let featByRec = new Map();
-let keepIdx = [0, 1, 2];
+let keepIdx = [0, 1]; // default: "registry or better"
 const shardCache = {};
 const shardFlight = {}; // shard name -> in-flight fetch promise (dedupes concurrent getRecord calls)
 const qCode = m => m === 'exact' ? 0 : (m && m.indexOf('fuzzy_street') === 0 ? 2 : 1);
@@ -742,7 +758,7 @@ function ppInfo(r){
   let corr = '';
   if (r._id != null) {
     const key = CUR_YEAR + ':' + r._id;
-    corrCache.set(key, {s: r.s, g: r.g, o: r.o, st: r.st, hn: r.hn, u: r.u, d: r.d});
+    corrCache.set(key, {s: r.s, g: r.g, o: r.o, st: r.st, hn: r.hn, u: r.u, d: r.d, pg: r.pg, rid: r._id});
     corr = '<div><button class="corr-link" onclick="openCorr(\'' + key.replace(/'/g, "\\'") + '\')">' + t('suggestCorrection') + '</button></div>';
   }
   return '<button class="pp-info" onclick="togglePpInfo(this)" aria-label="' + t('recordDetails') + '">i</button>' +
@@ -905,7 +921,7 @@ map.on('load', async () => {
             st.tapLabel = (st.tapLabel === nm) ? '' : nm;
             map.setFilter('ovl-sites-label-hover', ['==', ['get', 'name'], st.tapLabel]);
           }
-          openOverlayPopup(id, hit); return;
+          openOverlayPopup(id, hit, e.lngLat); return;
         }
       }
     }
@@ -992,6 +1008,13 @@ async function openB2Popup(which, f){
   h += '</div></div>';
   new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(f.geometry.coordinates).setHTML(h).addTo(map);
 }
+// Line/label features have no single point: anchor their popup at the tap.
+function popupAt(f, lngLat){
+  if (f.geometry && f.geometry.type === 'Point') return f.geometry.coordinates;
+  if (lngLat) return [lngLat.lng, lngLat.lat];
+  const c = f.geometry && f.geometry.coordinates;
+  return (c && c.length && typeof c[0] === 'number') ? c : (c && c[0] ? c[0] : [0, 0]);
+}
 async function setB2Layer(which){
   // which: null | 'b2' | 'b2clean'
   try {
@@ -1047,7 +1070,7 @@ $('setInfer').addEventListener('change', e => {
 // ---- overlay layers: renames, Nazi-era book names (per year), historic sites
 const OVERLAYS = {
   renames:   {box: 'setRenames',   key: 'lehmann.showRenames',   file: 'layers/renames.geojson',         color: '#7c3aed', r: 5, line: true},
-  booknames: {box: 'setBookNames', key: 'lehmann.showBookNames', perYear: 'renamed.geojson',             color: '#92400e', r: 5},
+  booknames: {box: 'setBookNames', key: 'lehmann.showBookNames', perYear: 'renamed-lines.geojson',       color: '#92400e', r: 5, line: true},
   sites:     {box: 'setSites',     key: 'lehmann.showSites',     file: 'layers/historic-sites.geojson',  color: '#111827', r: 7},
 };
 const overlayState = {};
@@ -1057,6 +1080,47 @@ function overlayOn(id){
 function overlayLayerIds(id){
   return overlayState[id] && overlayState[id].layers ? overlayState[id].layers : [];
 }
+// When both line overlays are on, their traces run side by side (perpendicular
+// pixel offsets); with only one on, its line sits centered on the street.
+// Book-name labels only show while the renames toggle is off — its own
+// "old → new" labels already name the street then.
+function syncOverlayOffsets(){
+  const rOn = overlayOn('renames'), bOn = overlayOn('booknames');
+  const both = rOn && bOn;
+  for (const [id, off] of [['renames', both ? 5 : 0], ['booknames', both ? -5 : 0]]){
+    const st = overlayState[id];
+    if (!st || !st.ready) continue;
+    if (map.getLayer('ovl-' + id)) map.setPaintProperty('ovl-' + id, 'line-offset', off);
+    if (map.getLayer('ovl-' + id + '-hit')) map.setPaintProperty('ovl-' + id + '-hit', 'line-offset', off);
+  }
+  for (const lid of ['ovl-booknames-lbl', 'ovl-booknames-lbl-sm']){
+    if (map.getLayer(lid)) map.setLayoutProperty(lid, 'visibility', (bOn && !rOn) ? 'visible' : 'none');
+  }
+}
+// Label source: the pre-split, full corner-to-corner street lines (plus a
+// midpoint point per street), so labels repeat along the whole street like the
+// basemap's — not one label per gap-split segment. Carries len (metres) and
+// zmin (zoom-appropriate label level) per street. Promise-guarded: the renames
+// and booknames toggles can initialise concurrently.
+let renameLabPromise = null;
+function ensureRenameLabelSource(){
+  if (!renameLabPromise){
+    renameLabPromise = (async () => {
+      const res = await fetch('layers/renames-labels.geojson');
+      if (!res.ok) throw new Error('no label data');
+      map.addSource('ov-renames-lab', {type: 'geojson', data: await res.json()});
+      return true;
+    })().catch(() => { renameLabPromise = null; return false; });
+  }
+  return renameLabPromise;
+}
+const LBL_FONT = ['DIN Pro Medium', 'Arial Unicode MS Bold'];
+function booknamePairFilter(st){
+  const keys = (st && st.pairs) || [];
+  return ['all',
+    ['in', ['geometry-type'], ['literal', ['LineString', 'MultiLineString']]],
+    ['in', ['concat', ['get', 'old'], '|', ['get', 'new']], ['literal', keys]]];
+}
 async function setOverlayLayer(id, on){
   const def = OVERLAYS[id];
   const st = overlayState[id] || (overlayState[id] = {ready: false, layers: []});
@@ -1065,38 +1129,76 @@ async function setOverlayLayer(id, on){
     if (on && !st.ready){
       const res = await fetch(url);
       if (!res.ok) throw new Error('no data');
-      map.addSource('ov-' + id, {type: 'geojson', data: await res.json()});
+      const data = await res.json();
+      map.addSource('ov-' + id, {type: 'geojson', data: data});
       if (def.line){
         const lineFilter = ['in', ['geometry-type'], ['literal', ['LineString', 'MultiLineString']]];
+        const ptFilter = ['==', ['geometry-type'], 'Point'];
+        // Thin street-like traces (like the modern streets on the basemap),
+        // not fat highlight strokes.
         map.addLayer({id: 'ovl-' + id, type: 'line', source: 'ov-' + id,
           filter: lineFilter,
-          paint: {'line-color': def.color, 'line-width': 5, 'line-opacity': 0.55}});
+          paint: {'line-color': def.color, 'line-width': 2.5, 'line-opacity': 0.9}});
         // invisible fat line underneath: reliable tap target on touch screens
         map.addLayer({id: 'ovl-' + id + '-hit', type: 'line', source: 'ov-' + id,
           filter: lineFilter,
           paint: {'line-color': def.color, 'line-width': 24, 'line-opacity': 0}});
         map.addLayer({id: 'ovl-' + id + '-pt', type: 'circle', source: 'ov-' + id,
-          filter: ['==', ['geometry-type'], 'Point'],
+          filter: ptFilter,
           paint: {'circle-color': def.color, 'circle-radius': def.r,
                   'circle-stroke-width': 2, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
-        // names on the lines themselves: old → new along the street (z13+),
-        // singletons get a point label. Same toggle as the purple lines.
-        const lblFont = ['DIN Pro Medium', 'Arial Unicode MS Bold'];
-        const lblPaint = {'text-color': '#5b21b6', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5};
-        map.addLayer({id: 'ovl-' + id + '-lbl', type: 'symbol', source: 'ov-' + id,
-          minzoom: 13, filter: lineFilter,
-          layout: {'symbol-placement': 'line', 'symbol-spacing': 400,
-            'text-field': ['concat', ['get', 'old'], ' → ', ['get', 'new']],
-            'text-font': lblFont, 'text-size': 11},
-          paint: lblPaint});
-        map.addLayer({id: 'ovl-' + id + '-ptlbl', type: 'symbol', source: 'ov-' + id,
-          minzoom: 13, filter: ['==', ['geometry-type'], 'Point'],
-          layout: {'text-field': ['concat', ['get', 'old'], ' → ', ['get', 'new']],
-            'text-font': lblFont, 'text-size': 11,
-            'text-anchor': 'top', 'text-offset': [0, 0.8]},
-          paint: lblPaint});
-        st.layers = ['ovl-' + id, 'ovl-' + id + '-hit', 'ovl-' + id + '-pt',
-                     'ovl-' + id + '-lbl', 'ovl-' + id + '-ptlbl'];
+        const lblPaint = {'text-color': id === 'renames' ? '#5b21b6' : '#92400e',
+                          'text-halo-color': '#ffffff', 'text-halo-width': 1.5};
+        if (id === 'renames'){
+          if (!(await ensureRenameLabelSource())) throw new Error('no label data');
+          // Repeating line labels along the full street (zmin per street
+          // length, so long streets label at lower zooms).
+          map.addLayer({id: 'ovl-' + id + '-lbl', type: 'symbol', source: 'ov-renames-lab',
+            filter: ['all', ['==', ['geometry-type'], 'LineString'],
+                     ['>=', ['get', 'len'], 300], ['<=', ['get', 'zmin'], ['zoom']]],
+            layout: {'symbol-placement': 'line', 'symbol-spacing': 350,
+              'text-field': ['concat', ['get', 'old'], ' → ', ['get', 'new']],
+              'text-font': LBL_FONT, 'text-size': 11},
+            paint: lblPaint});
+          // Small streets: a single label, centered horizontally on the line
+          // (not rotated along it), at the street midpoint.
+          map.addLayer({id: 'ovl-' + id + '-lbl-sm', type: 'symbol', source: 'ov-renames-lab',
+            filter: ['all', ['==', ['get', 'mid'], 1],
+                     ['<', ['get', 'len'], 300], ['<=', ['get', 'zmin'], ['zoom']]],
+            layout: {'text-field': ['concat', ['get', 'old'], ' → ', ['get', 'new']],
+              'text-font': LBL_FONT, 'text-size': 11, 'text-anchor': 'center'},
+            paint: lblPaint});
+          // singleton points get a point label (as before)
+          map.addLayer({id: 'ovl-' + id + '-ptlbl', type: 'symbol', source: 'ov-' + id,
+            minzoom: 13, filter: ptFilter,
+            layout: {'text-field': ['concat', ['get', 'old'], ' → ', ['get', 'new']],
+              'text-font': LBL_FONT, 'text-size': 11,
+              'text-anchor': 'top', 'text-offset': [0, 0.8]},
+            paint: lblPaint});
+          st.layers = ['ovl-' + id, 'ovl-' + id + '-hit', 'ovl-' + id + '-pt',
+                       'ovl-' + id + '-lbl', 'ovl-' + id + '-lbl-sm', 'ovl-' + id + '-ptlbl'];
+        } else {
+          // booknames: old-name labels on the same label source, filtered to
+          // this year's pairs; hidden while the renames toggle is on.
+          if (!(await ensureRenameLabelSource())) throw new Error('no label data');
+          st.pairs = booknamePairs(data);
+          map.addLayer({id: 'ovl-' + id + '-lbl', type: 'symbol', source: 'ov-renames-lab',
+            filter: ['all', ['==', ['geometry-type'], 'LineString'],
+                     ['>=', ['get', 'len'], 300], ['<=', ['get', 'zmin'], ['zoom']],
+                     booknamePairFilter(st)],
+            layout: {'symbol-placement': 'line', 'symbol-spacing': 350,
+              'text-field': ['get', 'old'], 'text-font': LBL_FONT, 'text-size': 11},
+            paint: lblPaint});
+          map.addLayer({id: 'ovl-' + id + '-lbl-sm', type: 'symbol', source: 'ov-renames-lab',
+            filter: ['all', ['==', ['get', 'mid'], 1],
+                     ['<', ['get', 'len'], 300], ['<=', ['get', 'zmin'], ['zoom']],
+                     booknamePairFilter(st)],
+            layout: {'text-field': ['get', 'old'],
+              'text-font': LBL_FONT, 'text-size': 11, 'text-anchor': 'center'},
+            paint: lblPaint});
+          st.layers = ['ovl-' + id, 'ovl-' + id + '-hit', 'ovl-' + id + '-pt',
+                       'ovl-' + id + '-lbl', 'ovl-' + id + '-lbl-sm'];
+        }
       } else {
         map.addLayer({id: 'ovl-' + id, type: 'circle', source: 'ov-' + id,
           paint: {'circle-color': def.color, 'circle-radius': def.r,
@@ -1111,22 +1213,51 @@ async function setOverlayLayer(id, on){
       st.ready = true;
     } else if (on && st.ready && def.perYear){
       const res = await fetch(url);
-      if (res.ok) map.getSource('ov-' + id).setData(await res.json());
+      if (res.ok){
+        const data = await res.json();
+        map.getSource('ov-' + id).setData(data);
+        if (id === 'booknames'){
+          st.pairs = booknamePairs(data);
+          for (const lid of ['ovl-booknames-lbl', 'ovl-booknames-lbl-sm'])
+            if (map.getLayer(lid)) map.setFilter(lid, booknameLabelFilter(lid, st));
+        }
+      }
     }
     if (st.ready) for (const lid of st.layers) map.setLayoutProperty(lid, 'visibility', on ? 'visible' : 'none');
     try { localStorage.setItem(def.key, on ? '1' : '0'); } catch (err) {}
+    syncOverlayOffsets();
   } catch (err) { return false; }
   return true;
 }
+// (old,new) pair keys for the line features in a booknames year file.
+function booknamePairs(data){
+  const s = new Set();
+  for (const f of (data.features || [])){
+    const g = f.geometry && f.geometry.type;
+    if (g === 'LineString' || g === 'MultiLineString')
+      s.add(f.properties.old + '|' + f.properties.new);
+  }
+  return [...s];
+}
+function booknameLabelFilter(lid, st){
+  const small = lid.endsWith('-sm');
+  return ['all',
+    small ? ['==', ['get', 'mid'], 1] : ['==', ['geometry-type'], 'LineString'],
+    small ? ['<', ['get', 'len'], 300] : ['>=', ['get', 'len'], 300],
+    ['<=', ['get', 'zmin'], ['zoom']],
+    booknamePairFilter(st)];
+}
 function addSiteLabels(id, st){
-  // Landmark labels: always visible when zoomed in; on desktop hover the
-  // hovered site's label shows at any zoom; on touch, tapping a pin toggles it.
+  // Landmark labels: visible from z11 (hand-picked, only five); on desktop
+  // hover the hovered site's label shows at any zoom; on touch, tapping a pin
+  // toggles it.
   const src = 'ov-' + id, HL = 'ovl-sites-label-hover';
   const layout = {'text-field': ['get', 'name'], 'text-size': 12,
     'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'],
     'text-offset': [0, 1.4], 'text-anchor': 'top'};
   const paint = {'text-color': '#111827', 'text-halo-color': '#fff', 'text-halo-width': 1.5};
-  map.addLayer({id: 'ovl-sites-label', type: 'symbol', source: src, minzoom: 13,
+  map.addLayer({id: 'ovl-sites-label', type: 'symbol', source: src,
+    filter: ['<=', ['get', 'zmin'], ['zoom']],
     layout: Object.assign({'text-allow-overlap': false}, layout), paint: paint});
   map.addLayer({id: HL, type: 'symbol', source: src,
     filter: ['==', ['get', 'name'], ''],
@@ -1141,7 +1272,7 @@ function addSiteLabels(id, st){
     map.on('mouseleave', 'ovl-' + id, () => map.setFilter(HL, ['==', ['get', 'name'], '']));
   }
 }
-function openOverlayPopup(id, f){
+function openOverlayPopup(id, f, lngLat){
   const p = f.properties;
   let h;
   if (id === 'renames'){
@@ -1160,7 +1291,7 @@ function openOverlayPopup(id, f){
         '<figcaption>' + esc(p.imgCap || '') + (p.imgCredit ? ' · ' + esc(p.imgCredit) : '') + '</figcaption></figure>' : '') +
       '<div class="pp-meta">' + esc(desc) + '</div></div>';
   }
-  new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(f.geometry.coordinates).setHTML(h).addTo(map);
+  new mapboxgl.Popup({offset: 14, maxWidth: '300px'}).setLngLat(popupAt(f, lngLat)).setHTML(h).addTo(map);
 }
 for (const id of Object.keys(OVERLAYS)){
   $(OVERLAYS[id].box).addEventListener('change', async e => {
@@ -1951,6 +2082,133 @@ function fwStopPlay(){
   const b = $('fwPlay');
   if (b){ b.innerHTML = '&#9654;'; b.setAttribute('aria-label', t('playTimeline')); }
 }
+// ---- street routing (A*) for the follow-this-person animation ------------
+// The Vienna OGD street graph ships as layers/street-graph.json (built by
+// lehmann-map/renames-build/build_street_graph.py):
+// {"n":[[x,y],...],"e":[[a,b,lenM,[[x,y],...]],...]} with coords as integers
+// (degrees * 1e5). Legs are routed along streets; a straight leg is the
+// fallback when the graph can't load or no path exists.
+let streetGraph = null; // {xy, adj, grid, cs} once loaded
+let streetGraphFailed = false;
+async function loadStreetGraph(){
+  if (streetGraph) return streetGraph;
+  if (streetGraphFailed) return null;
+  try {
+    const res = await fetch('layers/street-graph.json');
+    if (!res.ok) throw new Error('no graph');
+    const g = await res.json();
+    const n = g.n.length;
+    const xy = new Array(n);
+    for (let i = 0; i < n; i++) xy[i] = [g.n[i][0] / 1e5, g.n[i][1] / 1e5];
+    const adj = new Array(n);
+    for (let i = 0; i < n; i++) adj[i] = [];
+    for (const e of g.e){
+      const a = e[0], b = e[1], len = e[2];
+      const sh = e[3].map(p => [p[0] / 1e5, p[1] / 1e5]);
+      adj[a].push({to: b, len: len, shape: sh});
+      adj[b].push({to: a, len: len, shape: sh.slice().reverse()});
+    }
+    const CS = 0.01, grid = new Map();
+    for (let i = 0; i < n; i++){
+      const k = Math.floor(xy[i][0] / CS) + ':' + Math.floor(xy[i][1] / CS);
+      let arr = grid.get(k);
+      if (!arr) grid.set(k, arr = []);
+      arr.push(i);
+    }
+    streetGraph = {xy: xy, adj: adj, grid: grid, cs: CS};
+    return streetGraph;
+  } catch (err) { streetGraphFailed = true; return null; }
+}
+function sgNearest(g, lng, lat, maxM){
+  const t = Math.PI / 180, R = 6371000, cosLat = Math.cos(lat * t);
+  const dLat = maxM / R / t, dLng = maxM / (R * cosLat) / t;
+  const x0 = Math.floor((lng - dLng) / g.cs), x1 = Math.floor((lng + dLng) / g.cs);
+  const y0 = Math.floor((lat - dLat) / g.cs), y1 = Math.floor((lat + dLat) / g.cs);
+  let best = -1, bestD = Infinity;
+  for (let cx = x0; cx <= x1; cx++) for (let cy = y0; cy <= y1; cy++){
+    const arr = g.grid.get(cx + ':' + cy);
+    if (!arr) continue;
+    for (const i of arr){
+      const dx = (g.xy[i][0] - lng) * t * cosLat, dy = (g.xy[i][1] - lat) * t;
+      const d = Math.sqrt(dx * dx + dy * dy) * R;
+      if (d < bestD){ bestD = d; best = i; }
+    }
+  }
+  return bestD <= maxM ? best : -1;
+}
+// A* shortest path between node ids; returns the stitched street polyline.
+function sgAStar(g, s, t){
+  const n = g.xy.length;
+  const gS = new Float64Array(n).fill(Infinity);
+  const came = new Int32Array(n).fill(-1);
+  const cameE = new Array(n).fill(null);
+  const closed = new Uint8Array(n);
+  const tx = g.xy[t][0], ty = g.xy[t][1], cosLat = Math.cos(ty * Math.PI / 180);
+  const h = i => {
+    const dx = (g.xy[i][0] - tx) * cosLat * 111320, dy = (g.xy[i][1] - ty) * 111320;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+  const hk = [], hv = [];
+  const push = (f, v) => {
+    hk.push(f); hv.push(v);
+    let i = hk.length - 1;
+    while (i > 0){
+      const p = (i - 1) >> 1;
+      if (hk[p] <= hk[i]) break;
+      const tf = hk[p]; hk[p] = hk[i]; hk[i] = tf;
+      const tv = hv[p]; hv[p] = hv[i]; hv[i] = tv; i = p;
+    }
+  };
+  const pop = () => {
+    const top = hv[0], lf = hk.pop(), lv = hv.pop();
+    if (hk.length){
+      hk[0] = lf; hv[0] = lv;
+      let i = 0;
+      for (;;){
+        const l = 2 * i + 1, r = l + 1; let m = i;
+        if (l < hk.length && hk[l] < hk[m]) m = l;
+        if (r < hk.length && hk[r] < hk[m]) m = r;
+        if (m === i) break;
+        const tf = hk[m]; hk[m] = hk[i]; hk[i] = tf;
+        const tv = hv[m]; hv[m] = hv[i]; hv[i] = tv; i = m;
+      }
+    }
+    return top;
+  };
+  gS[s] = 0; push(h(s), s);
+  while (hk.length){
+    const u = pop();
+    if (closed[u]) continue;
+    if (u === t) break;
+    closed[u] = 1;
+    const gu = gS[u];
+    for (const e of g.adj[u]){
+      const v = e.to, ng = gu + e.len;
+      if (ng < gS[v]){ gS[v] = ng; came[v] = u; cameE[v] = e; push(ng + h(v), v); }
+    }
+  }
+  if (s !== t && came[t] < 0) return null;
+  const nodes = [];
+  for (let u = t; u >= 0; u = came[u]){ nodes.push(u); if (u === s) break; }
+  nodes.reverse();
+  const line = [];
+  for (let i = 0; i < nodes.length - 1; i++){
+    const sh = cameE[nodes[i + 1]].shape;
+    for (const p of sh) line.push(p);
+  }
+  return line.filter((p, i) => i === 0 || p[0] !== line[i - 1][0] || p[1] !== line[i - 1][1]);
+}
+// Route one leg along streets (exact stop coords at both ends; short straight
+// hops to the snapped street nodes). Null = fall back to a straight leg.
+function sgRouteLeg(g, p0, p1){
+  if (!g) return null;
+  const a = sgNearest(g, p0.lng, p0.lat, 400);
+  const b = sgNearest(g, p1.lng, p1.lat, 400);
+  if (a < 0 || b < 0 || a === b) return null;
+  const mid = sgAStar(g, a, b);
+  if (!mid || mid.length < 2) return null;
+  return [[p0.lng, p0.lat]].concat(mid, [[p1.lng, p1.lat]]);
+}
 // ---- animated journey ---------------------------------------------------
 // Continuous on-map animation of the person's path through the year stops:
 // a line through every stop, a dot that travels it, camera following along.
@@ -2012,6 +2270,36 @@ function fwLeg(p0, p1, ms){
     fwAnim.raf = requestAnimationFrame(fr);
   });
 }
+// Travel the dot along a routed street path, arc-length parameterised so the
+// dot moves at constant speed along the streets (same easing as fwLeg).
+function fwLegPath(path, ms){
+  return new Promise(res => {
+    const cum = [0];
+    for (let i = 1; i < path.length; i++){
+      const a = path[i - 1], b = path[i];
+      cum.push(cum[i - 1] + (fwHav({la: a[1], lo: a[0]}, {la: b[1], lo: b[0]}) || 0));
+    }
+    const total = cum[cum.length - 1] || 0;
+    const dest = path[path.length - 1];
+    const t0 = performance.now();
+    try { map.easeTo({center: [dest[0], dest[1]], duration: ms, easing: t => t}); } catch (e) {}
+    function fr(now){
+      if (!fwPlaying) return res();
+      const t = Math.min(1, (now - t0) / ms);
+      const e = t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      const d = e * total;
+      let i = 1;
+      while (i < cum.length - 1 && cum[i] < d) i++;
+      const seg = (cum[i] - cum[i - 1]) || 1;
+      const f = Math.min(1, Math.max(0, (d - cum[i - 1]) / seg));
+      if (fwAnimMarker) fwAnimMarker.setLngLat([
+        path[i - 1][0] + (path[i][0] - path[i - 1][0]) * f,
+        path[i - 1][1] + (path[i][1] - path[i - 1][1]) * f]);
+      if (t < 1) fwAnim.raf = requestAnimationFrame(fr); else res();
+    }
+    fwAnim.raf = requestAnimationFrame(fr);
+  });
+}
 async function fwAnimateJourney(){
   fwClearAnim();
   fwAnim = {raf: 0};
@@ -2019,18 +2307,44 @@ async function fwAnimateJourney(){
   // rec.la = latitude, rec.lo = longitude; Mapbox wants [lng, lat].
   const pts = fwStops.filter(s => s.rec && s.rec.lo && s.rec.la)
     .map(s => ({year: s.year, lng: +s.rec.lo, lat: +s.rec.la}));
+  const stopPt = st => (st.rec && st.rec.lo != null && st.rec.la != null)
+    ? {lng: +st.rec.lo, lat: +st.rec.la} : null;
+  // Route every leg along streets (A* over the OGD street graph); a straight
+  // leg is the per-leg fallback. Same-place hops (<50m) get no leg at all.
+  $('fwPlay').innerHTML = '&#8230;';
+  const graph = await loadStreetGraph();
+  const legPaths = new Array(Math.max(0, fwStops.length - 1)).fill(null);
+  for (let i = 0; i + 1 < fwStops.length; i++){
+    const p0 = stopPt(fwStops[i]), p1 = stopPt(fwStops[i + 1]);
+    if (!p0 || !p1 || fwSamePlace(p0, p1)) continue;
+    legPaths[i] = (graph && sgRouteLeg(graph, p0, p1)) ||
+      [[p0.lng, p0.lat], [p1.lng, p1.lat]];
+  }
+  $('fwPlay').innerHTML = '&#10074;&#10074;';
   // Path line: one LineString per contiguous run of listed years, so a gap
   // never draws an unverified leg across the missing years.
   const runs = [];
   let run = [];
-  for (const st of fwStops){
-    const p = st.rec && st.rec.lo && st.rec.la ? {lng: +st.rec.lo, lat: +st.rec.la} : null;
-    if (p) run.push(p); else if (run.length){ runs.push(run); run = []; }
-  }
+  fwStops.forEach((st, i) => {
+    if (stopPt(st)) run.push(i);
+    else { if (run.length) runs.push(run); run = []; }
+  });
   if (run.length) runs.push(run);
+  const runCoords = rn => {
+    const c = [];
+    for (let j = 0; j + 1 < rn.length; j++){
+      const p0 = stopPt(fwStops[rn[j]]), p1 = stopPt(fwStops[rn[j + 1]]);
+      const leg = legPaths[rn[j]] || [[p0.lng, p0.lat], [p1.lng, p1.lat]];
+      for (let k = 0; k < leg.length; k++){
+        if (c.length && k === 0) continue; // skip the joint duplicate
+        c.push(leg[k]);
+      }
+    }
+    return c;
+  };
   const fc = {type: 'FeatureCollection', features: [
-    ...runs.map(r => ({type: 'Feature', properties: {},
-      geometry: {type: 'LineString', coordinates: r.map(p => [p.lng, p.lat])}})),
+    ...runs.filter(r => r.length > 1).map(r => ({type: 'Feature', properties: {},
+      geometry: {type: 'LineString', coordinates: runCoords(r)}})),
     ...pts.map(p => ({type: 'Feature', properties: {year: String(p.year)},
       geometry: {type: 'Point', coordinates: [p.lng, p.lat]}}))
   ]};
@@ -2050,25 +2364,29 @@ async function fwAnimateJourney(){
   pts.forEach(p => b.extend([p.lng, p.lat]));
   map.fitBounds(b, {padding: 70, duration: 900});
   await fwPause(950);
-  let last = null, visible = false;
-  for (const st of fwStops){
+  let last = null, lastIdx = -1, visible = false;
+  for (let si = 0; si < fwStops.length; si++){
+    const st = fwStops[si];
     if (!fwPlaying) break;
     fwActiveYear = st.year;
     renderFwCells();
-    const p = st.rec && st.rec.lo && st.rec.la ? {lng: +st.rec.lo, lat: +st.rec.la} : null;
+    const p = stopPt(st);
     if (p){
       if (!visible){
         await fwMarkerFade(true, p);
         visible = true;
       } else if (!fwSamePlace(last, p)){
-        await fwLeg(last, p, 1600);
+        // routed street path when available; straight leg is the fallback
+        const path = (si === lastIdx + 1) ? legPaths[lastIdx] : null;
+        if (path) await fwLegPath(path, 1600);
+        else await fwLeg(last, p, 1600);
       } else {
         // Same building across years: no leg, just re-centre gently.
         try { map.easeTo({center: [p.lng, p.lat], duration: 600}); } catch (e) {}
         await fwPause(650);
       }
       fwArrive(st, p);
-      last = p;
+      last = p; lastIdx = si;
       await fwPause(900);
     } else {
       // Not listed this year: the dot shrinks and fades out where last seen.
@@ -2248,6 +2566,16 @@ function openCorr(key){
   $('corrCancel').textContent = t('corrCancel');
   $('corrSubmit').disabled = false;
   $('corrOverlay').style.display = 'flex';
+  // the scanned row itself, so the suggestion can be checked against the scan
+  const oldSnip = $('corrSnip');
+  if (oldSnip) oldSnip.remove();
+  if (r.pg != null && r.rid != null){
+    const snip = document.createElement('div');
+    snip.className = 'rowsnip'; snip.id = 'corrSnip';
+    snip.dataset.pg = r.pg; snip.dataset.rid = r.rid;
+    $('corrCur').after(snip);
+    hydrateSnippets($('corrBox'));
+  }
   setTimeout(() => { $('corrInput').focus(); $('corrInput').select(); }, 50);
 }
 function closeCorr(){
