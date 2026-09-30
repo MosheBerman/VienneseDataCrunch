@@ -2613,17 +2613,17 @@ function openCorr(key){
   const r = corrCache.get(key) || {};
   const cur = corrDisplay(r);
   $('corrTitle').textContent = t('corrTitle');
-  $('corrCurLabel').textContent = t('corrOriginal');
-  const holder = $('corrCur');
+  $('corrOrigLabel').textContent = t('corrOriginal');
+  $('corrCurLabel').textContent = t('corrCurrent');
+  $('corrCur').textContent = cur;
+  const holder = $('corrOrig');
   holder.textContent = '';
   const oldSnip = $('corrSnip');
   if (oldSnip) oldSnip.remove();
   if (r.pg != null && r.rid != null) {
-    // the inline original: the scanned row itself, so the suggestion can be
-    // checked against the scan. Falls back to the transcription if no box.
-    showCorrOriginal(key, r, holder, cur);
+    showCorrOriginal(key, r, holder);
   } else {
-    holder.textContent = cur;
+    holder.textContent = '—';
   }
   $('corrPrompt').textContent = t('corrPrompt');
   $('corrInput').value = cur;
@@ -2635,7 +2635,7 @@ function openCorr(key){
   $('corrOverlay').style.display = 'flex';
   setTimeout(() => { $('corrInput').focus(); $('corrInput').select(); }, 50);
 }
-async function showCorrOriginal(key, r, holder, cur){
+async function showCorrOriginal(key, r, holder){
   let found = null;
   try { found = await getRowBox(YC().dir, r.pg, r.rid); } catch (e) { found = null; }
   if (corrKey !== key) return; // modal moved on
@@ -2646,7 +2646,7 @@ async function showCorrOriginal(key, r, holder, cur){
     holder.appendChild(snip);
     hydrateSnippets(holder);
   } else {
-    holder.textContent = cur;
+    holder.textContent = '—';
   }
 }
 function closeCorr(){
@@ -2694,7 +2694,9 @@ setLang(getLang());
 <div id="corrOverlay" role="dialog" aria-modal="true" aria-labelledby="corrTitle">
   <div id="corrBox">
     <h2 id="corrTitle">Suggest a correction</h2>
-    <div id="corrCurLabel" style="font-size:13px;color:#6b7280;">Current entry:</div>
+    <div id="corrOrigLabel" style="font-size:13px;color:#6b7280;">Original:</div>
+    <div id="corrOrig"></div>
+    <div id="corrCurLabel" style="font-size:13px;color:#6b7280;margin-top:8px;">Current entry:</div>
     <div id="corrCur"></div>
     <div id="corrPrompt" style="font-size:14px;margin:0 0 6px;">What should it say? Edit below.</div>
     <textarea id="corrInput" rows="4"></textarea>
