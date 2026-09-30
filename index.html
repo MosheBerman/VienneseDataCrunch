@@ -289,6 +289,15 @@ header>*{pointer-events:auto;}
 .is-name{font-weight:700;font-size:17px;padding-right:44px;}
 .is-meta{color:#6b7280;font-size:13px;margin:4px 0 12px;}
 @media(min-width:641px){#infoSheet{display:none !important;}}
+/* ---- Mobile point bottom sheet: replaces the map popover on tap --------- */
+#pointSheet{position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-radius:16px 16px 0 0;
+  box-shadow:0 -4px 24px rgba(0,0,0,.25);padding:8px 18px calc(18px + env(safe-area-inset-bottom));
+  max-height:70vh;overflow:auto;animation:sheetup .25s ease-out;}
+#pointSheetClose{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;border:1px solid #d1d5db;background:#fff;font-size:16px;cursor:pointer;color:#111827;padding:0;}
+#pointSheet .pp{min-width:0;}
+#pointSheet .pp-list{max-height:none;}
+#pointSheet .pp-row{cursor:pointer;}
+@media(min-width:641px){#pointSheet{display:none !important;}}
 </style>
 </head>
 <body>
@@ -323,6 +332,11 @@ header>*{pointer-events:auto;}
 <div id="infoSheet" style="display:none" aria-hidden="true">
   <div class="is-grab"></div>
   <button id="infoSheetClose" aria-label="Close">&#10005;</button>
+  <div class="is-body"></div>
+</div>
+<div id="pointSheet" style="display:none" aria-hidden="true">
+  <div class="is-grab"></div>
+  <button id="pointSheetClose" aria-label="Close">&#10005;</button>
   <div class="is-body"></div>
 </div>
 <div id="aboutOverlay"><div id="aboutBox">
@@ -1002,6 +1016,7 @@ map.on('load', async () => {
   map.on('click', async e => {
     const c = near(e.point, 'clusters', TAP_R)[0];
     if (c) {
+      closePointSheet();
       map.getSource('places').getClusterExpansionZoom(c.properties.cluster_id, (err, zoom) => {
         if (err) return;
         map.easeTo({center: c.geometry.coordinates, zoom: zoom, duration: 550});
@@ -1031,6 +1046,8 @@ map.on('load', async () => {
         }
       }
     }
+    // Tapping empty map dismisses the mobile point sheet.
+    closePointSheet();
   });
   for (const lyr of ['clusters', 'unclustered-point']) {
     map.on('mouseenter', lyr, () => map.getCanvas().style.cursor = 'pointer');
@@ -1501,12 +1518,32 @@ async function hydrateSnippets(root){
 }
 
 let lastGroupF = null; // stashed for the popup retry button
-async function openGroupPopup(f, highlightId){
-  document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
-  const pop = new mapboxgl.Popup({offset: 14, maxWidth: '300px'})
-    .setLngLat(f.geometry.coordinates)
-    .setHTML('<div class="pp"><div class="pp-load"><div class="spin sm"></div></div></div>')
-    .addTo(map);
+let pointSheetSeq = 0; // guards the async sheet fill against a mid-load dismiss
+function showPointSheet(html){
+  const sh = $('pointSheet');
+  const body = sh.querySelector('.is-body');
+  body.innerHTML = html;
+  // Tapping a person row highlights it (single selection). Action buttons,
+  // links and the info toggle keep their own behavior.
+  body.querySelectorAll('.pp-row').forEach(row => {
+    row.addEventListener('click', e => {
+      if (e.target.closest('.pp-act, a, button')) return;
+      body.querySelectorAll('.pp-row.hl').forEach(r => r.classList.remove('hl'));
+      row.classList.add('hl');
+    });
+  });
+  sh.style.display = 'block';
+  sh.setAttribute('aria-hidden', 'false');
+  hydrateSnippets(body);
+}
+function closePointSheet(){
+  pointSheetSeq++;
+  $('pointSheet').style.display = 'none';
+  $('pointSheet').setAttribute('aria-hidden', 'true');
+}
+// Builds the group-popup HTML (shared by the desktop popover and the mobile
+// bottom sheet). Returns null when the record shard failed to load.
+async function groupPopupHTML(f, highlightId){
   // NOTE: Mapbox encodes features to vector tiles internally, and non-scalar
   // properties (like our member-id array) come back JSON-stringified from
   // queryRenderedFeatures. Parse them back before use.
@@ -1518,15 +1555,7 @@ async function openGroupPopup(f, highlightId){
     if (r) r._id = id;
     return r;
   }))).filter(Boolean);
-  if (!recs.length) {
-    // Record shard failed to load (common on flaky mobile) — say so with a
-    // retry instead of flashing a spinner and vanishing.
-    lastGroupF = f;
-    pop.setHTML('<div class="pp"><div class="pp-addr">' + esc(t('recLoadFail')) + '</div>' +
-      '<div class="pp-act"><button class="pp-follow" onclick="openGroupPopup(lastGroupF, null)">' +
-      esc(t('retry')) + '</button></div></div>');
-    return;
-  }
+  if (!recs.length) return null;
   const shown = recs.filter(r => keepIdx.includes(qCode(r.m)));
   const list = (shown.length ? shown : recs).slice()
     .sort((a, b) => qCode(a.m) - qCode(b.m) || String(a.s).localeCompare(String(b.s)));
@@ -1546,6 +1575,35 @@ async function openGroupPopup(f, highlightId){
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + t(hidden === 1 ? 'moreHidden1' : 'moreHiddenN', {n: hidden}) + '</div>';
   h += '</div>';
+  return h;
+}
+function groupFailHTML(){
+  // Record shard failed to load (common on flaky mobile) — say so with a
+  // retry instead of flashing a spinner and vanishing.
+  return '<div class="pp"><div class="pp-addr">' + esc(t('recLoadFail')) + '</div>' +
+    '<div class="pp-act"><button class="pp-follow" onclick="openGroupPopup(lastGroupF, null)">' +
+    esc(t('retry')) + '</button></div></div>';
+}
+async function openGroupPopup(f, highlightId){
+  if (!isDesktop()){
+    // Mobile: the bottom sheet replaces the popover.
+    const seq = ++pointSheetSeq;
+    closeInfoSheet();
+    showPointSheet('<div class="pp"><div class="pp-load"><div class="spin sm"></div></div></div>');
+    lastGroupF = f;
+    const h = await groupPopupHTML(f, highlightId);
+    if (seq !== pointSheetSeq) return; // user tapped away mid-load
+    showPointSheet(h === null ? groupFailHTML() : h);
+    return;
+  }
+  document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
+  const pop = new mapboxgl.Popup({offset: 14, maxWidth: '300px'})
+    .setLngLat(f.geometry.coordinates)
+    .setHTML('<div class="pp"><div class="pp-load"><div class="spin sm"></div></div></div>')
+    .addTo(map);
+  lastGroupF = f;
+  const h = await groupPopupHTML(f, highlightId);
+  if (h === null) { pop.setHTML(groupFailHTML()); return; }
   pop.setHTML(h);
   hydrateSnippets(pop.getElement());
 }
@@ -1734,9 +1792,12 @@ function selectResRow(row){
     if (f) openGroupPopup(f, rid);
     else {
       document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
-      const pop = new mapboxgl.Popup({offset: 14, maxWidth: '280px'})
-        .setLngLat([+rec.lo, +rec.la]).setHTML(popupHTML(rec)).addTo(map);
-      hydrateSnippets(pop.getElement());
+      if (!isDesktop()) showPointSheet(popupHTML(rec));
+      else {
+        const pop = new mapboxgl.Popup({offset: 14, maxWidth: '280px'})
+          .setLngLat([+rec.lo, +rec.la]).setHTML(popupHTML(rec)).addTo(map);
+        hydrateSnippets(pop.getElement());
+      }
     }
   });
 }
@@ -2607,9 +2668,12 @@ async function fwGoto(st){
   document.querySelectorAll('.mapboxgl-popup').forEach(p => p.remove());
   if (f) openGroupPopup(f, st.id);
   else {
-    const pop = new mapboxgl.Popup({offset: 14, maxWidth: '300px'})
-      .setLngLat([+rec.lo, +rec.la]).setHTML(popupHTML(rec)).addTo(map);
-    hydrateSnippets(pop.getElement());
+    if (!isDesktop()) showPointSheet(popupHTML(rec));
+    else {
+      const pop = new mapboxgl.Popup({offset: 14, maxWidth: '300px'})
+        .setLngLat([+rec.lo, +rec.la]).setHTML(popupHTML(rec)).addTo(map);
+      hydrateSnippets(pop.getElement());
+    }
   }
 }
 function fwShowAlts(st){
@@ -2666,9 +2730,11 @@ function fwClose(){
 $('fwPlay').addEventListener('click', fwTogglePlay);
 $('fwClose').addEventListener('click', fwClose);
 $('infoSheetClose').addEventListener('click', closeInfoSheet);
+$('pointSheetClose').addEventListener('click', closePointSheet);
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && $('followPanel').style.display === 'block') fwClose();
   if (e.key === 'Escape' && $('infoSheet').style.display === 'block') closeInfoSheet();
+  if (e.key === 'Escape' && $('pointSheet').style.display === 'block') closePointSheet();
 });
 document.addEventListener('click', e => {
   const b = e.target.closest ? e.target.closest('[data-follow-id]') : null;
