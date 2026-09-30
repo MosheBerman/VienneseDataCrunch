@@ -33,6 +33,9 @@ header>*{pointer-events:auto;}
 .pp-links a{color:#2563eb;text-decoration:none;}
 @media (pointer:coarse){.pp-links a{display:inline-block;padding:14px 6px;}}
 .rowsnip{position:relative;overflow:hidden;max-width:100%;border:2px solid #dc2626;border-radius:6px;margin:8px 0 4px;background:#e5e7eb;}
+.rowsnip-toggle{border:1px solid #d1d5db;background:#f9fafb;border-radius:999px;padding:6px 12px;font-size:12px;
+  font-weight:600;color:#374151;cursor:pointer;margin:6px 0 2px;min-height:32px;}
+.rowsnip-toggle:hover{border-color:#2563eb;color:#2563eb;}
 .rowsnip img{position:absolute;max-width:none;}
 .rowsnip-frame{position:absolute;left:0;right:0;border:2px solid #dc2626;box-sizing:border-box;pointer-events:none;}
 @media (max-width:640px){
@@ -507,6 +510,8 @@ en: {
   qAlpha: "alphabetical fallback",
   qFuzzy: "fuzzy street match",
   viewInScan: "View in scan",
+  showScanRow: "Show scan row",
+  hideScanRow: "Hide scan row",
   suggestCorrection: "Suggest correction",
   corrPill: "corrected",
   corrPillTitle: "This entry includes an approved correction",
@@ -629,6 +634,8 @@ de: {
   qAlpha: "alphabetische Zuordnung",
   qFuzzy: "ungefähre Straßenübereinstimmung",
   viewInScan: "Im Scan ansehen",
+  showScanRow: "Scanzeile anzeigen",
+  hideScanRow: "Scanzeile ausblenden",
   suggestCorrection: "Korrektur vorschlagen",
   corrPill: "korrigiert",
   corrPillTitle: "Dieser Eintrag enthält eine übernommene Korrektur",
@@ -1491,12 +1498,33 @@ async function getRowBox(dir, pg, rid){
 }
 function rowSnippetPH(r){
   if (r.pg == null || r._id == null) return '';
-  return '<div class="rowsnip" data-pg="' + r.pg + '" data-rid="' + r._id + '"></div>';
+  // Collapsed by default: a toggle reveals the scan snippet on demand.
+  return '<button class="rowsnip-toggle" data-pg="' + r.pg + '" data-rid="' + r._id + '">' +
+    esc(t('showScanRow')) + '</button>' +
+    '<div class="rowsnip" data-pg="' + r.pg + '" data-rid="' + r._id + '" hidden></div>';
 }
+// Scan-snippet toggle: rows show a small button; tapping reveals the snippet.
+document.addEventListener('click', async e => {
+  const btn = e.target.closest('.rowsnip-toggle');
+  if (!btn) return;
+  e.stopPropagation();
+  const snip = btn.nextElementSibling;
+  if (!snip || !snip.classList.contains('rowsnip')) return;
+  if (snip.hasAttribute('hidden')) {
+    snip.removeAttribute('hidden');
+    btn.textContent = t('hideScanRow');
+    await hydrateSnippets(snip.parentNode);
+    if (!snip.isConnected) btn.remove(); // no box for this row
+  } else {
+    snip.setAttribute('hidden', '');
+    btn.textContent = t('showScanRow');
+  }
+});
 async function hydrateSnippets(root){
   if (!root) return;
-  const els = root.querySelectorAll('.rowsnip');
+  const els = root.querySelectorAll('.rowsnip:not([hidden]):not([data-hyd])');
   for (const el of els) {
+    el.setAttribute('data-hyd', '1');
     const pg = +el.dataset.pg, rid = +el.dataset.rid;
     let found = null;
     try { found = await getRowBox(YC().dir, pg, rid); } catch (e) { found = null; }
