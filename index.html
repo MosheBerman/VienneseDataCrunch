@@ -33,9 +33,6 @@ header>*{pointer-events:auto;}
 .pp-links a{color:#2563eb;text-decoration:none;}
 @media (pointer:coarse){.pp-links a{display:inline-block;padding:14px 6px;}}
 .rowsnip{position:relative;overflow:hidden;max-width:100%;border:2px solid #dc2626;border-radius:6px;margin:8px 0 4px;background:#e5e7eb;}
-.rowsnip-toggle{border:1px solid #d1d5db;background:#f9fafb;border-radius:999px;padding:6px 12px;font-size:12px;
-  font-weight:600;color:#374151;cursor:pointer;margin:6px 0 2px;min-height:32px;}
-.rowsnip-toggle:hover{border-color:#2563eb;color:#2563eb;}
 .rowsnip img{position:absolute;max-width:none;}
 .rowsnip-frame{position:absolute;left:0;right:0;border:2px solid #dc2626;box-sizing:border-box;pointer-events:none;}
 @media (max-width:640px){
@@ -232,9 +229,12 @@ header>*{pointer-events:auto;}
 #results #pagejump input{width:64px;border:1px solid #d1d5db;border-radius:8px;padding:7px 8px;font-size:14px;text-align:center;font-family:inherit;}
 #results #pagejump button{border:1px solid #d1d5db;background:#fff;border-radius:8px;padding:7px 12px;font-size:14px;cursor:pointer;font-family:inherit;}
 /* ---- Follow this person: cross-year timeline --------------------------- */
-.pp-follow{display:inline-block;margin:0;padding:8px 12px;min-height:38px;border:1px solid #2563eb;
-  background:#eff6ff;color:#1d4ed8;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
-.pp-follow:hover{background:#dbeafe;}
+.pp-follow,.pp-btn{display:inline-block;margin:0;padding:8px 12px;min-height:38px;border:1px solid #2563eb;
+  background:#eff6ff;color:#1d4ed8;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+  text-decoration:none;line-height:1.4;box-sizing:border-box;}
+.pp-follow:hover,.pp-btn:hover{background:#dbeafe;}
+.pp-scanbtns{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 2px;}
+.pp-scanbtns .pp-btn{min-height:32px;padding:6px 12px;font-size:12px;margin:0;}
 #followPanel{position:fixed;left:10px;right:10px;bottom:10px;z-index:15;background:#fff;border-radius:14px;
   box-shadow:0 8px 30px rgba(0,0,0,.3);padding:12px 12px 14px;max-height:48vh;overflow:auto;}
 @media(min-width:641px){#followPanel{left:auto;right:12px;bottom:12px;width:410px;}}
@@ -512,6 +512,7 @@ en: {
   viewInScan: "View in scan",
   showScanRow: "Show Scan Excerpt",
   hideScanRow: "Hide Scan Excerpt",
+  originalScan: "Original Scan",
   suggestCorrection: "Suggest correction",
   corrPill: "corrected",
   corrPillTitle: "This entry includes an approved correction",
@@ -636,6 +637,7 @@ de: {
   viewInScan: "Im Scan ansehen",
   showScanRow: "Scanausschnitt anzeigen",
   hideScanRow: "Scanausschnitt ausblenden",
+  originalScan: "Originalscan",
   suggestCorrection: "Korrektur vorschlagen",
   corrPill: "korrigiert",
   corrPillTitle: "Dieser Eintrag enthält eine übernommene Korrektur",
@@ -833,12 +835,6 @@ function bezPill(r){
 }
 function tuerPill(r){
   return r.u ? '<span class="pill pill-tuer pill-tr">' + esc(r.u) + '</span>' : '';
-}
-function viewOriginalLink(r){
-  const _pv = (r.pg != null) ? SCAN_PV[r.pg + 1] : null;
-  if (VIEWER_URL && _pv)
-    return '<div class="pp-links"><div><a href="' + VIEWER_URL.split('{pageview}').join(_pv) + '" target="_blank" rel="noopener">' + t('viewInScan') + '</a></div></div>';
-  return '';
 }
 // Match quality + the correction button hide behind a circled-i toggle.
 // Single inline prompt: opens a modal with the current entry pre-filled.
@@ -1483,7 +1479,7 @@ function popupHTML(r){
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += rescueLine(r) + rowSnippetPH(r) + '<div class="pp-act">' + viewOriginalLink(r) + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
+  h += rescueLine(r) + rowSnippetPH(r) + '<div class="pp-act">' + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
   return h;
 }
 
@@ -1508,9 +1504,13 @@ async function getRowBox(dir, pg, rid){
 }
 function rowSnippetPH(r){
   if (r.pg == null || r._id == null) return '';
-  // Collapsed by default: a toggle reveals the scan snippet on demand.
-  return '<button class="rowsnip-toggle" data-pg="' + r.pg + '" data-rid="' + r._id + '">' +
-    esc(t('showScanRow')) + '</button>' +
+  // Collapsed by default: "Show Scan Excerpt" reveals the snippet inline;
+  // "Original Scan" opens the full page image in a new tab.
+  return '<div class="pp-scanbtns">' +
+    '<button class="pp-btn rowsnip-toggle" data-pg="' + r.pg + '" data-rid="' + r._id + '">' +
+      esc(t('showScanRow')) + '</button>' +
+    '<a class="pp-btn" href="https://www.digital.wienbibliothek.at/image/view/' + r.pg +
+      '" target="_blank" rel="noopener">' + esc(t('originalScan')) + '</a></div>' +
     '<div class="rowsnip" data-pg="' + r.pg + '" data-rid="' + r._id + '" hidden></div>';
 }
 // Scan-snippet toggle: rows show a small button; tapping reveals the snippet.
@@ -1643,7 +1643,7 @@ async function groupPopupHTML(f, highlightId){
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
-      snip + '<div class="pp-act">' + viewOriginalLink(r) + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
+      snip + '<div class="pp-act">' + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + t(hidden === 1 ? 'moreHidden1' : 'moreHiddenN', {n: hidden}) + '</div>';
