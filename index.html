@@ -2340,7 +2340,7 @@ function fwAddr(r){
 }
 function fwStopPlay(){
   fwPlaying = false;
-  fwClearAnim();
+  fwHaltAnim();
   const b = $('fwPlay');
   if (b){ b.innerHTML = '&#9654;'; b.setAttribute('aria-label', t('playTimeline')); }
 }
@@ -2477,11 +2477,16 @@ function sgRouteLeg(g, p0, p1){
 let fwAnim = null;
 let fwAnimMarker = null;
 let fwArrivePop = null;
-function fwClearAnim(){
+function fwHaltAnim(){
+  // Stop the travelling marker and arrival popup, but keep the drawn path
+  // on the map (it stays visible while the follow panel is open).
   if (fwAnim && fwAnim.raf) cancelAnimationFrame(fwAnim.raf);
   fwAnim = null;
   if (fwAnimMarker){ fwAnimMarker.remove(); fwAnimMarker = null; }
   if (fwArrivePop){ fwArrivePop.remove(); fwArrivePop = null; }
+}
+function fwClearAnim(){
+  fwHaltAnim();
   for (const l of ['fw-path-line', 'fw-stop-dots', 'fw-stop-labels']) if (map.getLayer(l)) map.removeLayer(l);
   if (map.getSource('fw-path')) map.removeSource('fw-path');
 }
@@ -2697,6 +2702,7 @@ function fwApplyResult(st, cands){
 }
 async function startFollow(year, id){
   fwStopPlay();
+  fwClearAnim(); // a new person replaces the old path
   dismissResults(); // following a person replaces the search context; clear it fully
   fwActiveYear = null;
   fwAltsStop = null;
@@ -2794,6 +2800,7 @@ async function fwTogglePlay(){
 }
 function fwClose(){
   fwStopPlay();
+  fwClearAnim();
   fwStops = [];
   fwActiveYear = null;
   fwAltsStop = null;
