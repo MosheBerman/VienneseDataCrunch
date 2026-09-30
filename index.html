@@ -117,6 +117,7 @@ header>*{pointer-events:auto;}
 .pill-ez{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;}
 .pill-bez{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;}
 .pill-tuer{background:#fffbeb;color:#92400e;border:1px solid #fde68a;}
+.pill-site{background:#111827;color:#f9fafb;border:1px solid #111827;}
 .pp-name .pill{margin-left:6px;}
 .pp-addr .pill{margin-left:6px;}
 .pp-row{position:relative;}
@@ -434,6 +435,7 @@ en: {
   moreHiddenN: "{n} more residents hidden by filter",
   noMatches: "No matches",
   chipAll: "All", chipNames: "Names", chipStreets: "Streets", chipOccs: "Occupations",
+  siteTag: "Historical site",
   prevPage: "‹ Prev", nextPage: "Next ›",
   pageInfo: "page {p} of {n}",
   jumpPage: "Page", goBtn: "Go",
@@ -543,6 +545,7 @@ de: {
   moreHiddenN: "{n} weitere Bewohner durch Filter ausgeblendet",
   noMatches: "Keine Treffer",
   chipAll: "Alle", chipNames: "Namen", chipStreets: "Straßen", chipOccs: "Berufe",
+  siteTag: "Historischer Ort",
   prevPage: "‹ Zurück", nextPage: "Weiter ›",
   pageInfo: "Seite {p} von {n}",
   jumpPage: "Seite", goBtn: "Los",
@@ -1411,6 +1414,13 @@ $('resPill').addEventListener('click', () => expandResults());
 function selectResRow(row){
   minimizeResults();
   resRows = []; resHl = -1;
+  if (row.site){
+    // Historic-site hit: fly to the landmark and open its popup.
+    const c = row.site.geometry.coordinates;
+    map.flyTo({center: [+c[0], +c[1]], zoom: 16, duration: 1400});
+    map.once('moveend', () => openOverlayPopup('sites', row.site));
+    return;
+  }
   const rec = row.rec, rid = row.id;
   rec._id = rid;
   map.flyTo({center: [+rec.lo, +rec.la], zoom: 16, duration: 1400});
@@ -1477,6 +1487,22 @@ async function renderResPage(seq){
   resRows = []; resHl = -1;
   for (const [id] of slice) {
     if (rs !== renderSeq || seq !== searchSeq) return;
+    if (id < 0){
+      // Historic-site hit: negative id encodes the feature index.
+      const feat = siteFeatures && siteFeatures[-1 - id];
+      if (!feat) continue;
+      const p = feat.properties || {};
+      const desc = (LANG === 'de' && p.desc_de) ? p.desc_de : p.desc;
+      const d = document.createElement('div');
+      d.className = 'rrow';
+      d.innerHTML = '<b>' + esc(p.name || '') + '</b> <span class="pill pill-site">' + esc(t('siteTag')) + '</span>' +
+        '<div class="r-sub">' + esc(p.addr || '') + (desc ? ' \u00b7 ' + esc(desc) : '') + '</div>';
+      const row = {el: d, id: id, site: feat};
+      resRows.push(row);
+      d.addEventListener('click', () => selectResRow(row));
+      box.appendChild(d);
+      continue;
+    }
     const rec = await getRecord(+id);
     if (!rec) continue;
     const d = document.createElement('div');
@@ -1531,6 +1557,62 @@ async function renderResPage(seq){
 }
 $('q').addEventListener('focus', refreshSearchPlaceholder);
 $('q').addEventListener('blur', refreshSearchPlaceholder);
+// ---- historic sites in search ------------------------------------------------
+// The hand-picked landmarks (historic-sites.geojson) are matched against the
+// query like records: name -> names field, addr -> streets field. Every query
+// token must match somewhere in the site (name/addr/desc). Site hits join the
+// normal result list under negative ids (-1 - feature index).
+let siteFeatures = null;
+function siteWords(s){
+  return String(s || '').toLowerCase().split(/[^a-zäöüßſ]+/).filter(w => w.length >= 2).map(foldUmlaut);
+}
+async function loadSiteFeatures(){
+  if (siteFeatures) return siteFeatures;
+  siteFeatures = [];
+  try {
+    const r = await fetch('layers/historic-sites.geojson');
+    if (r.ok){
+      const j = await r.json();
+      siteFeatures = j.features || [];
+      for (const f of siteFeatures){
+        const p = f.properties || {};
+        f._w = {name: siteWords(p.name), addr: siteWords(p.addr),
+                desc: siteWords((p.desc || '') + ' ' + (p.desc_de || ''))};
+      }
+    }
+  } catch (err) {}
+  return siteFeatures;
+}
+function matchSites(toks){
+  const out = [];
+  const ntok = toks.length;
+  for (let i = 0; i < siteFeatures.length; i++){
+    const w = siteFeatures[i]._w;
+    let tot = 0, exN = 0, bits = 0, ok = true;
+    for (const t of toks){
+      const thr = t.length <= 5 ? 1 : 2;
+      let best = 0, bf = 0;
+      const pools = [[w.name, 1], [w.addr, 2], [w.desc, 0]];
+      for (const [arr, bit] of pools){
+        for (let k = 0; k < arr.length; k++){
+          const key = arr[k];
+          let ww = 0;
+          if (key === t) ww = 8;
+          else if (key.startsWith(t)) ww = 4;
+          else if (key.indexOf(t) >= 0) ww = 2;
+          else if (Math.abs(key.length - t.length) <= thr && levLim(key, t, thr) <= thr) ww = 1;
+          if (ww > best){ best = ww; bf = bit; }
+        }
+      }
+      if (!best){ ok = false; break; }
+      tot += best;
+      if (best === 8) exN++;
+      bits |= bf;
+    }
+    if (ok) out.push({i: i, w: tot, ex: exN, bits: bits});
+  }
+  return out;
+}
 $('q').addEventListener('input', e => {
   clearTimeout(searchTimer);
   resRows = []; resHl = -1;
@@ -1586,6 +1668,15 @@ $('q').addEventListener('input', e => {
       }
     }
     if (seq !== searchSeq) return;
+    // Historic-site matches join the result list under negative ids.
+    await loadSiteFeatures();
+    if (seq !== searchSeq) return;
+    for (const s of matchSites(toks)){
+      const key = String(-1 - s.i);
+      hits[key] = s.w;
+      exactCnt[key] = s.ex;
+      fHits[key] = s.bits;
+    }
     // sort: exact matches first (all query tokens, then some), then near matches;
     // within each tier by surname, then given name (precomputed rank)
     resIds = Object.keys(hits).map(id => {
