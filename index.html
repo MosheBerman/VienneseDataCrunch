@@ -271,8 +271,18 @@ header>*{pointer-events:auto;}
 .fw-alt.is-pick{border-color:#2563eb;background:#eff6ff;}
 /* ---- Inline correction modal: single prompt, mobile-friendly ---- */
 #corrOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;display:none;align-items:center;justify-content:center;padding:18px;}
+#addOverlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;display:none;align-items:center;justify-content:center;padding:18px;}
 #corrBox{background:#fff;border-radius:14px;max-width:520px;width:100%;max-height:85vh;overflow:auto;padding:20px 20px 18px;box-shadow:0 8px 40px rgba(0,0,0,.35);}
-#corrBox h2{margin:0 0 6px;font-size:17px;}
+#corrBox h2,#addBox h2{margin:0 0 6px;font-size:17px;}
+#addBox{background:#fff;border-radius:14px;max-width:520px;width:100%;max-height:85vh;overflow:auto;padding:20px 20px 18px;box-shadow:0 8px 40px rgba(0,0,0,.35);}
+#addBox label{display:block;font-size:13px;color:#6b7280;margin:10px 0 4px;}
+#addBox input[type=text],#addBox select,#addBox textarea{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:10px;font-size:16px;font-family:inherit;line-height:1.45;}
+#addBox textarea{min-height:64px;resize:vertical;}
+#addBox .corr-row{display:flex;gap:10px;margin-top:12px;}
+#addFor{font-size:14px;font-weight:700;margin:2px 0 4px;}
+#addNote{font-size:12px;color:#6b7280;margin-top:10px;}
+#addMsg{font-size:13px;margin-top:10px;min-height:18px;color:#065f46;}
+#addMsg.err{color:#b91c1c;}
 #corrCur{font-size:13px;color:#4b5563;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:8px 10px;margin:8px 0 10px;line-height:1.45;}
 #corrInput{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:10px;font-size:16px;font-family:inherit;line-height:1.45;min-height:88px;resize:vertical;}
 #corrBox .corr-row{display:flex;gap:10px;margin-top:12px;}
@@ -283,6 +293,7 @@ header>*{pointer-events:auto;}
 #corrMsg.err{color:#b91c1c;}
 .corr-link{background:none;border:none;padding:0;color:#2563eb;font-size:13px;cursor:pointer;text-decoration:underline;font-family:inherit;}
 .corr-pill{display:inline-block;font-size:10px;font-weight:700;color:#065f46;background:#d1fae5;border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:middle;white-space:nowrap;}
+.added-pill{color:#166534;background:#dcfce7;}
 /* ---- Mobile record-details bottom sheet (iOS-style) ------------------------ */
 #infoSheet{position:fixed;left:0;right:0;bottom:0;z-index:45;background:#fff;border-radius:16px 16px 0 0;
   box-shadow:0 -4px 24px rgba(0,0,0,.25);padding:8px 18px calc(18px + env(safe-area-inset-bottom));
@@ -424,7 +435,7 @@ header>*{pointer-events:auto;}
 // LANG drives every user-facing string via t(). Static markup carries
 // data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
 // Release version (bumped with each tagged semver release).
-const SITE_VERSION = 'v1.0.0';
+const SITE_VERSION = 'v1.1.0';
 // data-i18n-aria (aria-label); applyI18n() walks them on every switch.
 // Record content (names, streets, occupations from the book) is never
 // translated. Persisted in localStorage; defaults to the browser language.
@@ -513,6 +524,7 @@ en: {
   qRange: "registry match · number range",
   qAlpha: "alphabetical fallback",
   qFuzzy: "fuzzy street match",
+  qAdded: "researcher-added",
   viewInScan: "View in scan",
   showScanRow: "Show Scan Excerpt",
   hideScanRow: "Hide Scan Excerpt",
@@ -520,6 +532,22 @@ en: {
   suggestCorrection: "Suggest correction",
   corrPill: "corrected",
   corrPillTitle: "This entry includes an approved correction",
+  addedPill: "researcher-added",
+  addedPillTitle: "Researcher-added address — not in the printed directory",
+  addAddr: "Add address for another year",
+  addTitle: "Add an address for another year",
+  addFor: "For:",
+  addYear: "Year",
+  addStreet: "Street",
+  addHn: "House number",
+  addUnit: "Unit (Stiege/Tür, optional)",
+  addSource: "Source / evidence",
+  addSourcePh: "e.g. IKG emigration questionnaire, Meldezettel…",
+  addSubmit: "Send for review",
+  addThanks: "Thanks — address sent for review.",
+  addError: "Couldn't send. Please try again.",
+  addEmpty: "Please fill in year, street and house number.",
+  addNote: "Additions are reviewed before appearing on the map, marked as researcher-added.",
   corrTitle: "Suggest a correction",
   corrCurrent: "Current entry:",
   corrOriginal: "Original:",
@@ -639,6 +667,7 @@ de: {
   qRange: "Registertreffer · Nummernbereich",
   qAlpha: "alphabetische Zuordnung",
   qFuzzy: "ungefähre Straßenübereinstimmung",
+  qAdded: "nachgetragen",
   viewInScan: "Im Scan ansehen",
   showScanRow: "Scanausschnitt anzeigen",
   hideScanRow: "Scanausschnitt ausblenden",
@@ -646,6 +675,22 @@ de: {
   suggestCorrection: "Korrektur vorschlagen",
   corrPill: "korrigiert",
   corrPillTitle: "Dieser Eintrag enthält eine übernommene Korrektur",
+  addedPill: "nachgetragen",
+  addedPillTitle: "Nachgetragene Adresse — nicht im gedruckten Adressbuch",
+  addAddr: "Adresse für ein anderes Jahr hinzufügen",
+  addTitle: "Adresse für ein anderes Jahr hinzufügen",
+  addFor: "Für:",
+  addYear: "Jahr",
+  addStreet: "Straße",
+  addHn: "Hausnummer",
+  addUnit: "Einheit (Stiege/Tür, optional)",
+  addSource: "Quelle / Beleg",
+  addSourcePh: "z. B. IKG-Auswanderungsfragebogen, Meldezettel…",
+  addSubmit: "Zur Prüfung senden",
+  addThanks: "Danke — Adresse zur Prüfung gesendet.",
+  addError: "Senden fehlgeschlagen. Bitte erneut versuchen.",
+  addEmpty: "Bitte Jahr, Straße und Hausnummer ausfüllen.",
+  addNote: "Hinzufügungen werden vor der Anzeige geprüft und als nachgetragen gekennzeichnet.",
   corrTitle: "Korrektur vorschlagen",
   corrCurrent: "Aktueller Eintrag:",
   corrOriginal: "Original:",
@@ -771,6 +816,30 @@ async function applyCorrToShard(dir, sh){
 function corrPill(r){
   return (r && r._corr) ? ' <span class="corr-pill" title="' + esc(t('corrPillTitle')) + '">' + esc(t('corrPill')) + '</span>' : '';
 }
+// ---- address additions ----------------------------------------------------
+// address_additions.json maps "<year>:a<n>" -> {year,s,g,o,st,hn,u,lo,la,
+// geo_match,source,anchor}. Approved researcher-added addresses for years in
+// which the person is missing from the printed directory. Merged into the
+// year's features at load time; records get r._added = 1 (pill badge) and
+// render as green pins (q tier 3).
+let ADDITIONS = null;
+const addReady = fetch('address_additions.json').then(r => r.ok ? r.json() : {}).catch(() => ({}))
+  .then(j => { ADDITIONS = j || {}; });
+const isAddId = id => /^\d{4}:a\d+$/.test(String(id));
+function addFeaturesFor(year){
+  const feats = [];
+  for (const aid in ADDITIONS){
+    const a = ADDITIONS[aid];
+    if (!a || a.year !== year || a.lo == null || a.la == null) continue;
+    feats.push({type: 'Feature',
+      geometry: {type: 'Point', coordinates: [+a.lo, +a.la]},
+      properties: {m: [aid], q: 3, qc: [1, 0, 0], _added: 1}});
+  }
+  return feats;
+}
+function addedPill(r){
+  return (r && r._added) ? ' <span class="corr-pill added-pill" title="' + esc(t('addedPillTitle')) + '">' + esc(t('addedPill')) + '</span>' : '';
+}
 const RESEARCH_VIEWS = [
   {id: 'family', label: 'Family migration demo (1938–1942)', url: 'research/family/index.html'},
 ];
@@ -851,10 +920,14 @@ function corrDisplay(r){
   if (addr.trim()) s += ' · ' + addr.trim();
   return s.trim() || '—';
 }
-function corrKeyFor(r){
+function recKey(r){
   if (r._id == null) return null;
-  const key = CUR_YEAR + ':' + r._id;
-  corrCache.set(key, {s: r.s, g: r.g, o: r.o, st: r.st, hn: r.hn, u: r.u, d: r.d, pg: r.pg, rid: r._id, m: r.m});
+  return isAddId(r._id) ? String(r._id) : CUR_YEAR + ':' + r._id;
+}
+function corrKeyFor(r){
+  const key = recKey(r);
+  if (!key) return null;
+  corrCache.set(key, {s: r.s, g: r.g, o: r.o, st: r.st, hn: r.hn, u: r.u, d: r.d, pg: r.pg, rid: r._id, m: r.m, _added: r._added});
   return key;
 }
 // circled-i button (lives in the .pp-act row). The info body is rendered
@@ -867,10 +940,11 @@ function ppInfoBtn(r){
 }
 function ppInfoBody(r){
   if (r._id == null) return '';
-  const key = CUR_YEAR + ':' + r._id;
+  const key = recKey(r);
   const meta = '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>';
   const corr = '<div><button class="corr-link" onclick="openCorr(\'' + key.replace(/'/g, "\\'") + '\')">' + t('suggestCorrection') + '</button></div>';
-  return '<div class="pp-info-body"><div class="pp-info-inner">' + meta + corr + '</div></div>';
+  const add = r._added ? '' : '<div><button class="corr-link" onclick="openAddOverlay(\'' + key.replace(/'/g, "\\'") + '\')">' + t('addAddr') + '</button></div>';
+  return '<div class="pp-info-body"><div class="pp-info-inner">' + meta + corr + add + '</div></div>';
 }
 // Inferred-street provenance, e.g. "Im Adressbuch 1941 als Reichsbrückenstraße verzeichnet."
 function rescueLine(r){
@@ -893,10 +967,11 @@ function infoTap(btn){
 }
 function openInfoSheet(key){
   const r = corrCache.get(key) || {};
+  const add = r._added ? '' : '<div><button class="corr-link" onclick="openAddOverlay(\'' + String(key).replace(/'/g, "\\'") + '\');closeInfoSheet();">' + t('addAddr') + '</button></div>';
   const body = $('infoSheet').querySelector('.is-body');
   body.innerHTML = '<div class="is-name">' + esc(corrDisplay(r)) + '</div>' +
     '<div class="is-meta">' + esc(YC().label) + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>' +
-    '<div><button class="corr-link" onclick="openCorr(\'' + String(key).replace(/'/g, "\\'") + '\');closeInfoSheet();">' + t('suggestCorrection') + '</button></div>';
+    '<div><button class="corr-link" onclick="openCorr(\'' + String(key).replace(/'/g, "\\'") + '\');closeInfoSheet();">' + t('suggestCorrection') + '</button></div>' + add;
   $('infoSheet').style.display = 'block';
   $('infoSheet').setAttribute('aria-hidden', 'false');
 }
@@ -947,6 +1022,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const qLabel = m => {
   if (m === 'exact') return t('qExact');
+  if (m === 'researcher_added') return t('qAdded');
   if (!m) return t('qFuzzy');
   if (m.indexOf('district_fb') === 0) return t('qDistrict');
   if (m.indexOf('range_in') === 0 || m.indexOf('wl_range') === 0) return t('qRange');
@@ -957,6 +1033,8 @@ const qLabel = m => {
 async function loadYearData(){
   const gj = await (await fetch(YC().geojson)).json();
   allFeatures = gj.features;
+  await addReady;
+  for (const f of addFeaturesFor(CUR_YEAR)) allFeatures.push(f);
   featByRec.clear();
   for (const f of allFeatures) for (const id of f.properties.m) featByRec.set(id, f);
   for (const k in shardCache) delete shardCache[k];
@@ -1004,7 +1082,7 @@ map.on('load', async () => {
     paint: {'text-color': '#fff'}});
   map.addLayer({id: 'unclustered-point', type: 'circle', source: 'places', filter: ['!', ['has', 'point_count']],
     paint: {
-      'circle-color': ['match', ['get', 'q'], 0, '#2563eb', 1, '#7c3aed', 2, '#d97706', '#2563eb'],
+      'circle-color': ['match', ['get', 'q'], 0, '#2563eb', 1, '#7c3aed', 2, '#d97706', 3, '#16a34a', '#2563eb'],
       'circle-radius': 4.5, 'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
   // Inferred-street highlight: a rose ring drawn UNDER the pins, so the tier
   // color (blue/purple/amber) always stays readable. Toggled from Settings.
@@ -1481,7 +1559,7 @@ map.on('load', async () => {
 
 function popupHTML(r){
   let h = '<div class="pp pp-single' + (r.u ? ' pp-tuer' : '') + '">' + tuerPill(r) +
-    '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + '</div>';
+    '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
   h += rescueLine(r) + rowSnippetPH(r) + '<div class="pp-act">' + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
@@ -1636,7 +1714,9 @@ async function groupPopupHTML(f, highlightId){
     return r;
   }))).filter(Boolean);
   if (!recs.length) return null;
-  const shown = recs.filter(r => keepIdx.includes(qCode(r.m)));
+  // Researcher-added records always stay visible: the OCR quality filter
+  // must never hide them (they aren't OCR at all).
+  const shown = recs.filter(r => r._added || keepIdx.includes(qCode(r.m)));
   const list = (shown.length ? shown : recs).slice()
     .sort((a, b) => qCode(a.m) - qCode(b.m) || String(a.s).localeCompare(String(b.s)));
   const hidden = recs.length - list.length;
@@ -1648,7 +1728,7 @@ async function groupPopupHTML(f, highlightId){
     const tp = r.u ? ' pp-tuer' : '';
     const snip = rowSnippetPH(r);
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
-      '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + '</div>' +
+      '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
       snip + '<div class="pp-act">' + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
   }
@@ -1689,6 +1769,12 @@ async function openGroupPopup(f, highlightId){
 }
 
 async function getRecord(id){
+  if (isAddId(id)){
+    await addReady;
+    const a = ADDITIONS[String(id)];
+    if (!a) return null;
+    return Object.assign({_id: String(id), _added: 1, m: 'researcher_added'}, a);
+  }
   const dir = YC().dir;
   const sh = 'r' + String(Math.floor(id / YC().shard)).padStart(4, '0');
   const key = dir + '/' + sh; // dir-keyed: a late fetch from a previous year can't poison this year's cache
@@ -2300,6 +2386,12 @@ async function fwGetIdx(year){
   return fwIdxC[year];
 }
 async function fwGetRec(year, id){
+  if (isAddId(id)){
+    await addReady;
+    const a = ADDITIONS[String(id)];
+    if (!a) return null;
+    return Object.assign({_id: String(id), _added: 1, m: 'researcher_added'}, a);
+  }
   const dir = YEARS[year].dir;
   const sh = 'r' + String(Math.floor(id / 1000)).padStart(4, '0');
   const c = fwShardC[year] || (fwShardC[year] = {});
@@ -2331,6 +2423,17 @@ async function fwFind(src, year){
   }
   const out = [];
   let n = 0;
+  // Researcher-added addresses for this year aren't in the printed index —
+  // inject them as candidates when the surname matches.
+  try {
+    await addReady;
+    for (const aid in ADDITIONS){
+      const a = ADDITIONS[aid];
+      if (!a || a.year !== year) continue;
+      const atoks = new Set(fwToks(a.s));
+      if (stoks.length && stoks.every(t => atoks.has(t))) ids.add(aid);
+    }
+  } catch (e) {}
   for (const id of ids){
     if (++n > 9000) break; // degenerate common-surname guard
     const c = await fwGetRec(year, id);
@@ -2338,9 +2441,10 @@ async function fwFind(src, year){
     const cs = new Set(fwToks(c.s));
     if (!stoks.every(t => cs.has(t))) continue;
     const r = fwScore(src, c);
-    if (r.score >= 2.5) out.push({id: +id, rec: c, score: r.score, why: r.why});
+    if (r.score >= 2.5) out.push({id: isAddId(id) ? id : +id, rec: c, score: r.score, why: r.why});
   }
-  out.sort((a, b) => b.score - a.score || a.id - b.id);
+  out.sort((a, b) => b.score - a.score ||
+    (typeof a.id === 'number' && typeof b.id === 'number' ? a.id - b.id : 0));
   return out;
 }
 const fwConfOf = s => s >= 7 ? 'strong' : s >= 4.5 ? 'likely' : s >= 3 ? 'possible' : null;
@@ -2840,7 +2944,8 @@ document.addEventListener('click', e => {
   const b = e.target.closest ? e.target.closest('[data-follow-id]') : null;
   if (!b) return;
   e.stopPropagation();
-  startFollow(b.getAttribute('data-follow-year'), +b.getAttribute('data-follow-id'));
+  const fid = b.getAttribute('data-follow-id');
+  startFollow(b.getAttribute('data-follow-year'), isAddId(fid) ? fid : +fid);
 });
 
 // ---- inline correction: single prompt -> Google Form formResponse ----
@@ -2916,6 +3021,77 @@ async function submitCorr(){
   }
 }
 
+// ---- add-address modal ------------------------------------------------------
+// Lets the user add a known address for a year in which the person is missing
+// from the printed directory. Identity is inherited from the anchor record;
+// the submission goes to the same review queue as corrections (structured
+// ADD-ADDRESS note) and never auto-applies.
+let addKey = null;
+function openAddOverlay(key){
+  addKey = key;
+  const r = corrCache.get(key) || {};
+  $('addTitle').textContent = t('addTitle');
+  $('addForLabel').textContent = t('addFor');
+  $('addFor').textContent = corrDisplay(r);
+  const sel = $('addYearSel');
+  sel.innerHTML = '';
+  const anchorYear = String(key).split(':')[0];
+  const years = Object.keys(YEARS).filter(y => YEARS[y].kind === 'layer');
+  const def = years.find(y => y !== anchorYear && +y > +anchorYear) || years.find(y => y !== anchorYear) || anchorYear;
+  for (const y of years){
+    const o = document.createElement('option');
+    o.value = y; o.textContent = YEARS[y].label;
+    if (y === def) o.selected = true;
+    sel.appendChild(o);
+  }
+  $('addYearLabel').textContent = t('addYear');
+  $('addStreetLabel').textContent = t('addStreet');
+  $('addHnLabel').textContent = t('addHn');
+  $('addUnitLabel').textContent = t('addUnit');
+  $('addSourceLabel').textContent = t('addSource');
+  $('addSource').placeholder = t('addSourcePh');
+  $('addStreet').value = ''; $('addHn').value = ''; $('addUnit').value = ''; $('addSource').value = '';
+  $('addMsg').textContent = ''; $('addMsg').className = '';
+  $('addNote').textContent = t('addNote');
+  $('addSubmit').textContent = t('addSubmit');
+  $('addCancel').textContent = t('corrCancel');
+  $('addSubmit').disabled = false;
+  $('addOverlay').style.display = 'flex';
+  setTimeout(() => $('addStreet').focus(), 50);
+}
+function closeAdd(){
+  $('addOverlay').style.display = 'none';
+  addKey = null;
+}
+async function submitAdd(){
+  const year = $('addYearSel').value;
+  const street = $('addStreet').value.trim();
+  const hn = $('addHn').value.trim();
+  const unit = $('addUnit').value.trim();
+  const source = $('addSource').value.trim();
+  if (!year || !street || !hn){
+    $('addMsg').textContent = t('addEmpty');
+    $('addMsg').className = 'err';
+    return;
+  }
+  const note = ['ADD-ADDRESS', 'year: ' + year, 'street: ' + street, 'hn: ' + hn,
+    'unit: ' + unit, 'source: ' + source].join('\n');
+  $('addSubmit').disabled = true;
+  $('addMsg').textContent = ''; $('addMsg').className = '';
+  try {
+    const body = new URLSearchParams();
+    body.append('entry.' + CORR_ENTRY.id, addKey || '');
+    body.append('entry.' + CORR_ENTRY.note, note);
+    await fetch(CORR_FORM_RESPONSE, {method: 'POST', mode: 'no-cors', body});
+    $('addMsg').textContent = t('addThanks');
+    setTimeout(closeAdd, 1400);
+  } catch (e) {
+    $('addMsg').textContent = t('addError');
+    $('addMsg').className = 'err';
+    $('addSubmit').disabled = false;
+  }
+}
+
 // ---- service worker -----------------------------------------------------
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
@@ -2944,9 +3120,34 @@ setLang(getLang());
     <div id="corrMsg"></div>
   </div>
 </div>
+<div id="addOverlay" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+  <div id="addBox">
+    <h2 id="addTitle">Add an address for another year</h2>
+    <div id="addForLabel" style="font-size:13px;color:#6b7280;">For:</div>
+    <div id="addFor"></div>
+    <label id="addYearLabel" for="addYearSel">Year</label>
+    <select id="addYearSel"></select>
+    <label id="addStreetLabel" for="addStreet">Street</label>
+    <input type="text" id="addStreet" autocomplete="off">
+    <label id="addHnLabel" for="addHn">House number</label>
+    <input type="text" id="addHn" autocomplete="off">
+    <label id="addUnitLabel" for="addUnit">Unit (Stiege/Tür, optional)</label>
+    <input type="text" id="addUnit" autocomplete="off">
+    <label id="addSourceLabel" for="addSource">Source / evidence</label>
+    <textarea id="addSource" rows="2"></textarea>
+    <div class="corr-row">
+      <button id="addCancel" onclick="closeAdd()">Cancel</button>
+      <button id="addSubmit" onclick="submitAdd()" style="flex:1;border:none;background:#111827;color:#fff;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;min-height:48px;">Send for review</button>
+    </div>
+    <div id="addMsg"></div>
+    <div id="addNote"></div>
+  </div>
+</div>
 <script>
 // close correction modal on overlay tap / Escape
 document.getElementById('corrOverlay').addEventListener('click', e => { if (e.target.id === 'corrOverlay') closeCorr(); });
+document.getElementById('addOverlay').addEventListener('click', e => { if (e.target.id === 'addOverlay') closeAdd(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('addOverlay').style.display === 'flex') closeAdd(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('corrOverlay').style.display === 'flex') closeCorr(); });
 document.getElementById('corrCancel').addEventListener('click', closeCorr);
 document.getElementById('corrSubmit').addEventListener('click', submitCorr);
