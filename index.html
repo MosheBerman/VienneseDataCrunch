@@ -1297,13 +1297,18 @@ $('setInfer').addEventListener('change', e => {
 });
 // ---- overlay layers: renames, Nazi-era book names (per year), historic sites
 const OVERLAYS = {
-  renames:   {box: 'setRenames',   key: 'lehmann.showRenames',   file: 'layers/renames.geojson',         color: '#7c3aed', r: 5, line: true},
+  renames:   {box: 'setRenames',   key: 'lehmann.showRenames',   file: 'layers/renames.geojson',         color: '#7c3aed', r: 5, line: true, def: true},
   booknames: {box: 'setBookNames', key: 'lehmann.showBookNames', perYear: 'renamed-lines.geojson',       color: '#92400e', r: 5, line: true},
-  sites:     {box: 'setSites',     key: 'lehmann.showSites',     file: 'layers/historic-sites.geojson',  color: '#111827', r: 7},
+  sites:     {box: 'setSites',     key: 'lehmann.showSites',     file: 'layers/historic-sites.geojson',  color: '#111827', r: 7, def: true},
 };
 const overlayState = {};
 function overlayOn(id){
-  try { return localStorage.getItem(OVERLAYS[id].key) === '1'; } catch (e) { return false; }
+  // No stored choice yet → fall back to the overlay's shipped default.
+  const def = !!OVERLAYS[id].def;
+  try {
+    const v = localStorage.getItem(OVERLAYS[id].key);
+    return v === null ? def : v === '1';
+  } catch (e) { return def; }
 }
 function overlayLayerIds(id){
   return overlayState[id] && overlayState[id].layers ? overlayState[id].layers : [];
