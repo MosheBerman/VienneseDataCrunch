@@ -46,9 +46,9 @@ Mobile:
 | ---------- | ---------------- |
 | ![Suggest-a-correction modal](screenshots/mobile-correction.jpg) | ![Gestapo HQ historical site](screenshots/mobile-gestapo.jpg) |
 
-| German UI |
-| --------- |
-| ![Gestapo HQ in the German interface](screenshots/mobile-german.jpg) |
+| German UI | Street renames |
+| --------- | -------------- |
+| ![Gestapo HQ in the German interface](screenshots/mobile-german.jpg) | ![Rathausplatz → Adolf Hitler-Platz rename overlay](screenshots/mobile-renames.jpg) |
 
 ## How it's built
 
