@@ -46,6 +46,10 @@ Mobile:
 | ---------- | ---------------- |
 | ![Suggest-a-correction modal](screenshots/mobile-correction.jpg) | ![Gestapo HQ historical site](screenshots/mobile-gestapo.jpg) |
 
+| German UI |
+| --------- |
+| ![Gestapo HQ in the German interface](screenshots/mobile-german.jpg) |
+
 ## How it's built
 
 1. Scans of the Lehmann volumes from the Wienbibliothek's Retrodigitalisierung
