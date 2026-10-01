@@ -409,7 +409,7 @@ header>*{pointer-events:auto;}
 <p data-i18n-html="licenseText1">Scans: <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/2316398" target="_blank" rel="noopener">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href="https://creativecommons.org/publicdomain/mark/1.0/" target="_blank" rel="noopener">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution. <a href="https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/2316398" target="_blank" rel="noopener">Browse all Lehmann volumes</a>. Landmark images via <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>: Aspangbahnhof c.1905 (public domain); Hotel Métropole c.1873, Rijksmuseum (<a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0</a>).</p>
 <p data-i18n-html="licenseText2">Map data extracted from the directory is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0 Universal</a>.</p>
 <h3 data-i18n="siteVersion">Site version</h3>
-<p data-i18n-html="sourceLine">Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>52957194</code></p>
+<p data-i18n-html="sourceLine">Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>v1.0.0</code></p>
 <h3 data-i18n="codeLibs">Code libraries</h3>
 <p><a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">Mapbox GL JS</a> v3.30.0 — BSD 3-Clause.</p>
 <h3 data-i18n="creditTitle">Credit</h3>
@@ -422,6 +422,8 @@ header>*{pointer-events:auto;}
 // ---- i18n: UI + About text in English and Austrian German ------------------
 // LANG drives every user-facing string via t(). Static markup carries
 // data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
+// Release version (bumped with each tagged semver release).
+const SITE_VERSION = 'v1.0.0';
 // data-i18n-aria (aria-label); applyI18n() walks them on every switch.
 // Record content (names, streets, occupations from the book) is never
 // translated. Persisted in localStorage; defaults to the browser language.
@@ -499,7 +501,7 @@ en: {
   licenseText1: "Scans: <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/2316398\" target=\"_blank\" rel=\"noopener\">Wienbibliothek im Rathaus — digital collection</a>. The 1938 and 1942 Lehmann volumes carry the <a href=\"https://creativecommons.org/publicdomain/mark/1.0/\" target=\"_blank\" rel=\"noopener\">Public Domain Mark 1.0</a>; when reusing the scans, please credit the Wienbibliothek im Rathaus as the holding institution. <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/2316398\" target=\"_blank\" rel=\"noopener\">Browse all Lehmann volumes</a>. Landmark images via <a href=\"https://commons.wikimedia.org\" target=\"_blank\" rel=\"noopener\">Wikimedia Commons</a>: Aspangbahnhof c.1905 (public domain); Hotel Métropole c.1873, Rijksmuseum (<a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0</a>).",
   licenseText2: "Map data extracted from the directory is released under <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0 Universal</a>.",
   siteVersion: "Site version",
-  sourceLine: "Source: <a href=\"https://github.com/MosheBerman/VienneseDataCrunch\" target=\"_blank\" rel=\"noopener\">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>52957194</code>",
+  sourceLine: "Source: <a href=\"https://github.com/MosheBerman/VienneseDataCrunch\" target=\"_blank\" rel=\"noopener\">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>" + SITE_VERSION + "</code>",
   codeLibs: "Code libraries",
   creditTitle: "Credit",
   creditText: "Built by Muse by Meta, working with Moshe Berman.",
@@ -624,7 +626,7 @@ de: {
   licenseText1: "Scans: <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/2316398\" target=\"_blank\" rel=\"noopener\">Wienbibliothek im Rathaus — Digitale Sammlung</a>. Die Lehmann-Bände von 1938 und 1942 sind mit der <a href=\"https://creativecommons.org/publicdomain/mark/1.0/\" target=\"_blank\" rel=\"noopener\">Public Domain Mark 1.0</a> gekennzeichnet; bitte nennen Sie bei einer Weiterverwendung der Scans die Wienbibliothek im Rathaus als besitzende Institution. <a href=\"https://www.digital.wienbibliothek.at/wbrobv/periodical/structure/2316398\" target=\"_blank\" rel=\"noopener\">Alle Lehmann-Bände durchblättern</a>. Bilder der Landmarken via <a href=\"https://commons.wikimedia.org\" target=\"_blank\" rel=\"noopener\">Wikimedia Commons</a>: Aspangbahnhof um 1905 (gemeinfrei); Hotel Métropole um 1873, Rijksmuseum (<a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0</a>).",
   licenseText2: "Die aus dem Adressbuch extrahierten Kartendaten stehen unter <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\" rel=\"noopener\">CC0 1.0 Universal</a>.",
   siteVersion: "Website-Version",
-  sourceLine: "Quelle: <a href=\"https://github.com/MosheBerman/VienneseDataCrunch\" target=\"_blank\" rel=\"noopener\">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>52957194</code>",
+  sourceLine: "Quelle: <a href=\"https://github.com/MosheBerman/VienneseDataCrunch\" target=\"_blank\" rel=\"noopener\">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>" + SITE_VERSION + "</code>",
   codeLibs: "Code-Bibliotheken",
   creditTitle: "Danksagung",
   creditText: "Erstellt von Muse by Meta, in Zusammenarbeit mit Moshe Berman.",
