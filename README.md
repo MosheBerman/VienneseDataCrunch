@@ -87,7 +87,7 @@ Beyond the scans, the site is built on these public sources:
 - **Basemap** — © [Mapbox](https://www.mapbox.com/), ©
   [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
   ([ODbL](https://opendatacommons.org/licenses/odbl/)).
-- **Historical street renames** — research draws on the 10 December 1938
+- **Historical street renames** — research draws on the 9 December 1938
   street-renaming decree and the
   [Wien Geschichte Wiki](https://www.geschichtewiki.wien.gv.at/) (Stadt Wien).
   Wiki article texts are
