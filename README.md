@@ -24,6 +24,16 @@ and each record popup shows the scanned row it came from.
   (Sammellager, Aspangbahnhof, Gestapo HQ)
 - **Bilingual UI** — English / Deutsch
 
+## Screenshots
+
+| Map | Search |
+| --- | ------ |
+| ![Map of central Vienna with address pins](screenshots/map.png) | ![Search results for "Bermann"](screenshots/search.png) |
+
+| Record | Follow this person |
+| ------ | ------------------ |
+| ![Record popup with scan excerpt](screenshots/record.png) | ![Follow panel with year timeline](screenshots/follow.png) |
+
 ## How it's built
 
 1. Scans of the Lehmann volumes from the Wienbibliothek's Retrodigitalisierung
