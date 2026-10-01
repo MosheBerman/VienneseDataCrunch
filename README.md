@@ -50,6 +50,10 @@ Mobile:
 | --------- | -------------- |
 | ![Gestapo HQ in the German interface](screenshots/mobile-german.jpg) | ![Rathausplatz → Adolf Hitler-Platz rename overlay](screenshots/mobile-renames.jpg) |
 
+From the book itself — a 1939 directory page showing the renamed street in print:
+
+![1939 Lehmann page: "Böhmer Julius, Portier, I. Adolf Hitler-Platz 2"](screenshots/rename-book-page.png)
+
 ## How it's built
 
 1. Scans of the Lehmann volumes from the Wienbibliothek's Retrodigitalisierung
