@@ -74,6 +74,32 @@ Caveats: OCR misreads names; some streets were renamed or no longer exist; amber
 pins are approximate. A missing pin doesn't mean the entry is missing from the
 book — not every address matched the modern registry.
 
+## Data sources & attribution
+
+Beyond the scans, the site is built on these public sources:
+
+- **Street coordinates** — Stadt Wien, Open Government Data
+  ([data.wien.gv.at](https://data.wien.gv.at)): the `STRASSENGRAPHOGD` street
+  centerlines (rename-overlay geometries follow the real centerlines) and the
+  City of Vienna address registry (geocoding). Geodata: © Stadt Wien,
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) —
+  *Datenquelle: Stadt Wien – data.wien.gv.at*.
+- **Basemap** — © [Mapbox](https://www.mapbox.com/), ©
+  [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+  ([ODbL](https://opendatacommons.org/licenses/odbl/)).
+- **Historical street renames** — research draws on the 10 December 1938
+  street-renaming decree and the
+  [Wien Geschichte Wiki](https://www.geschichtewiki.wien.gv.at/) (Stadt Wien).
+  Wiki article texts are
+  [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/); only
+  factual old→new name pairs are used, and the wiki's structured entry data is
+  published as Open Government Data. Cross-checked against the German
+  Wikipedia's Vienna street-name lists
+  ([CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)).
+- **Landmark images** — via [Wikimedia Commons](https://commons.wikimedia.org):
+  Aspangbahnhof c. 1905 (public domain); Hotel Métropole c. 1873, via the
+  Rijksmuseum ([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)).
+
 ## Repository layout
 
 - `index.html` — the site (single-file app)
