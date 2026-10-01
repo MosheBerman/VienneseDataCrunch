@@ -26,6 +26,8 @@ and each record popup shows the scanned row it came from.
 
 ## Screenshots
 
+Desktop:
+
 | Map | Search |
 | --- | ------ |
 | ![Map of central Vienna with address pins](screenshots/map.png) | ![Search results for "Bermann"](screenshots/search.png) |
@@ -33,6 +35,16 @@ and each record popup shows the scanned row it came from.
 | Record | Follow this person |
 | ------ | ------------------ |
 | ![Record popup with scan excerpt](screenshots/record.png) | ![Follow panel with year timeline](screenshots/follow.png) |
+
+Mobile:
+
+| Point sheet | Follow journey |
+| ----------- | -------------- |
+| ![Bottom sheet with records for an address](screenshots/mobile-sheet.jpg) | ![Follow panel mid-animation with routed path](screenshots/mobile-follow.jpg) |
+
+| Correction | Historical sites |
+| ---------- | ---------------- |
+| ![Suggest-a-correction modal](screenshots/mobile-correction.jpg) | ![Gestapo HQ historical site](screenshots/mobile-gestapo.jpg) |
 
 ## How it's built
 
