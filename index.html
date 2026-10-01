@@ -19,7 +19,7 @@ header>*{pointer-events:auto;}
 #q:focus{outline:none;border-color:#93c5fd;background:rgba(255,255,255,.14);flex-grow:5;}
 /* Desktop: the dock wrapper vanishes so #q/#resPill lay out in the header as before. */
 #searchDock{display:contents;}
-#yrPick{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:none;border-radius:8px;color:#111827;font-weight:700;font-size:15px;cursor:pointer;min-height:44px;padding:8px 28px 8px 12px;}
+#yrPick{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:none;border-radius:8px;color:#111827;font-weight:700;font-size:15px;cursor:pointer;min-height:44px;padding:8px 28px 8px 12px;max-width:160px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 #yrPick option{color:#111827;}
 #shareBtn{width:44px;height:44px;flex:0 0 auto;border-radius:50%;border:1px solid #d1d5db;background:#fff;
   font-size:22px;line-height:1;color:#111827;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.18);padding:0;}
@@ -1723,17 +1723,27 @@ function paintResHl(){
 // on tap and ✕ dismisses it outright. On desktop the open panel is a
 // left split-view sidebar (body.split-on pushes the map right).
 const isDesktop = () => window.matchMedia && matchMedia('(min-width: 641px)').matches;
+// The split-view shift animates #map{left} over .28s, so a synchronous
+// map.resize() measures the container mid-transition and leaves the canvas
+// mis-sized (white strip). Resize again once the transition settles.
+function resizeMapAfterShift(){
+  const el = document.getElementById('map');
+  let done = false;
+  const doResize = () => { if (done) return; done = true; try { map.resize(); } catch (e) {} };
+  if (el) el.addEventListener('transitionend', doResize, {once: true});
+  setTimeout(doResize, 350);
+}
 function splitOn(){
   if (!isDesktop()) return;
   if (!document.body.classList.contains('split-on')){
     document.body.classList.add('split-on');
-    try { map.resize(); } catch (e) {}
+    resizeMapAfterShift();
   }
 }
 function splitOff(){
   if (document.body.classList.contains('split-on')){
     document.body.classList.remove('split-on');
-    try { map.resize(); } catch (e) {}
+    resizeMapAfterShift();
   }
 }
 function minimizeResults(){
