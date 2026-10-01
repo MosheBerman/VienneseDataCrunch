@@ -36,6 +36,10 @@ Desktop:
 | ------ | ------------------ |
 | ![Record popup with scan excerpt](screenshots/record.png) | ![Follow panel with year timeline](screenshots/follow.png) |
 
+| Street renames | German UI |
+| -------------- | --------- |
+| ![Nazi-era street rename overlays near Rathausplatz](screenshots/renames.png) | ![German-language interface](screenshots/german.png) |
+
 Mobile:
 
 | Point sheet | Follow journey |
