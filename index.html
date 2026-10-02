@@ -191,16 +191,15 @@ header>*{pointer-events:auto;}
 .spin{width:34px;height:34px;border-radius:50%;border:4px solid rgba(0,0,0,.12);border-top-color:#1a73e8;animation:spn .8s linear infinite;}
 .spin.sm{width:20px;height:20px;border-width:3px;}
 @keyframes spn{to{transform:rotate(360deg);}}
-#boot{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:transparent;color:#4b5563;font-size:14px;text-shadow:0 1px 4px rgba(255,255,255,.9),0 0 12px rgba(255,255,255,.9);transition:opacity .4s;}
+#boot{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#f5f5f4;color:#4b5563;font-size:14px;transition:opacity .4s;}
 #boot.gone{opacity:0;pointer-events:none;}
 /* book-cover loading: book rests on the parchment, then drops toward the
    viewer onto the empty map as the parchment fades; pins spill out gray -> blue */
-.bookwrap{position:relative;line-height:0;transform:scale(.7);}
-#boot.mapready .bookwrap{animation:bookdrop .85s cubic-bezier(.3,.9,.35,1) .05s both;}
+.bookwrap{position:relative;line-height:0;transform:scale(1.3);opacity:0;}
+#boot.mapready .bookwrap{animation:bookdrop .85s cubic-bezier(.3,.7,.35,1) .05s both;}
 @keyframes bookdrop{
-  0%{transform:scale(.7);}
-  60%{transform:scale(1.04);}
-  100%{transform:scale(1);}
+  0%{transform:scale(1.3);opacity:0;}
+  100%{transform:scale(1);opacity:1;}
 }
 /* on exit the book shrinks away into the screen instead of just fading */
 #boot.gone .bookwrap{animation:bookaway .45s ease-in both;}
@@ -219,7 +218,7 @@ header>*{pointer-events:auto;}
   100%{transform:translate(var(--dx),var(--dy)) scale(1);opacity:0;background:#2563eb;}
 }
 @media (prefers-reduced-motion:reduce){
-  #boot .bookwrap{transform:none;}
+  #boot .bookwrap{transform:none;opacity:1;}
   #boot.mapready .bookwrap{animation:none;}
   #boot.gone .bookwrap{animation:none;}
   .bookpins{display:none;}
