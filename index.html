@@ -186,26 +186,23 @@ header>*{pointer-events:auto;}
 .spin{width:34px;height:34px;border-radius:50%;border:4px solid rgba(0,0,0,.12);border-top-color:#1a73e8;animation:spn .8s linear infinite;}
 .spin.sm{width:20px;height:20px;border-width:3px;}
 @keyframes spn{to{transform:rotate(360deg);}}
-#boot{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#e9e5d9;color:#4b5563;font-size:14px;transition:opacity .4s, background-color .9s ease;}
+#boot{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:transparent;color:#4b5563;font-size:14px;text-shadow:0 1px 4px rgba(255,255,255,.9),0 0 12px rgba(255,255,255,.9);transition:opacity .4s;}
 #boot.gone{opacity:0;pointer-events:none;}
-/* once the empty basemap is up, the parchment fades so the book drops onto the map */
-#boot.mapready{background:transparent;}
-/* book-cover loading: title page drops onto the map, then pins spill out, gray -> blue */
-.bookwrap{position:relative;line-height:0;transform:translateY(-78vh);}
-#boot.mapready .bookwrap{animation:bookdrop 1.05s cubic-bezier(.3,.85,.45,1) .1s both;}
+/* book-cover loading: book rests on the parchment, then drops toward the
+   viewer onto the empty map as the parchment fades; pins spill out gray -> blue */
+.bookwrap{position:relative;line-height:0;transform:scale(.7);}
+#boot.mapready .bookwrap{animation:bookdrop .85s cubic-bezier(.3,.9,.35,1) .05s both;}
 @keyframes bookdrop{
-  0%{transform:translateY(-78vh) rotate(-7deg);}
-  55%{transform:translateY(0) rotate(0deg);}
-  72%{transform:translateY(-16px) rotate(0deg);}
-  88%{transform:translateY(3px) rotate(0deg);}
-  100%{transform:translateY(0) rotate(0deg);}
+  0%{transform:scale(.7);}
+  60%{transform:scale(1.04);}
+  100%{transform:scale(1);}
 }
 .bookcover{position:relative;z-index:1;width:min(190px,42vw);height:auto;border-radius:3px;background:#fff;
   box-shadow:0 12px 32px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.25);transform:rotate(-1.5deg);}
 .bookpins{position:absolute;inset:0;z-index:0;pointer-events:none;}
 .bookpins span{position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;
   background:#9ca3af;opacity:0;}
-#boot.mapready .bookpins span{animation:pinout 2.6s cubic-bezier(.25,.6,.45,1) infinite;animation-delay:var(--d);}
+#boot.mapready .bookpins span{animation:pinout 2.2s cubic-bezier(.25,.6,.45,1) infinite;animation-delay:var(--d);}
 @keyframes pinout{
   0%{transform:rotate(var(--a)) translateX(30px);opacity:0;background:#9ca3af;}
   18%{opacity:.95;}
@@ -364,7 +361,7 @@ header>*{pointer-events:auto;}
 <div id="map"></div>
 <div id="boot">
 <div class="bookwrap">
-<div class="bookpins" aria-hidden="true"><span style="--a:0deg;--d:1.15s"></span><span style="--a:30deg;--d:1.36s"></span><span style="--a:60deg;--d:1.57s"></span><span style="--a:90deg;--d:1.78s"></span><span style="--a:120deg;--d:1.99s"></span><span style="--a:150deg;--d:2.20s"></span><span style="--a:180deg;--d:2.41s"></span><span style="--a:210deg;--d:2.62s"></span><span style="--a:240deg;--d:2.83s"></span><span style="--a:270deg;--d:3.04s"></span><span style="--a:300deg;--d:3.25s"></span><span style="--a:330deg;--d:3.46s"></span></div>
+<div class="bookpins" aria-hidden="true"><span style="--a:0deg;--d:0.85s"></span><span style="--a:30deg;--d:0.97s"></span><span style="--a:60deg;--d:1.09s"></span><span style="--a:90deg;--d:1.21s"></span><span style="--a:120deg;--d:1.33s"></span><span style="--a:150deg;--d:1.45s"></span><span style="--a:180deg;--d:1.57s"></span><span style="--a:210deg;--d:1.69s"></span><span style="--a:240deg;--d:1.81s"></span><span style="--a:270deg;--d:1.93s"></span><span style="--a:300deg;--d:2.05s"></span><span style="--a:330deg;--d:2.17s"></span></div>
 <img class="bookcover" src="boot-book.jpg" alt="" decoding="async" fetchpriority="high">
 </div>
 <div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div></div>
@@ -1128,7 +1125,8 @@ $('yrPick').addEventListener('change', e => {
 
 map.on('load', async () => {
   await loadYearData();
-  map.addSource('places', {type: 'geojson', data: {type: 'FeatureCollection', features: allFeatures}, cluster: true, clusterMaxZoom: 14, clusterRadius: 55});
+  // Points stay out of the source until the intro has played (see finishIntro below).
+  map.addSource('places', {type: 'geojson', data: {type: 'FeatureCollection', features: []}, cluster: true, clusterMaxZoom: 14, clusterRadius: 55});
 
   map.addLayer({id: 'clusters', type: 'circle', source: 'places', filter: ['has', 'point_count'],
     paint: {
@@ -1222,17 +1220,22 @@ map.on('load', async () => {
   // the follow panel no longer collapse results out from under themselves.
   map.on('click', () => minimizeResults());
   updateCount(allFeatures);
-  const hideBoot = () => $('boot').classList.add('gone');
-  // Let the intro play out: hide only after the data is idle AND the
-  // book-drop + pin-spill sequence has had its minimum screen time.
-  let idleFired = false, minTimeElapsed = false;
-  const maybeHideBoot = () => { if (idleFired && minTimeElapsed) hideBoot(); };
-  map.once('idle', () => { idleFired = true; maybeHideBoot(); });
-  setTimeout(() => { minTimeElapsed = true; maybeHideBoot(); }, 3200);
+  // The intro plays first; the real points render only once it has played out.
+  const initialFeats = allFeatures;
+  const finishIntro = () => {
+    if (map.getSource('places')) map.getSource('places').setData({type: 'FeatureCollection', features: initialFeats});
+    $('boot').classList.add('gone');
+  };
+  // Snappy intro: finish once the data is idle AND the minimum screen time
+  // for the book-drop + pin-spill has elapsed (~2.2s).
+  let idleFired = false, introTimeElapsed = false;
+  const maybeFinishIntro = () => { if (idleFired && introTimeElapsed) finishIntro(); };
+  map.once('idle', () => { idleFired = true; maybeFinishIntro(); });
+  setTimeout(() => { introTimeElapsed = true; maybeFinishIntro(); }, 2200);
   // Empty basemap is up (we are inside the map load handler): fade the
-  // parchment and drop the book onto the map.
+  // parchment and drop the book toward the viewer, onto the map.
   $('boot').classList.add('mapready');
-  setTimeout(hideBoot, 12000);
+  setTimeout(finishIntro, 12000);
 });
 
 function updateCount(feats){
