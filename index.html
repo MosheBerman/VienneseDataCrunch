@@ -163,6 +163,8 @@ header>*{pointer-events:auto;}
   .sheet-body{padding:0 18px calc(24px + env(safe-area-inset-bottom));}
 }
 #aboutBox h3{margin:12px 0 4px;font-size:13px;}
+.about-more{margin:4px 0;}
+.about-more>summary{cursor:pointer;font-weight:600;font-size:14px;color:#1f2937;padding:8px 0;}
 .about-stats{margin:8px 0;}
 .about-legend{font-size:12px;color:#4b5563;}
 .pp-info{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;font:italic 12px Georgia,serif;cursor:pointer;margin:0;padding:0;vertical-align:middle;flex:0 0 auto;}
@@ -373,15 +375,18 @@ header>*{pointer-events:auto;}
 <div class="sheet-head">
 <button id="aboutClose" data-i18n="aboutClose">Close</button>
 <div class="tabs" role="tablist">
-<button class="tab active" data-tab="settings" role="tab" data-i18n="tabSettings">Settings</button>
-<button class="tab" data-tab="about" role="tab" data-i18n="tabAbout">About</button>
+<button class="tab active" data-tab="about" role="tab" data-i18n="tabAbout">About</button>
+<button class="tab" data-tab="settings" role="tab" data-i18n="tabSettings">Settings</button>
 <button class="tab" data-tab="research" role="tab" data-i18n="tabResearch">Research</button>
 <button class="tab" data-tab="license" role="tab" data-i18n="tabLicense">Licensing</button>
 </div>
 </div>
 <div class="sheet-body">
-<div class="tabpage" id="tab-about">
+<div class="tabpage active" id="tab-about">
 <h2 data-i18n="aboutTitle">About this map</h2>
+<p data-i18n="aboutLead">This is a map of residents of Vienna over the years of 1938 through 1942. It shows movements of population, and includes information about streets that were renamed during and after the war.</p>
+<details class="about-more">
+<summary data-i18n="moreLabel">more</summary>
 <p class="about-stats"><b id="aboutCount">—</b> <span data-i18n="peopleWord">people</span> · <b id="aboutAcount">—</b> <span data-i18n="addressesWord">addresses</span><br>
 <span class="about-legend"><span style="color:#2563eb">●</span> <span data-i18n="legendExact">exact registry match</span> · <span style="color:#7c3aed">●</span> <span data-i18n="legendRegistry">registry match</span> · <span style="color:#d97706">●</span> <span data-i18n="legendFuzzy">fuzzy street match</span> · <span style="color:#e11d48">◯</span> <span data-i18n="legendInferred">inferred street name</span></span></p>
 <p data-i18n-html="aboutIntro">Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.</p>
@@ -400,6 +405,7 @@ header>*{pointer-events:auto;}
 <p data-i18n="caveatsText">OCR misreads names; some streets were renamed or no longer exist; amber pins are approximate. A missing pin doesn't mean the entry is missing from the book — not every address matched the modern registry.</p>
 <h3 data-i18n="keyboardTitle">Keyboard</h3>
 <p data-i18n-html="keyboardText"><b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · on the map, <b>←</b><b>→</b> steps through pins.</p>
+</details>
 </div>
 <div class="tabpage" id="tab-research">
 <h2 data-i18n="researchTitle">Research</h2>
@@ -413,7 +419,7 @@ header>*{pointer-events:auto;}
 <li><a href="research/lighting/" data-i18n="r4t">Scan preprocessing experiments</a><br><span data-i18n="r4d">Gallery of the lighting-correction algorithms tested to improve OCR, each labeled under its images.</span></li>
 </ul>
 </div>
-<div class="tabpage active" id="tab-settings">
+<div class="tabpage" id="tab-settings">
 <h2 data-i18n="settingsTitle">Research settings</h2>
 <div class="setrow"><label for="langPick" style="flex:1"><b data-i18n="languageLabel">Language</b><small data-i18n="languageDesc">Interface language.</small></label><select id="langPick" aria-label="Language"><option value="en">English</option><option value="de">Deutsch</option></select></div>
 <div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b data-i18n="setB2t">Green dots — 1938 Band 2 preview</b><small data-i18n="setB2d">Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
@@ -476,6 +482,8 @@ en: {
   legendExact: "exact registry match", legendRegistry: "registry match",
   legendFuzzy: "fuzzy street match", legendInferred: "inferred street name",
   aboutIntro: "Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.",
+  aboutLead: "This is a map of residents of Vienna over the years of 1938 through 1942. It shows movements of population, and includes information about streets that were renamed during and after the war.",
+  moreLabel: "more",
   buildLog: "Build log",
   build1: "Scans of the Lehmann volumes from the Wienbibliothek's Retrodigitalisierung copies (public domain).",
   build2: "The library's per-page Transkribus ALTO OCR, with bounding boxes for every text line.",
@@ -619,6 +627,8 @@ de: {
   legendExact: "exakter Registereintrag", legendRegistry: "Registertreffer",
   legendFuzzy: "ungefähre Straßenübereinstimmung", legendInferred: "abgeleiteter Straßenname",
   aboutIntro: "Jede Markierung steht für eine Wiener Adresse, unter der in Lehmanns Wohnungsanzeiger – dem Wiener Adressbuch – eine oder mehrere Personen bzw. Firmen verzeichnet sind. Über die Jahresauswahl können Sie zwischen den vollständigen Karten für 1938 bis 1942 wechseln. Zu jedem Eintrag lässt sich außerdem die entsprechende Zeile des Originalscans anzeigen.",
+  aboutLead: "Dies ist eine Karte der Bewohner Wiens in den Jahren 1938 bis 1942. Sie zeigt Bevölkerungsbewegungen und enthält Informationen über Straßen, die während und nach dem Krieg umbenannt wurden.",
+  moreLabel: "mehr",
   buildLog: "Entstehung der Karte",
   build1: "Scans der Lehmann-Bände aus den Retrodigitalisierungskopien der Wienbibliothek (gemeinfrei).",
   build2: "Das seitenweise Transkribus-ALTO-OCR der Bibliothek, mit den Koordinaten jeder Textzeile.",
@@ -2360,7 +2370,7 @@ function closeSheet(){
   setTimeout(() => { if (!ov.classList.contains('open')) ov.style.display = 'none'; }, 340);
 }
 function sheetOpen(){ return $('aboutOverlay').classList.contains('open'); }
-$('infoBtn').addEventListener('click', () => { switchTab('settings'); openSheet(); });
+$('infoBtn').addEventListener('click', () => { switchTab('about'); openSheet(); });
 $('aboutClose').addEventListener('click', closeSheet);
 $('aboutOverlay').addEventListener('click', e => {
   if (e.target.id === 'aboutOverlay') closeSheet();
