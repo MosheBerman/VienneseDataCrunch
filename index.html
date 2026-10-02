@@ -1370,6 +1370,23 @@ function booknamePairFilter(st){
     ['in', ['geometry-type'], ['literal', ['LineString', 'MultiLineString']]],
     ['in', ['concat', ['get', 'old'], '|', ['get', 'new']], ['literal', keys]]];
 }
+// Pre-war street names: the 1938 booknames file stores (book name -> Nazi
+// rename) pairs, so reversing it gives Nazi-era name -> pre-war book name.
+// Promise-guarded; resolves to {} on failure (popups fall back to two-stage).
+let prewarMapPromise = null;
+function ensurePrewarMap(){
+  if (!prewarMapPromise){
+    prewarMapPromise = fetch(YEARS['1938'].dir + '/renamed-lines.geojson')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        const m = {};
+        for (const f of ((d && d.features) || [])) m[f.properties.new] = f.properties.old;
+        return m;
+      })
+      .catch(() => ({}));
+  }
+  return prewarMapPromise;
+}
 async function setOverlayLayer(id, on){
   const def = OVERLAYS[id];
   const st = overlayState[id] || (overlayState[id] = {ready: false, layers: []});
@@ -1379,6 +1396,9 @@ async function setOverlayLayer(id, on){
       const res = await fetch(url);
       if (!res.ok) throw new Error('no data');
       const data = await res.json();
+      // Pre-war (1938 book) name for each Nazi-era name, so the renames
+      // popup can show the full pre-war → Nazi → postwar chain.
+      if (id === 'renames') st.prewar = await ensurePrewarMap();
       map.addSource('ov-' + id, {type: 'geojson', data: data});
       if (def.line){
         const lineFilter = ['in', ['geometry-type'], ['literal', ['LineString', 'MultiLineString']]];
@@ -1528,7 +1548,13 @@ function overlayPopupHTML(id, f){
   const p = f.properties;
   let h;
   if (id === 'renames'){
-    h = '<div class="pp"><div class="pp-name">' + esc(p.old) + ' → ' + esc(p.new) + '</div>' +
+    // When both line overlays are on, show the full chain:
+    // pre-war (1938 book) name → Nazi-era name → postwar (modern) name.
+    const st = overlayState[id];
+    const pre = (overlayOn('renames') && overlayOn('booknames') && st && st.prewar)
+      ? st.prewar[p.old] : null;
+    const chain = pre ? [pre, p.old, p.new] : [p.old, p.new];
+    h = '<div class="pp"><div class="pp-name">' + chain.map(esc).join(' → ') + '</div>' +
       '<div class="pp-meta">' + esc(t('renamedMeta', {n: p.n})) + '</div></div>';
   } else if (id === 'booknames'){
     const addr = [p.st, p.hn].filter(Boolean).join(' ');
