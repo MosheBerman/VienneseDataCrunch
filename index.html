@@ -1345,6 +1345,11 @@ function syncOverlayOffsets(){
   for (const lid of ['ovl-booknames-lbl', 'ovl-booknames-lbl-sm']){
     if (map.getLayer(lid)) map.setLayoutProperty(lid, 'visibility', (bOn && !rOn) ? 'visible' : 'none');
   }
+  // Rename labels show the full pre-war → Nazi → postwar chain while both
+  // line overlays are on; two-stage otherwise.
+  for (const lid of ['ovl-renames-lbl', 'ovl-renames-lbl-sm', 'ovl-renames-ptlbl']){
+    if (map.getLayer(lid)) map.setLayoutProperty(lid, 'text-field', both ? RENAME_LBL_3 : RENAME_LBL_2);
+  }
 }
 // Label source: the pre-split, full corner-to-corner street lines (plus a
 // midpoint point per street), so labels repeat along the whole street like the
@@ -1357,13 +1362,23 @@ function ensureRenameLabelSource(){
     renameLabPromise = (async () => {
       const res = await fetch('layers/renames-labels.geojson');
       if (!res.ok) throw new Error('no label data');
-      map.addSource('ov-renames-lab', {type: 'geojson', data: await res.json()});
+      const data = await res.json();
+      const prewar = await ensurePrewarMap();
+      for (const f of (data.features || [])) f.properties.pre = prewar[f.properties.old] || '';
+      map.addSource('ov-renames-lab', {type: 'geojson', data: data});
       return true;
     })().catch(() => { renameLabPromise = null; return false; });
   }
   return renameLabPromise;
 }
 const LBL_FONT = ['DIN Pro Medium', 'Arial Unicode MS Bold'];
+// Rename label text: two-stage normally, three-stage (pre-war → Nazi →
+// postwar) while both line overlays are on. Falls back to two-stage when a
+// street has no pre-war name in the data.
+const RENAME_LBL_2 = ['concat', ['get', 'old'], ' → ', ['get', 'new']];
+const RENAME_LBL_3 = ['case', ['==', ['get', 'pre'], ''],
+  RENAME_LBL_2,
+  ['concat', ['get', 'pre'], ' → ', ['get', 'old'], ' → ', ['get', 'new']]];
 function booknamePairFilter(st){
   const keys = (st && st.pairs) || [];
   return ['all',
@@ -1397,8 +1412,11 @@ async function setOverlayLayer(id, on){
       if (!res.ok) throw new Error('no data');
       const data = await res.json();
       // Pre-war (1938 book) name for each Nazi-era name, so the renames
-      // popup can show the full pre-war → Nazi → postwar chain.
-      if (id === 'renames') st.prewar = await ensurePrewarMap();
+      // popup and on-map labels can show the full pre-war → Nazi → postwar chain.
+      if (id === 'renames'){
+        st.prewar = await ensurePrewarMap();
+        for (const f of (data.features || [])) f.properties.pre = st.prewar[f.properties.old] || '';
+      }
       map.addSource('ov-' + id, {type: 'geojson', data: data});
       if (def.line){
         const lineFilter = ['in', ['geometry-type'], ['literal', ['LineString', 'MultiLineString']]];
