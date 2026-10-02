@@ -188,6 +188,19 @@ header>*{pointer-events:auto;}
 @keyframes spn{to{transform:rotate(360deg);}}
 #boot{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#e9e5d9;color:#4b5563;font-size:14px;transition:opacity .4s;}
 #boot.gone{opacity:0;pointer-events:none;}
+/* book-cover loading: scanned title page with pins spreading outward, gray -> blue */
+.bookwrap{position:relative;line-height:0;}
+.bookcover{position:relative;z-index:1;width:min(190px,42vw);height:auto;border-radius:3px;background:#fff;
+  box-shadow:0 12px 32px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.25);transform:rotate(-1.5deg);}
+.bookpins{position:absolute;inset:0;z-index:0;pointer-events:none;}
+.bookpins span{position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;
+  background:#9ca3af;opacity:0;animation:pinout 2.6s cubic-bezier(.25,.6,.45,1) infinite;animation-delay:var(--d);}
+@keyframes pinout{
+  0%{transform:rotate(var(--a)) translateX(30px);opacity:0;background:#9ca3af;}
+  18%{opacity:.95;}
+  100%{transform:rotate(var(--a)) translateX(min(150px,32vw));opacity:0;background:#2563eb;}
+}
+@media (prefers-reduced-motion:reduce){.bookpins{display:none;}}
 .r-load{display:flex;justify-content:center;padding:14px !important;cursor:default !important;}
 .pp-load{display:flex;justify-content:center;padding:18px 34px;}
 /* circled-i info button: the only control outside the map bar */
@@ -334,7 +347,12 @@ header>*{pointer-events:auto;}
 </head>
 <body>
 <div id="map"></div>
-<div id="boot"><div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div></div>
+<div id="boot">
+<div class="bookwrap">
+<div class="bookpins" aria-hidden="true"><span style="--a:0deg;--d:-2.60s"></span><span style="--a:30deg;--d:-2.38s"></span><span style="--a:60deg;--d:-2.16s"></span><span style="--a:90deg;--d:-1.95s"></span><span style="--a:120deg;--d:-1.73s"></span><span style="--a:150deg;--d:-1.51s"></span><span style="--a:180deg;--d:-1.30s"></span><span style="--a:210deg;--d:-1.08s"></span><span style="--a:240deg;--d:-0.86s"></span><span style="--a:270deg;--d:-0.65s"></span><span style="--a:300deg;--d:-0.43s"></span><span style="--a:330deg;--d:-0.21s"></span></div>
+<img class="bookcover" src="boot-book.jpg" alt="" decoding="async" fetchpriority="high">
+</div>
+<div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div></div>
 <header>
   <div class="brand">
     <div id="searchDock">
