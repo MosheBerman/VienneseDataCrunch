@@ -1222,9 +1222,14 @@ map.on('load', async () => {
   updateCount(allFeatures);
   // The intro plays first; the real points render only once it has played out.
   const initialFeats = allFeatures;
+  let finished = false;
   const finishIntro = () => {
-    if (map.getSource('places')) map.getSource('places').setData({type: 'FeatureCollection', features: initialFeats});
+    if (finished) return; finished = true;
     $('boot').classList.add('gone');
+    // Points render only after the overlay — fade included — has fully played out.
+    setTimeout(() => {
+      if (map.getSource('places')) map.getSource('places').setData({type: 'FeatureCollection', features: initialFeats});
+    }, 450);
   };
   // Snappy intro: finish once the data is idle AND the minimum screen time
   // for the book-drop + pin-spill has elapsed (~2.2s).
@@ -1232,8 +1237,8 @@ map.on('load', async () => {
   const maybeFinishIntro = () => { if (idleFired && introTimeElapsed) finishIntro(); };
   map.once('idle', () => { idleFired = true; maybeFinishIntro(); });
   setTimeout(() => { introTimeElapsed = true; maybeFinishIntro(); }, 2200);
-  // Empty basemap is up (we are inside the map load handler): fade the
-  // parchment and drop the book toward the viewer, onto the map.
+  // Empty basemap is up (we are inside the map load handler): drop the book
+  // toward the viewer, onto the map.
   $('boot').classList.add('mapready');
   setTimeout(finishIntro, 12000);
 });
