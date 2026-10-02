@@ -1223,9 +1223,15 @@ map.on('load', async () => {
   map.on('click', () => minimizeResults());
   updateCount(allFeatures);
   const hideBoot = () => $('boot').classList.add('gone');
-  map.once('idle', hideBoot);
-  // Empty basemap is up: fade the parchment, drop the book onto the map.
-  map.once('load', () => $('boot').classList.add('mapready'));
+  // Let the intro play out: hide only after the data is idle AND the
+  // book-drop + pin-spill sequence has had its minimum screen time.
+  let idleFired = false, minTimeElapsed = false;
+  const maybeHideBoot = () => { if (idleFired && minTimeElapsed) hideBoot(); };
+  map.once('idle', () => { idleFired = true; maybeHideBoot(); });
+  setTimeout(() => { minTimeElapsed = true; maybeHideBoot(); }, 3200);
+  // Empty basemap is up (we are inside the map load handler): fade the
+  // parchment and drop the book onto the map.
+  $('boot').classList.add('mapready');
   setTimeout(hideBoot, 12000);
 });
 
