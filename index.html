@@ -167,13 +167,18 @@ header>*{pointer-events:auto;}
 .about-more>summary{cursor:pointer;font-weight:600;font-size:14px;color:#1f2937;padding:8px 0;}
 .about-stats{margin:8px 0;}
 .about-legend{font-size:12px;color:#4b5563;}
-.pp-info{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;font:italic 12px Georgia,serif;cursor:pointer;margin:0;padding:0;vertical-align:middle;flex:0 0 auto;}
+.pp-info{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;font:400 14px/1 system-ui,-apple-system,sans-serif;cursor:pointer;margin:0;padding:0 0 2px;vertical-align:middle;flex:0 0 auto;transition:transform .18s ease,border-color .15s,color .15s;}
 .pp-info:hover{border-color:#2563eb;color:#2563eb;}
+.pp-info.open{transform:rotate(180deg);}
 /* info popover: the body stays in layout while collapsed (grid 0fr trick), so
    the popup width is always the wider of the collapsed/expanded states */
 .pp-info-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .18s ease-out;}
 .pp-info-body.open{grid-template-rows:1fr;margin-top:4px;}
 .pp-info-inner{overflow:hidden;min-height:0;}
+/* expanded record actions: all the buttons live here now */
+.pp-actbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center;}
+.pp-abtn{display:inline-block;padding:8px 12px;min-height:38px;border:1px solid #9ca3af;border-radius:10px;background:#fff;font-size:14px;color:#111827;cursor:pointer;font-family:inherit;}
+.pp-abtn:hover{border-color:#2563eb;color:#2563eb;}
 /* record-details circled-i: pinned top-right of the record card, out of the
    bottom actions row; tür rows keep their top-right pill, so the i drops
    one line below it */
@@ -992,21 +997,23 @@ function corrKeyFor(r){
   corrCache.set(key, {s: r.s, g: r.g, o: r.o, st: r.st, hn: r.hn, u: r.u, d: r.d, pg: r.pg, rid: r._id, m: r.m, _added: r._added});
   return key;
 }
-// circled-i button (lives in the .pp-act row). The info body is rendered
-// separately by ppInfoBody() as a direct child of the record card, so it can
-// reserve its width even while collapsed.
+// chevron button (lives in the .pp-act row, pinned top-right of the record
+// card). Tapping it reveals all the action buttons in the expandable body;
+// the row itself shows data only (name, occupation, door pill, pills).
 function ppInfoBtn(r){
   const key = corrKeyFor(r);
   if (!key) return '';
-  return '<button class="pp-info" data-key="' + esc(key) + '" onclick="infoTap(this)" aria-label="' + t('recordDetails') + '">i</button>';
+  return '<button class="pp-info" data-key="' + esc(key) + '" onclick="infoTap(this)" aria-label="' + t('recordDetails') + '">&#8964;</button>';
 }
 function ppInfoBody(r){
   if (r._id == null) return '';
   const key = recKey(r);
+  const qk = key.replace(/'/g, "\\'");
   const meta = '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>';
-  const corr = '<div><button class="corr-link" onclick="openCorr(\'' + key.replace(/'/g, "\\'") + '\')">' + t('suggestCorrection') + '</button></div>';
-  const add = r._added ? '' : '<div><button class="corr-link" onclick="openAddOverlay(\'' + key.replace(/'/g, "\\'") + '\')">' + t('addAddr') + '</button></div>';
-  return '<div class="pp-info-body"><div class="pp-info-inner">' + meta + corr + add + '</div></div>';
+  const corr = '<button class="pp-abtn" onclick="openCorr(\'' + qk + '\')">' + t('suggestCorrection') + '</button>';
+  const add = r._added ? '' : '<button class="pp-abtn" onclick="openAddOverlay(\'' + qk + '\')">' + t('addAddr') + '</button>';
+  return '<div class="pp-info-body"><div class="pp-info-inner">' + meta +
+    '<div class="pp-actbtns">' + followBtn(r) + corr + add + '</div></div></div>';
 }
 // Inferred-street provenance, e.g. "Im Adressbuch 1941 als Reichsbrückenstraße verzeichnet."
 function rescueLine(r){
@@ -1020,6 +1027,7 @@ function togglePpInfo(btn){
   const wrap = btn.closest('.pp-row, .pp-single');
   const body = wrap && wrap.querySelector('.pp-info-body');
   if (body) body.classList.toggle('open');
+  btn.classList.toggle('open', !!body && body.classList.contains('open'));
 }
 // Mobile: the circled-i opens the record details in a bottom sheet (iOS-style),
 // like the search results sheet, instead of the expanding popover.
@@ -1029,11 +1037,14 @@ function infoTap(btn){
 }
 function openInfoSheet(key){
   const r = corrCache.get(key) || {};
-  const add = r._added ? '' : '<div><button class="corr-link" onclick="openAddOverlay(\'' + String(key).replace(/'/g, "\\'") + '\');closeInfoSheet();">' + t('addAddr') + '</button></div>';
+  const qk = String(key).replace(/'/g, "\\'");
+  const follow = (r.rid == null) ? '' : '<button class="pp-follow" data-follow-year="' + esc(CUR_YEAR) + '" data-follow-id="' + esc(r.rid) + '">' + t('followPerson') + '</button>';
+  const corr = '<button class="pp-abtn" onclick="openCorr(\'' + qk + '\');closeInfoSheet();">' + t('suggestCorrection') + '</button>';
+  const add = r._added ? '' : '<button class="pp-abtn" onclick="openAddOverlay(\'' + qk + '\');closeInfoSheet();">' + t('addAddr') + '</button>';
   const body = $('infoSheet').querySelector('.is-body');
   body.innerHTML = '<div class="is-name">' + esc(corrDisplay(r)) + '</div>' +
     '<div class="is-meta">' + esc(YC().label) + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>' +
-    '<div><button class="corr-link" onclick="openCorr(\'' + String(key).replace(/'/g, "\\'") + '\');closeInfoSheet();">' + t('suggestCorrection') + '</button></div>' + add;
+    '<div class="pp-actbtns">' + follow + corr + add + '</div>';
   $('infoSheet').style.display = 'block';
   $('infoSheet').setAttribute('aria-hidden', 'false');
 }
@@ -1692,7 +1703,7 @@ function popupHTML(r){
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += rescueLine(r) + rowSnippetPH(r) + '<div class="pp-act">' + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
+  h += rescueLine(r) + rowSnippetPH(r) + '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
   return h;
 }
 
@@ -1860,7 +1871,7 @@ async function groupPopupHTML(f, highlightId){
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
-      snip + '<div class="pp-act">' + ppInfoBtn(r) + followBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
+      snip + '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + t(hidden === 1 ? 'moreHidden1' : 'moreHiddenN', {n: hidden}) + '</div>';
