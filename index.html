@@ -497,7 +497,7 @@ header>*{pointer-events:auto;}
 // LANG drives every user-facing string via t(). Static markup carries
 // data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
 // Release version (bumped with each tagged semver release).
-const SITE_VERSION = 'v1.1.0';
+const SITE_VERSION = 'v1.1.1';
 // data-i18n-aria (aria-label); applyI18n() walks them on every switch.
 // Record content (names, streets, occupations from the book) is never
 // translated. Persisted in localStorage; defaults to the browser language.
@@ -630,6 +630,7 @@ en: {
   moreHidden1: "1 more resident hidden by filter",
   moreHiddenN: "{n} more residents hidden by filter",
   noMatches: "No matches",
+  noMatchesHint: "Try fewer words or check the spelling.",
   chipAll: "All", chipNames: "Names", chipStreets: "Streets", chipOccs: "Occupations",
   siteTag: "Historical site",
   prevPage: "‹ Prev", nextPage: "Next ›",
@@ -775,6 +776,7 @@ de: {
   moreHidden1: "1 weiterer Bewohner durch Filter ausgeblendet",
   moreHiddenN: "{n} weitere Bewohner durch Filter ausgeblendet",
   noMatches: "Keine Treffer",
+  noMatchesHint: "Weniger Wörter versuchen oder die Schreibweise prüfen.",
   chipAll: "Alle", chipNames: "Namen", chipStreets: "Straßen", chipOccs: "Berufe",
   siteTag: "Historischer Ort",
   prevPage: "‹ Zurück", nextPage: "Weiter ›",
@@ -1111,7 +1113,7 @@ async function loadYearData(){
   for (const f of allFeatures) for (const id of f.properties.m) featByRec.set(id, f);
   for (const k in shardCache) delete shardCache[k];
   for (const k in shardFlight) delete shardFlight[k];
-  searchIdx = null; searchKeys = null; searchFields = null; nameRank = null;
+  searchIdx = null; searchKeys = null; searchFields = null; nameRank = null; searchIdxPromise = null;
   document.title = t('docTitle', {year: YC().label});
 }
 
@@ -1935,6 +1937,7 @@ async function getRecord(id){
 // first), results paginate 100 per page, and filter chips classify hits by
 // which field matched (computed in the background from cached shards).
 let searchTimer = null;
+let searchIdxPromise = null; // shared in-flight index load (see input handler)
 let resRows = []; // [{el, id, rec}] result rows for keyboard navigation
 let resHl = -1;   // highlighted row index (-1 = none)
 let resIds = [];  // [[id, score, exact], ...] sorted, uncapped
@@ -2007,7 +2010,7 @@ function showResultsBox(){
     box.style.top = '';
     // Apple Maps-style: the search dock moves into the top of the sheet.
     const dock = $('searchDock');
-    if (dock.parentElement !== box){ box.prepend(dock); dock.classList.add('in-sheet'); }
+    if (dock && dock.parentElement !== box){ box.prepend(dock); dock.classList.add('in-sheet'); }
   }
   box.style.display = 'block';
   if (wasHidden) {
@@ -2029,6 +2032,7 @@ function fwRefreshLang(){
 // Returns the search dock to the header (from the results sheet, if it moved there).
 function dockToHeader(){
   const dock = $('searchDock');
+  if (!dock) return;
   dock.classList.remove('in-sheet');
   const brand = document.querySelector('.brand');
   const name = document.querySelector('.brand-name');
@@ -2237,6 +2241,33 @@ async function renderResPage(seq){
   box.appendChild(pj);
   showResultsBox();
 }
+// No-matches state: same sheet chrome as a result page (dock-safe clear,
+// header with minimize + dismiss) so the query can always be cleared.
+function renderNoMatches(seq){
+  if (seq !== searchSeq) return;
+  const box = $('results');
+  // Clear the sheet but keep the in-sheet search dock (mobile moves it here).
+  const dock = $('searchDock');
+  if (dock) for (const c of Array.from(box.children)) if (c !== dock) c.remove();
+  else box.innerHTML = '';
+  // header: title + minimize + dismiss (persistent)
+  const head = document.createElement('div');
+  head.id = 'resHead';
+  const title = document.createElement('span');
+  title.textContent = t('noMatches');
+  const hsp = document.createElement('span'); hsp.className = 'sp';
+  const hmin = document.createElement('button'); hmin.innerHTML = '&#8211;'; hmin.setAttribute('aria-label', t('minimizeAria'));
+  hmin.addEventListener('click', ev => { ev.stopPropagation(); minimizeResults(); });
+  const hx = document.createElement('button'); hx.innerHTML = '&#215;'; hx.setAttribute('aria-label', t('dismissAria'));
+  hx.addEventListener('click', ev => { ev.stopPropagation(); dismissResults(); });
+  head.appendChild(title); head.appendChild(hsp); head.appendChild(hmin); head.appendChild(hx);
+  box.appendChild(head);
+  const d = document.createElement('div');
+  d.className = 'rrow';
+  d.textContent = t('noMatchesHint');
+  box.appendChild(d);
+  showResultsBox();
+}
 $('q').addEventListener('focus', refreshSearchPlaceholder);
 $('q').addEventListener('blur', refreshSearchPlaceholder);
 // ---- historic sites in search ------------------------------------------------
@@ -2308,14 +2339,18 @@ $('q').addEventListener('input', e => {
       box.innerHTML = '<div class="r-load"><div class="spin sm"></div></div>';
       showResultsBox();
       try {
-        const [ix, fl, nr] = await Promise.all([
-          fetch(YC().dir + '/search.idx.json').then(r => r.json()),
-          fetch(YC().dir + '/search.fields.json').then(r => r.json()).catch(() => null),
-          fetch(YC().dir + '/search.namerank.json').then(r => r.json()).catch(() => null)
-        ]);
-        searchIdx = ix; searchFields = fl; nameRank = nr;
+        // One shared in-flight load: typing while the multi-MB index is
+        // still downloading must not fire duplicate fetches.
+        if (!searchIdxPromise) {
+          searchIdxPromise = Promise.all([
+            fetch(YC().dir + '/search.idx.json').then(r => r.json()),
+            fetch(YC().dir + '/search.fields.json').then(r => r.json()).catch(() => null),
+            fetch(YC().dir + '/search.namerank.json').then(r => r.json()).catch(() => null)
+          ]).then(([ix, fl, nr]) => { searchIdx = ix; searchFields = fl; nameRank = nr; });
+        }
+        await searchIdxPromise;
       }
-      catch (err) { box.style.display = 'none'; return; }
+      catch (err) { searchIdxPromise = null; box.style.display = 'none'; return; }
     }
     const toks = q.split(/[^a-zäöüßſ]+/).filter(t => t.length >= 2).map(foldUmlaut);
     const xtoks = [];
@@ -2373,8 +2408,7 @@ $('q').addEventListener('input', e => {
     }
     resPage = 0; resFilter = 'all'; resFieldHits = searchFields ? fHits : null;
     if (!resIds.length) {
-      box.innerHTML = '<div class="rrow">' + t('noMatches') + '</div>';
-      showResultsBox();
+      renderNoMatches(seq);
       return;
     }
     await renderResPage(seq);
