@@ -456,7 +456,7 @@ header>*{pointer-events:auto;}
 <h3 data-i18n="caveatsTitle">Caveats</h3>
 <p data-i18n="caveatsText">OCR misreads names; some streets were renamed or no longer exist; amber pins are approximate. A missing pin doesn't mean the entry is missing from the book — not every address matched the modern registry.</p>
 <h3 data-i18n="keyboardTitle">Keyboard</h3>
-<p data-i18n-html="keyboardText"><b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · on the map, <b>←</b><b>→</b> steps through pins.</p>
+<p data-i18n-html="keyboardText"><b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · <b>*</b> <b>?</b> wildcards · on the map, <b>←</b><b>→</b> steps through pins.</p>
 </details>
 </div>
 <div class="tabpage" id="tab-research">
@@ -509,7 +509,7 @@ header>*{pointer-events:auto;}
 // LANG drives every user-facing string via t(). Static markup carries
 // data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
 // Release version (bumped with each tagged semver release).
-const SITE_VERSION = 'v1.1.2';
+const SITE_VERSION = 'v1.2.0';
 // data-i18n-aria (aria-label); applyI18n() walks them on every switch.
 // Record content (names, streets, occupations from the book) is never
 // translated. Persisted in localStorage; defaults to the browser language.
@@ -548,7 +548,7 @@ en: {
   caveatsTitle: "Caveats",
   caveatsText: "OCR misreads names; some streets were renamed or no longer exist; amber pins are approximate. A missing pin doesn't mean the entry is missing from the book — not every address matched the modern registry.",
   keyboardTitle: "Keyboard",
-  keyboardText: "<b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · on the map, <b>←</b><b>→</b> steps through pins.",
+  keyboardText: "<b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · <b>*</b> <b>?</b> wildcards · on the map, <b>←</b><b>→</b> steps through pins.",
   researchTitle: "Research",
   researchIntro: "Draft explorers and experiments. Drafts are unreviewed work in progress.",
   methodTitle: "Method",
@@ -694,7 +694,7 @@ de: {
   caveatsTitle: "Einschränkungen",
   caveatsText: "Die OCR kann Namen falsch erkennen; manche Straßen wurden umbenannt oder existieren nicht mehr; bernsteinfarbene Markierungen sind nur ungefähr. Eine fehlende Markierung bedeutet nicht, dass der Eintrag im Adressbuch fehlt — nicht jede Adresse konnte dem heutigen Adressregister zugeordnet werden.",
   keyboardTitle: "Tastatur",
-  keyboardText: "<b>/</b> suchen · <b>↑</b><b>↓</b> durch die Ergebnisse blättern · <b>Leertaste</b>/<b>Enter</b> öffnet ein Ergebnis · <b>Esc</b> schließt · auf der Karte mit <b>←</b><b>→</b> zwischen den Markierungen wechseln.",
+  keyboardText: "<b>/</b> suchen · <b>↑</b><b>↓</b> durch die Ergebnisse blättern · <b>Leertaste</b>/<b>Enter</b> öffnet ein Ergebnis · <b>Esc</b> schließt · <b>*</b> <b>?</b> Wildcards · auf der Karte mit <b>←</b><b>→</b> zwischen den Markierungen wechseln.",
   researchTitle: "Recherche",
   researchIntro: "Entwürfe und Experimente. Diese Entwürfe sind noch nicht abschließend geprüft.",
   methodTitle: "Methode",
@@ -1103,6 +1103,20 @@ function levLim(a, b, lim) {
     prev = cur;
   }
   return prev[n];
+}
+// Wildcard match without regex: '*' = any run (incl. empty), '?' = one char.
+// Iterative with no allocation — about as cheap as the indexOf check it
+// replaces in the search loop, so wildcard queries cost no more than plain ones.
+function wildMatch(s, p){
+  let si = 0, pi = 0, star = -1, ss = 0;
+  while (si < s.length){
+    if (pi < p.length && (p[pi] === '?' || p[pi] === s[si])){ si++; pi++; }
+    else if (pi < p.length && p[pi] === '*'){ star = pi++; ss = si; }
+    else if (star !== -1){ pi = star + 1; si = ++ss; }
+    else return false;
+  }
+  while (pi < p.length && p[pi] === '*') pi++;
+  return pi === p.length;
 }
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -2316,22 +2330,24 @@ function matchSites(toks){
     let tot = 0, exN = 0, bits = 0, ok = true;
     for (const t of toks){
       const thr = t.length <= 5 ? 1 : 2;
-      let best = 0, bf = 0;
+      const isWild = t.indexOf('*') >= 0 || t.indexOf('?') >= 0;
+      let best = 0, bf = 0, bex = false;
       const pools = [[w.name, 1], [w.addr, 2], [w.desc, 0]];
       for (const [arr, bit] of pools){
         for (let k = 0; k < arr.length; k++){
           const key = arr[k];
-          let ww = 0;
-          if (key === t) ww = 8;
+          let ww = 0, wx = false;
+          if (isWild){ if (wildMatch(key, t)){ ww = 6; wx = true; } }
+          else if (key === t){ ww = 8; wx = true; }
           else if (key.startsWith(t)) ww = 4;
           else if (key.indexOf(t) >= 0) ww = 2;
           else if (Math.abs(key.length - t.length) <= thr && levLim(key, t, thr) <= thr) ww = 1;
-          if (ww > best){ best = ww; bf = bit; }
+          if (ww > best){ best = ww; bf = bit; bex = wx; }
         }
       }
       if (!best){ ok = false; break; }
       tot += best;
-      if (best === 8) exN++;
+      if (bex) exN++;
       bits |= bf;
     }
     if (ok) out.push({i: i, w: tot, ex: exN, bits: bits});
@@ -2377,7 +2393,7 @@ $('q').addEventListener('input', e => {
       }
       catch (err) { searchIdxPromise = null; box.style.display = 'none'; return; }
     }
-    const toks = q.split(/[^a-zäöüßſ]+/).filter(t => t.length >= 2).map(foldUmlaut);
+    const toks = q.split(/[^a-zäöüßſ*?]+/).filter(t => t.length >= 2).map(foldUmlaut);
     const xtoks = [];
     for (const t of toks) {
       xtoks.push([t, 1]);
@@ -2390,10 +2406,12 @@ $('q').addEventListener('input', e => {
     const fHits = {}; // id -> field bitmask (1 name, 2 street, 4 occupation)
     for (const [t, mul] of xtoks) {
       const thr = t.length <= 5 ? 1 : 2;
+      const isWild = t.indexOf('*') >= 0 || t.indexOf('?') >= 0;
       for (let ki = 0; ki < searchKeys.length; ki++) {
         const key = searchKeys[ki][0], fk = searchKeys[ki][1];
         let w = 0, ex = false;
-        if (key === t) { w = 8; ex = true; }
+        if (isWild){ if (wildMatch(fk, t)){ w = 6; ex = true; } }
+        else if (key === t) { w = 8; ex = true; }
         else if (fk === t) { w = 6; ex = true; }
         else if (fk.startsWith(t)) w = 4;
         else if (fk.indexOf(t) >= 0) w = 2;
