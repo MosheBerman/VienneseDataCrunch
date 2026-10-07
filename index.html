@@ -33,6 +33,16 @@ header>*{pointer-events:auto;}
 #q{flex:1;min-width:110px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:8px;padding:8px 10px;font-size:15px;transition:flex-grow .22s ease;}
 #q::placeholder{color:#9ca3af;}
 #q:focus{outline:none;border-color:#93c5fd;background:rgba(255,255,255,.14);flex-grow:5;}
+/* Inline clear (×) inside the search box, shown only when text is present. */
+#qWrap{position:relative;display:flex;flex:1;min-width:110px;transition:flex-grow .22s ease;}
+#qWrap #q{flex:1 1 auto;min-width:0;padding-right:36px;}
+#qClear{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:none;
+  border:none;background:transparent;color:#9ca3af;font-size:17px;line-height:1;
+  padding:8px 10px;cursor:pointer;border-radius:50%;}
+#qClear:hover{color:#4b5563;}
+#qClear:active{color:#111827;}
+#q::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:none;}
+@media(min-width:641px){#qWrap:focus-within{flex-grow:5;}}
 /* Desktop: the dock wrapper vanishes so #q/#resPill lay out in the header as before. */
 #searchDock{display:contents;}
 #yrPick{appearance:none;-webkit-appearance:none;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;border:none;border-radius:8px;color:#111827;font-weight:700;font-size:15px;cursor:pointer;min-height:44px;padding:8px 28px 8px 12px;max-width:160px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -71,6 +81,8 @@ header>*{pointer-events:auto;}
   #searchDock #q::placeholder{color:#6b7280;}
   #searchDock #q:focus{background:#e8ebef;flex-grow:1;}
   #searchDock #resPill{flex:0 0 auto;}
+  #qWrap{flex:1 1 auto;min-width:0;}
+  #searchDock #qWrap #q{padding-right:40px;}
   .hctl{align-self:center;}
   /* Lift Mapbox's bottom-right controls above the search dock. */
   .mapboxgl-ctrl-bottom-right{bottom:calc(78px + env(safe-area-inset-bottom,0px)) !important;}
@@ -378,7 +390,7 @@ header>*{pointer-events:auto;}
 <header>
   <div class="brand">
     <div id="searchDock">
-    <input id="q" type="search" placeholder="/ to search" autocomplete="off" data-i18n-ph="searchPh">
+    <span id="qWrap"><input id="q" type="search" placeholder="/ to search" autocomplete="off" data-i18n-ph="searchPh"><button id="qClear" aria-label="Clear search" data-i18n-aria="clearSearchAria">&#215;</button></span>
     <div id="resPill" role="button" aria-label="Show search results" data-i18n-aria="showResultsAria"></div>
     </div>
     <span class="brand-name">Lehmann <small data-i18n="brandVienna">· Vienna</small></span>
@@ -497,7 +509,7 @@ header>*{pointer-events:auto;}
 // LANG drives every user-facing string via t(). Static markup carries
 // data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
 // Release version (bumped with each tagged semver release).
-const SITE_VERSION = 'v1.1.1';
+const SITE_VERSION = 'v1.1.2';
 // data-i18n-aria (aria-label); applyI18n() walks them on every switch.
 // Record content (names, streets, occupations from the book) is never
 // translated. Persisted in localStorage; defaults to the browser language.
@@ -636,7 +648,7 @@ en: {
   prevPage: "‹ Prev", nextPage: "Next ›",
   pageInfo: "page {p} of {n}",
   jumpPage: "Page", goBtn: "Go",
-  minimizeAria: "Minimize results", dismissAria: "Dismiss results",
+  minimizeAria: "Minimize results", dismissAria: "Dismiss results", clearSearchAria: "Clear search",
   b2alert: "Band 2 preview data is not built yet — check back after the next processing batch.",
   b2label: "Unreviewed OCR preview · Band 2",
   b2clabel: "Unreviewed OCR preview · Band 2 clean-only",
@@ -782,7 +794,7 @@ de: {
   prevPage: "‹ Zurück", nextPage: "Weiter ›",
   pageInfo: "Seite {p} von {n}",
   jumpPage: "Seite", goBtn: "Los",
-  minimizeAria: "Ergebnisse minimieren", dismissAria: "Ergebnisse schließen",
+  minimizeAria: "Ergebnisse minimieren", dismissAria: "Ergebnisse schließen", clearSearchAria: "Suche löschen",
   b2alert: "Die Band-2-Vorschau ist noch nicht aufbereitet — bitte schauen Sie nach dem nächsten Verarbeitungslauf wieder vorbei.",
   b2label: "Ungeprüfte OCR-Vorschau · Band 2",
   b2clabel: "Ungeprüfte OCR-Vorschau · Band 2 (bereinigt)",
@@ -1128,7 +1140,7 @@ async function switchYear(year){
   updateCount(feats);
   if (overlayOn('booknames')) setOverlayLayer('booknames', true); // per-year layer follows the picker
   $('boot').classList.add('gone');
-  $('q').value = ''; dismissResults();
+  $('q').value = ''; refreshQClear(); dismissResults();
 }
 $('yrPick').addEventListener('change', e => {
   const v = e.target.value;
@@ -2326,8 +2338,21 @@ function matchSites(toks){
   }
   return out;
 }
+function refreshQClear(){ $('qClear').style.display = $('q').value ? 'block' : 'none'; }
+function clearSearch(){
+  const q = $('q');
+  q.value = '';
+  refreshQClear();
+  dismissResults();
+  q.focus();
+}
+// mousedown is preempted so tapping × keeps the input focused (keyboard stays up).
+$('qClear').addEventListener('mousedown', e => e.preventDefault());
+$('qClear').addEventListener('click', ev => { ev.stopPropagation(); clearSearch(); });
+refreshQClear();
 $('q').addEventListener('input', e => {
   clearTimeout(searchTimer);
+  refreshQClear();
   resRows = []; resHl = -1;
   $('resPill').style.display = 'none';
   searchTimer = setTimeout(async () => {
