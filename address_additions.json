@@ -22,12 +22,12 @@
   "lo": 21.969,
   "o": "Kaufm.",
   "s": "Bermann",
-  "source": "Demo override for video: transit point on the deportation route",
+  "source": "Demo override for video: Feb 1941, stopover of a few hours by train",
   "st": "Puławy",
   "u": "",
   "year": "1941"
  },
- "1942:a0": {
+ "1941:a1": {
   "anchor": "1938:23953",
   "g": "Jossel",
   "geo_match": "demo",
@@ -36,9 +36,9 @@
   "lo": 21.9728,
   "o": "Kaufm.",
   "s": "Bermann",
-  "source": "Demo override for video: d. 22 Jan 1942 (Opole civil death record Nr. 89)",
+  "source": "Demo override for video: arrived Feb 1941; d. 22 Jan 1942 (Opole civil death record Nr. 89)",
   "st": "Opole Lubelskie",
   "u": "",
-  "year": "1942"
+  "year": "1941"
  }
 }
