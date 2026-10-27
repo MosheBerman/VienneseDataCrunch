@@ -186,8 +186,8 @@ header>*{pointer-events:auto;}
 .about-more>summary{cursor:pointer;font-weight:600;font-size:14px;color:#1f2937;padding:8px 0;}
 .about-stats{margin:8px 0;}
 .about-legend{font-size:12px;color:#4b5563;}
-.pp-info{position:relative;display:inline-flex;width:22px;height:22px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;cursor:pointer;margin:0;padding:0;vertical-align:middle;flex:0 0 auto;transition:border-color .15s,color .15s;}
-.pp-info:hover{border-color:#2563eb;color:#2563eb;}
+.pp-info{position:relative;display:inline-flex;width:22px;height:22px;border:0;background:transparent;color:#6b7280;cursor:pointer;margin:0;padding:0;vertical-align:middle;flex:0 0 auto;transition:color .15s;}
+.pp-info:hover{color:#2563eb;}
 /* CSS-drawn chevron (the old text glyph sat off-center and did not read as
    a chevron): centered by construction, flips up when open. */
 .pp-info::after{content:'';position:absolute;left:50%;top:50%;width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translate(-50%,-50%) rotate(45deg);transition:transform .18s ease;}
@@ -389,6 +389,10 @@ header>*{pointer-events:auto;}
 #pointSheet .pp{min-width:0;}
 #pointSheet .pp-list{max-height:none;}
 #pointSheet .pp-row{cursor:pointer;}
+.is-backbar{margin:2px 0 10px;}
+.is-back{border:0;background:transparent;color:#2563eb;font-size:15px;cursor:pointer;padding:4px 0;}
+.is-detail{animation:sheetpush .25s ease-out;}
+@keyframes sheetpush{from{transform:translateX(24px);opacity:0;}to{transform:none;opacity:1;}}
 @media(min-width:641px){#pointSheet{display:none !important;}}
 /* ---- Map key: pin legend back on the main screen ------------------------ */
 /* Desktop: always-visible card, bottom-left where the old footer key sat. */
@@ -706,6 +710,7 @@ en: {
   corrError: "Couldn't send. Please try again.",
   corrEmpty: "Please edit the text or cancel.",
   recordDetails: "Record details",
+  sheetBack: "Back",
   recLoadFail: "Couldn't load the records for this pin.",
   retry: "Try again",
   rescueLine: "Listed as {old} in the {year} directory.",
@@ -858,6 +863,7 @@ de: {
   corrError: "Senden fehlgeschlagen. Bitte erneut versuchen.",
   corrEmpty: "Bitte Text bearbeiten oder abbrechen.",
   recordDetails: "Details zum Eintrag",
+  sheetBack: "Zurück",
   recLoadFail: "Die Einträge für diese Markierung konnten nicht geladen werden.",
   retry: "Erneut versuchen",
   rescueLine: "Im Adressbuch {year} als {old} verzeichnet.",
@@ -1127,12 +1133,14 @@ function togglePpInfo(btn){
   if (body) body.classList.toggle('open');
   btn.classList.toggle('open', !!body && body.classList.contains('open'));
 }
-// Mobile: the circled-i opens the record details in a bottom sheet (iOS-style),
-// like the search results sheet, instead of the expanding popover.
-function infoTap(btn){
-  if (!isDesktop()) openInfoSheet(btn.getAttribute('data-key'));
-  else togglePpInfo(btn);
-}
+// The chevron expands the record's detail body in place on every surface
+// (scan buttons, corrections, add-address). On mobile, the row itself
+// pushes the full per-person detail into the point sheet (delegated row
+// handler below); the chevron never navigates. The chevron is a bare
+// glyph, no circle (see .pp-info).
+function infoTap(btn){ togglePpInfo(btn); }
+// Superseded by the point-sheet navigation stack (pushPointDetail); kept
+// dormant so the existing closeInfoSheet calls stay safe.
 function openInfoSheet(key){
   const r = corrCache.get(key) || {};
   const qk = String(key).replace(/'/g, "\\'");
@@ -1955,6 +1963,21 @@ document.addEventListener('click', async e => {
     btn.textContent = t('showScanRow');
   }
 });
+// Mobile point-sheet row tap: highlight the row and push its per-person
+// detail into the sheet. Controls keep their own behavior: the chevron
+// expands the row in place, follow/scans/corrections act directly, and
+// taps inside the expanded body never navigate.
+document.addEventListener('click', e => {
+  if (isDesktop()) return;
+  const row = e.target.closest('#pointSheet .pp-list .pp-row');
+  if (!row) return;
+  if (e.target.closest('.pp-act, .pp-info-body, a, button')) return;
+  const body = $('pointSheet').querySelector('.is-body');
+  body.querySelectorAll('.pp-row.hl').forEach(r => r.classList.remove('hl'));
+  row.classList.add('hl');
+  const r = lastSheetRecs && lastSheetRecs[+row.dataset.idx];
+  if (r && !pointSheetPushed) pushPointDetail(r);
+});
 async function hydrateSnippets(root){
   if (!root) return;
   const els = root.querySelectorAll('.rowsnip:not([hidden]):not([data-hyd])');
@@ -2001,19 +2024,15 @@ async function hydrateSnippets(root){
 
 let lastGroupF = null; // stashed for the popup retry button
 let pointSheetSeq = 0; // guards the async sheet fill against a mid-load dismiss
+let pointSheetRoot = ''; // list HTML the detail push returns to
+let pointSheetPushed = false;
+let lastSheetRecs = []; // records behind the current sheet list, by row index
 function showPointSheet(html){
   const sh = $('pointSheet');
   const body = sh.querySelector('.is-body');
   body.innerHTML = html;
-  // Tapping a person row highlights it (single selection). Action buttons,
-  // links and the info toggle keep their own behavior.
-  body.querySelectorAll('.pp-row').forEach(row => {
-    row.addEventListener('click', e => {
-      if (e.target.closest('.pp-act, a, button')) return;
-      body.querySelectorAll('.pp-row.hl').forEach(r => r.classList.remove('hl'));
-      row.classList.add('hl');
-    });
-  });
+  pointSheetRoot = html;
+  pointSheetPushed = false;
   sh.style.display = 'block';
   sh.setAttribute('aria-hidden', 'false');
   hydrateSnippets(body);
@@ -2035,9 +2054,25 @@ function dockFollowPanel(){
 }
 function closePointSheet(){
   pointSheetSeq++;
+  pointSheetPushed = false;
   $('pointSheet').style.display = 'none';
   $('pointSheet').setAttribute('aria-hidden', 'true');
   dockFollowPanel(); // sheet closed: follow panel drops back to the bottom
+}
+// Point-sheet navigation stack (mobile): tapping a person row pushes the
+// per-person detail into the sheet; the back bar pops to the list.
+function pushPointDetail(r){
+  const body = $('pointSheet').querySelector('.is-body');
+  body.innerHTML = '<div class="is-backbar"><button class="is-back" onclick="popPointDetail()">‹ ' + esc(t('sheetBack')) + '</button></div>' +
+    '<div class="is-detail">' + popupHTML(r) + '</div>';
+  pointSheetPushed = true;
+  dockFollowPanel();
+}
+function popPointDetail(){
+  const body = $('pointSheet').querySelector('.is-body');
+  body.innerHTML = pointSheetRoot;
+  pointSheetPushed = false;
+  dockFollowPanel();
 }
 // Builds the group-popup HTML (shared by the desktop popover and the mobile
 // bottom sheet). Returns null when the record shard failed to load.
@@ -2059,15 +2094,17 @@ async function groupPopupHTML(f, highlightId){
   const shown = recs.filter(r => r._added || keepIdx.includes(qCode(r.m)));
   const list = (shown.length ? shown : recs).slice()
     .sort((a, b) => qCode(a.m) - qCode(b.m) || String(a.s).localeCompare(String(b.s)));
+  lastSheetRecs = list;
   const hidden = recs.length - list.length;
   const r0 = list[0];
   let h = '<div class="pp"><div class="pp-addr"><b>' + esc(r0.st || '') + ' ' + esc(r0.hn || '') +
           '</b> ' + bezPill(r0) + '</div><div class="pp-list">';
-  for (const r of list) {
+  for (let ri = 0; ri < list.length; ri++) {
+    const r = list[ri];
     const hl = (highlightId !== null && r._id === highlightId ? ' hl' : '');
     const tp = r.u ? ' pp-tuer' : '';
     const flw = followBtn(r);
-    h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
+    h += '<div class="pp-row' + hl + tp + '" data-idx="' + ri + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
       (flw ? '<div class="pp-followrow">' + flw + '</div>' : '') + '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
