@@ -411,6 +411,23 @@ header>*{pointer-events:auto;}
   #mapKey.open{display:flex;}
   #mapKey .keySep{width:100%;height:1px;}
 }
+/* Layer control (Google/Apple Maps style): a floating button that opens a
+   card with the map-layer toggles, moved out of Settings. Same z-index 5
+   as the key, below every slide-up sheet. Opening one flyout closes the
+   other, so Key and Layers never overlap. */
+#layersFab{position:fixed;top:64px;right:12px;z-index:5;background:#fff;
+  border:1px solid #d1d5db;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;
+  color:#111827;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+#layersPanel{display:none;position:fixed;top:108px;right:12px;z-index:5;background:#fff;
+  border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px 14px;
+  width:min(320px,calc(100vw - 24px));max-height:calc(100dvh - 170px);overflow:auto;}
+#layersPanel.open{display:block;}
+#layersPanel h3{margin:10px 0 2px;font-size:14px;}
+@media(max-width:640px){
+  /* Mobile: the Key button already sits at top:64, so Layers drops below it. */
+  #layersFab{top:108px;}
+  #layersPanel{top:152px;}
+}
 </style>
 </head>
 <body>
@@ -423,6 +440,16 @@ header>*{pointer-events:auto;}
 <div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div><div id="bootVersion"></div></div>
 <div id="mapKey"><span><span style="color:#2563eb">●</span> <span data-i18n="legendExact">exact registry match</span></span><span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#111827;border:2px solid #DD0000;vertical-align:middle"></span> <span data-i18n="legendNazi">Nazi site</span></span><span class="keySep"></span><span><span style="color:#7c3aed">●</span> <span data-i18n="legendRegistry">registry match</span></span><span><span style="color:#d97706">●</span> <span data-i18n="legendFuzzy">fuzzy street match</span></span><span><span style="color:#e11d48">◯</span> <span data-i18n="legendInferred">inferred street name</span></span></div>
 <button id="keyFab" data-i18n="keyBtn" data-i18n-aria="keyBtnAria" aria-expanded="false">Key</button>
+<button id="layersFab" data-i18n="layersBtn" data-i18n-aria="layersBtnAria" aria-expanded="false">Layers</button>
+<div id="layersPanel" aria-labelledby="layersTitleH">
+<h3 id="layersTitleH" data-i18n="layersTitle">Layers</h3>
+<div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b data-i18n="setB2t">Green dots — 1938 Band 2 preview</b><small data-i18n="setB2d">Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b data-i18n="setB2ct">Teal dots — 1938 Band 2 clean-only preview</b><small data-i18n="setB2cd">Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b data-i18n="setInferT">Rose ring — inferred street names</b><small data-i18n="setInferD">Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setRenames"><label for="setRenames"><b data-i18n="setRenamesT">Renamed streets — Nazi-era &rarr; modern</b><small data-i18n="setRenamesD">Streets the Nazis renamed, traced as lines through directory addresses that used the old name.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setBookNames"><label for="setBookNames"><b data-i18n="setBookNamesT">Nazi-era names from the book</b><small data-i18n="setBookNamesD">The Nazi street renames, traced for the current year's book — 1938 shows what the book's streets were renamed to; 1939–41 show the book's Nazi-era names against modern names.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setSites"><label for="setSites"><b data-i18n="setSitesT">Historical sites — Sammellager &amp; deportations</b><small data-i18n="setSitesD">Hand-picked: collection camps, the Aspangbahnhof deportation point, Gestapo HQ.</small></label></div>
+</div>
 <header>
   <div class="brand">
     <div id="searchDock">
@@ -519,13 +546,7 @@ header>*{pointer-events:auto;}
 <div class="tabpage" id="tab-settings">
 <h2 data-i18n="settingsTitle">Research settings</h2>
 <div class="setrow"><label for="langPick" style="flex:1"><b data-i18n="languageLabel">Language</b><small data-i18n="languageDesc">Interface language.</small></label><select id="langPick" aria-label="Language"><option value="en">English</option><option value="de">Deutsch</option></select></div>
-<div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b data-i18n="setB2t">Green dots — 1938 Band 2 preview</b><small data-i18n="setB2d">Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b data-i18n="setB2ct">Teal dots — 1938 Band 2 clean-only preview</b><small data-i18n="setB2cd">Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b data-i18n="setResearchT">Show Research section in the year picker</b><small data-i18n="setResearchD">Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b data-i18n="setInferT">Rose ring — inferred street names</b><small data-i18n="setInferD">Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setRenames"><label for="setRenames"><b data-i18n="setRenamesT">Renamed streets — Nazi-era &rarr; modern</b><small data-i18n="setRenamesD">Streets the Nazis renamed, traced as lines through directory addresses that used the old name.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setBookNames"><label for="setBookNames"><b data-i18n="setBookNamesT">Nazi-era names from the book</b><small data-i18n="setBookNamesD">The Nazi street renames, traced for the current year's book — 1938 shows what the book's streets were renamed to; 1939–41 show the book's Nazi-era names against modern names.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setSites"><label for="setSites"><b data-i18n="setSitesT">Historical sites — Sammellager &amp; deportations</b><small data-i18n="setSitesD">Hand-picked: collection camps, the Aspangbahnhof deportation point, Gestapo HQ.</small></label></div>
 <h3 data-i18n="mapSection">Map</h3>
 <p><label for="flt"><b data-i18n="pinFilter">Pin quality filter</b></label><br>
 <select id="flt">
@@ -578,7 +599,7 @@ en: {
   peopleWord: "people", addressesWord: "addresses",
   legendExact: "exact registry match", legendNazi: "Nazi site", legendRegistry: "registry match",
   legendFuzzy: "fuzzy street match", legendInferred: "inferred street name",
-  keyBtn: "Key", keyBtnAria: "Show pin key",
+  keyBtn: "Key", keyBtnAria: "Show pin key", layersBtn: "Layers", layersBtnAria: "Show layer control", layersTitle: "Layers",
   aboutIntro: "Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.",
   aboutLead: "This is a map of residents of Vienna over the years of 1938 through 1942. It shows movements of population, and includes information about streets that were renamed during and after the war.",
   moreLabel: "more",
@@ -730,7 +751,7 @@ de: {
   peopleWord: "Personen", addressesWord: "Adressen",
   legendExact: "exakter Registereintrag", legendNazi: "NS-Stätte", legendRegistry: "Registertreffer",
   legendFuzzy: "ungefähre Straßenübereinstimmung", legendInferred: "abgeleiteter Straßenname",
-  keyBtn: "Legende", keyBtnAria: "Pin-Legende anzeigen",
+  keyBtn: "Legende", keyBtnAria: "Pin-Legende anzeigen", layersBtn: "Ebenen", layersBtnAria: "Ebenensteuerung anzeigen", layersTitle: "Ebenen",
   aboutIntro: "Jede Markierung steht für eine Wiener Adresse, unter der in Lehmanns Wohnungsanzeiger – dem Wiener Adressbuch – eine oder mehrere Personen bzw. Firmen verzeichnet sind. Über die Jahresauswahl können Sie zwischen den vollständigen Karten für 1938 bis 1942 wechseln. Zu jedem Eintrag lässt sich außerdem die entsprechende Zeile des Originalscans anzeigen.",
   aboutLead: "Dies ist eine Karte der Bewohner Wiens in den Jahren 1938 bis 1942. Sie zeigt Bevölkerungsbewegungen und enthält Informationen über Straßen, die während und nach dem Krieg umbenannt wurden.",
   moreLabel: "mehr",
@@ -1235,6 +1256,14 @@ $('yrPick').addEventListener('change', e => {
 $('keyFab').addEventListener('click', () => {
   const open = $('mapKey').classList.toggle('open');
   $('keyFab').setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (open) { $('layersPanel').classList.remove('open'); $('layersFab').setAttribute('aria-expanded', 'false'); }
+});
+// Layer control: tap the button to open/close the layer toggles. Opening
+// one flyout closes the other, so Key and Layers never overlap.
+$('layersFab').addEventListener('click', () => {
+  const open = $('layersPanel').classList.toggle('open');
+  $('layersFab').setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (open) { $('mapKey').classList.remove('open'); $('keyFab').setAttribute('aria-expanded', 'false'); }
 });
 
 map.on('load', async () => {
@@ -1256,7 +1285,7 @@ map.on('load', async () => {
       'circle-color': ['match', ['get', 'q'], 0, '#2563eb', 1, '#7c3aed', 2, '#d97706', 3, '#16a34a', '#2563eb'],
       'circle-radius': 4.5, 'circle-stroke-width': 1.5, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
   // Inferred-street highlight: a rose ring drawn UNDER the pins, so the tier
-  // color (blue/purple/amber) always stays readable. Toggled from Settings.
+  // color (blue/purple/amber) always stays readable. Toggled from the layer control.
   map.addLayer({id: 'inferred-halo', type: 'circle', source: 'places',
     filter: ['all', ['!', ['has', 'point_count']], ['==', ['get', 'ir'], 1]],
     paint: {
@@ -1271,8 +1300,9 @@ map.on('load', async () => {
     return map.queryRenderedFeatures(b, {layers: [layer]});
   }
   map.on('click', async e => {
-    // Tapping the map dismisses the mobile key flyout.
+    // Tapping the map dismisses the mobile key flyout and the layer panel.
     if ($('mapKey').classList.contains('open')) { $('mapKey').classList.remove('open'); $('keyFab').setAttribute('aria-expanded', 'false'); }
+    if ($('layersPanel').classList.contains('open')) { $('layersPanel').classList.remove('open'); $('layersFab').setAttribute('aria-expanded', 'false'); }
     const c = near(e.point, 'clusters', TAP_R)[0];
     if (c) {
       closePointSheet();
