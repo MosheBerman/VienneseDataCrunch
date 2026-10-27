@@ -393,6 +393,7 @@ header>*{pointer-events:auto;}
 #mapKey{position:fixed;left:10px;bottom:10px;z-index:5;background:#fff;border-radius:10px;
   box-shadow:0 4px 16px rgba(0,0,0,.25);padding:8px 12px;font-size:12px;color:#4b5563;
   display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+#mapKey .keySep{width:1px;height:14px;background:#e5e7eb;}
 #keyFab{display:none;}
 @media(min-width:641px){body.split-on #mapKey{left:calc(min(380px,42vw) + 10px);}}
 @media(max-width:640px){
@@ -402,6 +403,7 @@ header>*{pointer-events:auto;}
   #mapKey{display:none;left:auto;right:12px;top:108px;bottom:auto;flex-direction:column;
     align-items:flex-start;gap:6px;max-width:230px;}
   #mapKey.open{display:flex;}
+  #mapKey .keySep{width:100%;height:1px;}
 }
 </style>
 </head>
@@ -413,7 +415,7 @@ header>*{pointer-events:auto;}
 <img id="bootBook" class="bookcover" src="covers/1938.jpg" alt="" decoding="async" fetchpriority="high" onerror="this.onerror=null;this.src='boot-book.jpg'">
 </div>
 <div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div><div id="bootVersion"></div></div>
-<div id="mapKey"><span><span style="color:#2563eb">●</span> <span data-i18n="legendExact">exact registry match</span></span><span><span style="color:#7c3aed">●</span> <span data-i18n="legendRegistry">registry match</span></span><span><span style="color:#d97706">●</span> <span data-i18n="legendFuzzy">fuzzy street match</span></span><span><span style="color:#e11d48">◯</span> <span data-i18n="legendInferred">inferred street name</span></span></div>
+<div id="mapKey"><span><span style="color:#2563eb">●</span> <span data-i18n="legendExact">exact registry match</span></span><span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#111827;border:2px solid #DD0000;vertical-align:middle"></span> <span data-i18n="legendNazi">Nazi site</span></span><span class="keySep"></span><span><span style="color:#7c3aed">●</span> <span data-i18n="legendRegistry">registry match</span></span><span><span style="color:#d97706">●</span> <span data-i18n="legendFuzzy">fuzzy street match</span></span><span><span style="color:#e11d48">◯</span> <span data-i18n="legendInferred">inferred street name</span></span></div>
 <button id="keyFab" data-i18n="keyBtn" data-i18n-aria="keyBtnAria" aria-expanded="false">Key</button>
 <header>
   <div class="brand">
@@ -559,7 +561,7 @@ en: {
   aboutClose: "Close",
   aboutTitle: "About this map",
   peopleWord: "people", addressesWord: "addresses",
-  legendExact: "exact registry match", legendRegistry: "registry match",
+  legendExact: "exact registry match", legendNazi: "Nazi site", legendRegistry: "registry match",
   legendFuzzy: "fuzzy street match", legendInferred: "inferred street name",
   keyBtn: "Key", keyBtnAria: "Show pin key",
   aboutIntro: "Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.",
@@ -706,7 +708,7 @@ de: {
   aboutClose: "Schließen",
   aboutTitle: "Über diese Karte",
   peopleWord: "Personen", addressesWord: "Adressen",
-  legendExact: "exakter Registereintrag", legendRegistry: "Registertreffer",
+  legendExact: "exakter Registereintrag", legendNazi: "NS-Stätte", legendRegistry: "Registertreffer",
   legendFuzzy: "ungefähre Straßenübereinstimmung", legendInferred: "abgeleiteter Straßenname",
   keyBtn: "Legende", keyBtnAria: "Pin-Legende anzeigen",
   aboutIntro: "Jede Markierung steht für eine Wiener Adresse, unter der in Lehmanns Wohnungsanzeiger – dem Wiener Adressbuch – eine oder mehrere Personen bzw. Firmen verzeichnet sind. Über die Jahresauswahl können Sie zwischen den vollständigen Karten für 1938 bis 1942 wechseln. Zu jedem Eintrag lässt sich außerdem die entsprechende Zeile des Originalscans anzeigen.",
