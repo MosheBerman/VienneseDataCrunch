@@ -1462,7 +1462,7 @@ $('setInfer').addEventListener('change', e => {
 });
 // ---- overlay layers: renames, Nazi-era book names (per year), historic sites
 const OVERLAYS = {
-  renames:   {box: 'setRenames',   key: 'lehmann.showRenames',   file: 'layers/renames.geojson',         color: '#7c3aed', r: 5, line: true, def: true},
+  renames:   {box: 'setRenames',   key: 'lehmann.showRenames',   file: 'layers/renames.geojson',         color: '#DD0000', r: 5, line: true, def: true},
   booknames: {box: 'setBookNames', key: 'lehmann.showBookNames', perYear: 'renamed-lines.geojson',       color: '#92400e', r: 5, line: true},
   sites:     {box: 'setSites',     key: 'lehmann.showSites',     file: 'layers/historic-sites.geojson',  color: '#111827', r: 7, def: true},
 };
@@ -1583,7 +1583,7 @@ async function setOverlayLayer(id, on){
           filter: ptFilter,
           paint: {'circle-color': def.color, 'circle-radius': def.r,
                   'circle-stroke-width': 2, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
-        const lblPaint = {'text-color': id === 'renames' ? '#5b21b6' : '#92400e',
+        const lblPaint = {'text-color': id === 'renames' ? '#991b1b' : '#92400e',
                           'text-halo-color': '#ffffff', 'text-halo-width': 1.5};
         if (id === 'renames'){
           if (!(await ensureRenameLabelSource())) throw new Error('no label data');
@@ -1638,7 +1638,7 @@ async function setOverlayLayer(id, on){
       } else {
         map.addLayer({id: 'ovl-' + id, type: 'circle', source: 'ov-' + id,
           paint: {'circle-color': def.color, 'circle-radius': def.r,
-                  'circle-stroke-width': 2, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
+                  'circle-stroke-width': 3, 'circle-stroke-color': '#DD0000', 'circle-opacity': 0.95}});
         st.layers = ['ovl-' + id];
         if (id === 'sites') addSiteLabels(id, st);
       }
@@ -2884,15 +2884,17 @@ function fwSamePlace(p, q){
   return d != null && d < 50;
 }
 function fwMarkerFade(show, p){
-  // Shrink-and-fade the travelling dot (disappearance) or fade it back in.
+  // Fade the travelling dot out (disappearance) or back in. Opacity
+  // only: Mapbox positions the marker element with transform, so
+  // touching transform here fights positioning and makes the dot
+  // start in the wrong place and trail its path.
   return new Promise(res => {
     if (!fwAnimMarker) return res();
     const el = fwAnimMarker.getElement();
-    el.style.transition = 'opacity .7s ease, transform .7s ease';
+    el.style.transition = 'opacity .7s ease';
     if (show && p) fwAnimMarker.setLngLat([p.lng, p.lat]);
     requestAnimationFrame(() => {
       el.style.opacity = show ? '1' : '0';
-      el.style.transform = show ? 'scale(1)' : 'scale(.15)';
     });
     setTimeout(res, 760);
   });
