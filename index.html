@@ -205,6 +205,7 @@ header>*{pointer-events:auto;}
 @keyframes spn{to{transform:rotate(360deg);}}
 #boot{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:#f5f5f4;color:#4b5563;font-size:14px;transition:opacity .4s;}
 #boot.gone{opacity:0;pointer-events:none;}
+#bootVersion{position:absolute;right:12px;bottom:10px;font-size:11px;font-weight:300;color:#9ca3af;letter-spacing:.02em;}
 /* book-cover loading: book rests on the parchment, then drops toward the
    viewer onto the empty map as the parchment fades; pins spill out gray -> blue */
 .bookwrap{position:relative;line-height:0;transform:scale(1.3);opacity:0;}
@@ -405,7 +406,7 @@ header>*{pointer-events:auto;}
 <div class="bookpins" aria-hidden="true"><span style="--dx:-70px;--dy:-52px;--sz:7px;--d:0.85s"></span><span style="--dx:78px;--dy:-46px;--sz:12px;--d:0.90s"></span><span style="--dx:-112px;--dy:-14px;--sz:11px;--d:0.95s"></span><span style="--dx:118px;--dy:12px;--sz:7px;--d:1.00s"></span><span style="--dx:-92px;--dy:26px;--sz:6px;--d:1.05s"></span><span style="--dx:96px;--dy:42px;--sz:13px;--d:0.88s"></span><span style="--dx:-142px;--dy:48px;--sz:13px;--d:0.93s"></span><span style="--dx:144px;--dy:-24px;--sz:9px;--d:1.10s"></span><span style="--dx:-62px;--dy:62px;--sz:8px;--d:1.15s"></span><span style="--dx:66px;--dy:66px;--sz:11px;--d:1.20s"></span><span style="--dx:-122px;--dy:-62px;--sz:10px;--d:1.25s"></span><span style="--dx:126px;--dy:62px;--sz:6px;--d:0.98s"></span></div>
 <img id="bootBook" class="bookcover" src="covers/1938.jpg" alt="" decoding="async" fetchpriority="high" onerror="this.onerror=null;this.src='boot-book.jpg'">
 </div>
-<div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div></div>
+<div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div><div id="bootVersion"></div></div>
 <div id="mapKey"><span><span style="color:#2563eb">●</span> <span data-i18n="legendExact">exact registry match</span></span><span><span style="color:#7c3aed">●</span> <span data-i18n="legendRegistry">registry match</span></span><span><span style="color:#d97706">●</span> <span data-i18n="legendFuzzy">fuzzy street match</span></span><span><span style="color:#e11d48">◯</span> <span data-i18n="legendInferred">inferred street name</span></span></div>
 <button id="keyFab" data-i18n="keyBtn" data-i18n-aria="keyBtnAria" aria-expanded="false">Key</button>
 <header>
@@ -955,6 +956,9 @@ let CUR_YEAR = '1938';
   // Boot screen shows the cover of the year being loaded, not a generic book.
   const bb = document.getElementById('bootBook');
   if (bb) bb.src = 'covers/' + CUR_YEAR + '.jpg';
+  // Boot screen shows the site version, subtle, bottom-right.
+  const bv = document.getElementById('bootVersion');
+  if (bv) bv.textContent = SITE_VERSION;
 })();
 const showResearch = () => { try { return localStorage.getItem('lehmann.showResearch') === '1'; } catch (e) { return false; } };
 function buildYearPicker(){
