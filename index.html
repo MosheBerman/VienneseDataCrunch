@@ -144,7 +144,8 @@ header>*{pointer-events:auto;}
 .pp-row{padding:10px 4px;border-bottom:1px solid #f3f4f6;}
 .pp-row:last-child{border-bottom:none;}
 .pp-row.hl{background:#eff6ff;border-radius:8px;}
-/* actions row: scan link, info toggle, follow button — one aligned row */
+/* actions row: info toggle pinned top-right; follow row below it; the scan
+   buttons live in the expandable body, secondary to follow */
 .pp-act{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap;}
 .pp-more{color:#6b7280;font-size:12px;margin-top:4px;}
 .pill{display:inline-block;font-size:11px;font-weight:600;line-height:1.5;padding:0 8px;border-radius:999px;white-space:nowrap;vertical-align:1px;}
@@ -185,9 +186,12 @@ header>*{pointer-events:auto;}
 .about-more>summary{cursor:pointer;font-weight:600;font-size:14px;color:#1f2937;padding:8px 0;}
 .about-stats{margin:8px 0;}
 .about-legend{font-size:12px;color:#4b5563;}
-.pp-info{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;font:400 14px/1 system-ui,-apple-system,sans-serif;cursor:pointer;margin:0;padding:0 0 2px;vertical-align:middle;flex:0 0 auto;transition:transform .18s ease,border-color .15s,color .15s;}
+.pp-info{position:relative;display:inline-flex;width:22px;height:22px;border-radius:50%;border:1px solid #9ca3af;color:#6b7280;background:#fff;cursor:pointer;margin:0;padding:0;vertical-align:middle;flex:0 0 auto;transition:border-color .15s,color .15s;}
 .pp-info:hover{border-color:#2563eb;color:#2563eb;}
-.pp-info.open{transform:rotate(180deg);}
+/* CSS-drawn chevron (the old text glyph sat off-center and did not read as
+   a chevron): centered by construction, flips up when open. */
+.pp-info::after{content:'';position:absolute;left:50%;top:50%;width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translate(-50%,-50%) rotate(45deg);transition:transform .18s ease;}
+.pp-info.open::after{transform:translate(-50%,-50%) rotate(225deg);}
 /* info popover: the body stays in layout while collapsed (grid 0fr trick), so
    the popup width is always the wider of the collapsed/expanded states */
 .pp-info-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .18s ease-out;}
@@ -195,6 +199,8 @@ header>*{pointer-events:auto;}
 .pp-info-inner{overflow:hidden;min-height:0;}
 /* expanded record actions: all the buttons live here now */
 .pp-actbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center;}
+/* follow row: always visible, above the chevron body; scans live in the body */
+.pp-followrow{margin-top:10px;}
 .pp-abtn{display:inline-block;padding:8px 12px;min-height:38px;border:1px solid #9ca3af;border-radius:10px;background:#fff;font-size:14px;color:#111827;cursor:pointer;font-family:inherit;}
 .pp-abtn:hover{border-color:#2563eb;color:#2563eb;}
 /* record-details circled-i: pinned top-right of the record card, out of the
@@ -488,6 +494,15 @@ header>*{pointer-events:auto;}
 <h3 data-i18n="keyboardTitle">Keyboard</h3>
 <p data-i18n-html="keyboardText"><b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · <b>*</b> <b>?</b> wildcards · on the map, <b>←</b><b>→</b> steps through pins.</p>
 </details>
+<h3 data-i18n="faqTitle">Frequently asked questions</h3>
+<details class="about-more">
+<summary data-i18n="faqQ1">What do the different pin colors mean?</summary>
+<p data-i18n="faqA1">Each color shows how well the address matched the City of Vienna address registry. Blue is an exact registry match, purple is a registry match, amber is a fuzzy street match, so the pin is approximate, and a red outline means the street name was inferred. Blue and purple pins are the most reliable; amber pins are approximate.</p>
+</details>
+<details class="about-more">
+<summary data-i18n="faqQ2">How are individuals matched across years?</summary>
+<p data-i18n="faqA2">A person is followed across years when the surname, address, and occupation line up in the different volumes. A given-name initial counts as a match when those three line up, so "Biller S." and "Biller Siegfried" at the same address with the same occupation are treated as the same person. Any match can be checked against the scanned rows shown in the record popups, and uncertain matches are flagged on the map rather than hidden.</p>
+</details>
 </div>
 <div class="tabpage" id="tab-research">
 <h2 data-i18n="researchTitle">Research</h2>
@@ -578,6 +593,11 @@ en: {
   build8: "Scanned-row snippets in every record popup.",
   caveatsTitle: "Caveats",
   caveatsText: "OCR misreads names; some streets were renamed or no longer exist; amber pins are approximate. A missing pin doesn't mean the entry is missing from the book — not every address matched the modern registry.",
+  faqTitle: "Frequently asked questions",
+  faqQ1: "What do the different pin colors mean?",
+  faqA1: "Each color shows how well the address matched the City of Vienna address registry. Blue is an exact registry match, purple is a registry match, amber is a fuzzy street match, so the pin is approximate, and a red outline means the street name was inferred. Blue and purple pins are the most reliable; amber pins are approximate.",
+  faqQ2: "How are individuals matched across years?",
+  faqA2: "A person is followed across years when the surname, address, and occupation line up in the different volumes. A given-name initial counts as a match when those three line up, so \"Biller S.\" and \"Biller Siegfried\" at the same address with the same occupation are treated as the same person. Any match can be checked against the scanned rows shown in the record popups, and uncertain matches are flagged on the map rather than hidden.",
   keyboardTitle: "Keyboard",
   keyboardText: "<b>/</b> search · <b>↑</b><b>↓</b> move through results · <b>space</b>/<b>enter</b> open a result · <b>esc</b> close · <b>*</b> <b>?</b> wildcards · on the map, <b>←</b><b>→</b> steps through pins.",
   researchTitle: "Research",
@@ -725,6 +745,11 @@ de: {
   build8: "Gescannte Zeilenausschnitte in jedem Detailfenster.",
   caveatsTitle: "Einschränkungen",
   caveatsText: "Die OCR kann Namen falsch erkennen; manche Straßen wurden umbenannt oder existieren nicht mehr; bernsteinfarbene Markierungen sind nur ungefähr. Eine fehlende Markierung bedeutet nicht, dass der Eintrag im Adressbuch fehlt — nicht jede Adresse konnte dem heutigen Adressregister zugeordnet werden.",
+  faqTitle: "Häufige Fragen",
+  faqQ1: "Was bedeuten die verschiedenen Stecknadelfarben?",
+  faqA1: "Jede Farbe zeigt, wie gut die Adresse mit dem Adressregister der Stadt Wien übereinstimmt. Blau bedeutet einen exakten Registereintrag, Violett einen Registertreffer, Bernstein eine ungefähre Straßenübereinstimmung, also eine ungefähre Position, und ein roter Ring bedeutet, dass der Straßenname erschlossen wurde. Blaue und violette Nadeln sind am zuverlässigsten; bernsteinfarbene sind ungefähr.",
+  faqQ2: "Wie werden Personen über die Jahre hinweg zugeordnet?",
+  faqA2: "Eine Person wird über die Jahre verfolgt, wenn Nachname, Adresse und Beruf in den verschiedenen Bänden übereinstimmen. Ein Anfangsbuchstabe des Vornamens gilt als Übereinstimmung, wenn diese drei Angaben übereinstimmen: „Biller S.\" und „Biller Siegfried\" an derselben Adresse mit demselben Beruf gelten als dieselbe Person. Jede Zuordnung lässt sich anhand der gescannten Zeilen in den Datensätzen prüfen; unsichere Treffer werden markiert, nicht verborgen.",
   keyboardTitle: "Tastatur",
   keyboardText: "<b>/</b> suchen · <b>↑</b><b>↓</b> durch die Ergebnisse blättern · <b>Leertaste</b>/<b>Enter</b> öffnet ein Ergebnis · <b>Esc</b> schließt · <b>*</b> <b>?</b> Wildcards · auf der Karte mit <b>←</b><b>→</b> zwischen den Markierungen wechseln.",
   researchTitle: "Recherche",
@@ -1049,12 +1074,13 @@ function corrKeyFor(r){
   return key;
 }
 // chevron button (lives in the .pp-act row, pinned top-right of the record
-// card). Tapping it reveals all the action buttons in the expandable body;
+// card; the chevron itself is CSS-drawn, see .pp-info::after). Tapping it
+// reveals the expandable body with the scan buttons and corrections;
 // the row itself shows data only (name, occupation, door pill, pills).
 function ppInfoBtn(r){
   const key = corrKeyFor(r);
   if (!key) return '';
-  return '<button class="pp-info" data-key="' + esc(key) + '" onclick="infoTap(this)" aria-label="' + t('recordDetails') + '">&#8964;</button>';
+  return '<button class="pp-info" data-key="' + esc(key) + '" onclick="infoTap(this)" aria-label="' + t('recordDetails') + '"></button>';
 }
 function ppInfoBody(r){
   if (r._id == null) return '';
@@ -1063,8 +1089,8 @@ function ppInfoBody(r){
   const meta = '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>';
   const corr = '<button class="pp-abtn" onclick="openCorr(\'' + qk + '\')">' + t('suggestCorrection') + '</button>';
   const add = r._added ? '' : '<button class="pp-abtn" onclick="openAddOverlay(\'' + qk + '\')">' + t('addAddr') + '</button>';
-  return '<div class="pp-info-body"><div class="pp-info-inner">' + meta +
-    '<div class="pp-actbtns">' + followBtn(r) + corr + add + '</div></div></div>';
+  return '<div class="pp-info-body"><div class="pp-info-inner">' + meta + rowSnippetPH(r) +
+    '<div class="pp-actbtns">' + corr + add + '</div></div></div>';
 }
 // Inferred-street provenance, e.g. "Im Adressbuch 1941 als Reichsbrückenstraße verzeichnet."
 function rescueLine(r){
@@ -1843,7 +1869,10 @@ function popupHTML(r){
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += rescueLine(r) + rowSnippetPH(r) + '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
+  h += rescueLine(r);
+  const flw = followBtn(r);
+  if (flw) h += '<div class="pp-followrow">' + flw + '</div>';
+  h += '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
   return h;
 }
 
@@ -2007,11 +2036,11 @@ async function groupPopupHTML(f, highlightId){
   for (const r of list) {
     const hl = (highlightId !== null && r._id === highlightId ? ' hl' : '');
     const tp = r.u ? ' pp-tuer' : '';
-    const snip = rowSnippetPH(r);
+    const flw = followBtn(r);
     h += '<div class="pp-row' + hl + tp + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>' +
       (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
-      snip + '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
+      (flw ? '<div class="pp-followrow">' + flw + '</div>' : '') + '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + t(hidden === 1 ? 'moreHidden1' : 'moreHiddenN', {n: hidden}) + '</div>';
