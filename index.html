@@ -1587,13 +1587,20 @@ async function setOverlayLayer(id, on){
         const ptFilter = ['==', ['geometry-type'], 'Point'];
         // Thin street-like traces (like the modern streets on the basemap),
         // not fat highlight strokes.
+        // Street lines sit beneath the pins (not above), and fade at
+        // zoomed-out levels: faint but never fully gone.
+        const pinLayer = map.getLayer('clusters') ? 'clusters'
+          : (map.getLayer('unclustered-point') ? 'unclustered-point' : undefined);
         map.addLayer({id: 'ovl-' + id, type: 'line', source: 'ov-' + id,
           filter: lineFilter,
-          paint: {'line-color': def.color, 'line-width': 2.5, 'line-opacity': 0.9}});
+          paint: {'line-color': def.color, 'line-width': 2.5,
+                  'line-opacity': ['interpolate', ['linear'], ['zoom'], 11, 0.2, 15, 0.9]}},
+          pinLayer);
         // invisible fat line underneath: reliable tap target on touch screens
         map.addLayer({id: 'ovl-' + id + '-hit', type: 'line', source: 'ov-' + id,
           filter: lineFilter,
-          paint: {'line-color': def.color, 'line-width': 24, 'line-opacity': 0}});
+          paint: {'line-color': def.color, 'line-width': 24, 'line-opacity': 0}},
+          pinLayer);
         map.addLayer({id: 'ovl-' + id + '-pt', type: 'circle', source: 'ov-' + id,
           filter: ptFilter,
           paint: {'circle-color': def.color, 'circle-radius': def.r,
