@@ -1261,6 +1261,17 @@ map.on('load', async () => {
     const siteSt = overlayState['sites'];
     const siteOn = siteSt && siteSt.ready &&
       map.getLayoutProperty('ovl-sites', 'visibility') === 'visible';
+    if (siteOn){
+      const sc = near(e.point, 'ovl-sites-cluster', TAP_R)[0];
+      if (sc){
+        closePointSheet();
+        map.getSource('ov-sites').getClusterExpansionZoom(sc.properties.cluster_id, (err, zoom) => {
+          if (err) return;
+          map.easeTo({center: sc.geometry.coordinates, zoom: zoom, duration: 550});
+        });
+        return;
+      }
+    }
     let best = null, bestD = Infinity, bestTag = '';
     const consider = (ft, tag) => {
       const g = ft.geometry;
@@ -1566,7 +1577,9 @@ async function setOverlayLayer(id, on){
         st.prewar = await ensurePrewarMap();
         for (const f of (data.features || [])) f.properties.pre = st.prewar[f.properties.old] || '';
       }
-      map.addSource('ov-' + id, {type: 'geojson', data: data});
+      map.addSource('ov-' + id, id === 'sites'
+        ? {type: 'geojson', data: data, cluster: true, clusterMaxZoom: 14, clusterRadius: 55}
+        : {type: 'geojson', data: data});
       if (def.line){
         const lineFilter = ['in', ['geometry-type'], ['literal', ['LineString', 'MultiLineString']]];
         const ptFilter = ['==', ['geometry-type'], 'Point'];
@@ -1637,10 +1650,25 @@ async function setOverlayLayer(id, on){
         }
       } else {
         map.addLayer({id: 'ovl-' + id, type: 'circle', source: 'ov-' + id,
+          filter: ['!', ['has', 'point_count']],
           paint: {'circle-color': def.color, 'circle-radius': def.r,
                   'circle-stroke-width': 3, 'circle-stroke-color': '#DD0000', 'circle-opacity': 0.95}});
         st.layers = ['ovl-' + id];
-        if (id === 'sites') addSiteLabels(id, st);
+        if (id === 'sites'){
+          // Clustered at low zoom (like the places layer, unclustering at 14).
+          map.addLayer({id: 'ovl-sites-cluster', type: 'circle', source: 'ov-sites',
+            filter: ['has', 'point_count'],
+            paint: {'circle-color': '#111827',
+                    'circle-radius': ['step', ['get', 'point_count'], 14, 3, 18, 5, 22],
+                    'circle-stroke-width': 3, 'circle-stroke-color': '#DD0000', 'circle-opacity': 0.95}});
+          map.addLayer({id: 'ovl-sites-cluster-count', type: 'symbol', source: 'ov-sites',
+            filter: ['has', 'point_count'],
+            layout: {'text-field': ['get', 'point_count_abbreviated'],
+              'text-font': ['DIN Pro Medium', 'Arial Unicode MS Bold'], 'text-size': 12},
+            paint: {'text-color': '#fff'}});
+          st.layers.push('ovl-sites-cluster', 'ovl-sites-cluster-count');
+          addSiteLabels(id, st);
+        }
       }
       for (const lid of st.layers){
         map.on('mouseenter', lid, () => map.getCanvas().style.cursor = 'pointer');
@@ -1688,8 +1716,8 @@ function booknameLabelFilter(lid, st){
     booknamePairFilter(st)];
 }
 function addSiteLabels(id, st){
-  // Landmark labels: persistent — always rendered while the sites overlay is
-  // on, at any zoom (hand-picked, only five). On desktop hover the hovered
+  // Landmark labels: shown from zoom 14 (individual level) while the sites overlay is
+  // on (hand-picked, only five). On desktop hover the hovered
   // site's label shows at any zoom; on touch, tapping a pin toggles it.
   const src = 'ov-' + id, HL = 'ovl-sites-label-hover';
   const layout = {'text-field': ['get', 'name'], 'text-size': 12,
@@ -1697,6 +1725,7 @@ function addSiteLabels(id, st){
     'text-offset': [0, 1.4], 'text-anchor': 'top'};
   const paint = {'text-color': '#111827', 'text-halo-color': '#fff', 'text-halo-width': 1.5};
   map.addLayer({id: 'ovl-sites-label', type: 'symbol', source: src,
+    minzoom: 14,
     layout: Object.assign({'text-allow-overlap': true, 'text-ignore-placement': true}, layout), paint: paint});
   map.addLayer({id: HL, type: 'symbol', source: src,
     filter: ['==', ['get', 'name'], ''],
