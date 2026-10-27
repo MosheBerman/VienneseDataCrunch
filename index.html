@@ -1299,11 +1299,27 @@ map.on('load', async () => {
       }
       openOverlayPopup('sites', best, e.lngLat); return;
     }
+    // Rename point clusters: tapping one zooms to expansion, like places.
+    for (const id of ['renames', 'booknames']){
+      const rst = overlayState[id];
+      if (!rst || !rst.ready) continue;
+      if (!map.getLayer('ovl-' + id + '-cluster')) continue;
+      if (map.getLayoutProperty('ovl-' + id + '-cluster', 'visibility') !== 'visible') continue;
+      const rcl = near(e.point, 'ovl-' + id + '-cluster', TAP_R)[0];
+      if (rcl){
+        map.getSource('ov-' + id).getClusterExpansionZoom(rcl.properties.cluster_id, (err, zoom) => {
+          if (err) return;
+          map.easeTo({center: rcl.geometry.coordinates, zoom: zoom, duration: 550});
+        });
+        return;
+      }
+    }
     for (const id of Object.keys(OVERLAYS)){
       if (id === 'sites') continue; // handled above
       const st = overlayState[id];
       if (!st || !st.ready) continue;
       for (const lid of overlayLayerIds(id)){
+        if (lid.includes('-cluster')) continue; // handled above
         if (map.getLayoutProperty(lid, 'visibility') !== 'visible') continue;
         const hit = near(e.point, lid, TAP_R)[0];
         if (hit) { openOverlayPopup(id, hit, e.lngLat); return; }
@@ -1579,12 +1595,12 @@ async function setOverlayLayer(id, on){
         st.prewar = await ensurePrewarMap();
         for (const f of (data.features || [])) f.properties.pre = st.prewar[f.properties.old] || '';
       }
-      map.addSource('ov-' + id, id === 'sites'
-        ? {type: 'geojson', data: data, cluster: true, clusterMaxZoom: 14, clusterRadius: 55}
-        : {type: 'geojson', data: data});
+      // Clustered: points cluster below zoom 14 (lines pass through
+      // unclustered); the point-cluster layers below handle the dots.
+      map.addSource('ov-' + id, {type: 'geojson', data: data, cluster: true, clusterMaxZoom: 14, clusterRadius: 55});
       if (def.line){
         const lineFilter = ['in', ['geometry-type'], ['literal', ['LineString', 'MultiLineString']]];
-        const ptFilter = ['==', ['geometry-type'], 'Point'];
+        const ptFilter = ['all', ['==', ['geometry-type'], 'Point'], ['!', ['has', 'point_count']]];
         // Thin street-like traces (like the modern streets on the basemap),
         // not fat highlight strokes.
         // Street lines sit beneath the pins (not above), and fade at
@@ -1605,6 +1621,17 @@ async function setOverlayLayer(id, on){
           filter: ptFilter,
           paint: {'circle-color': def.color, 'circle-radius': def.r,
                   'circle-stroke-width': 2, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
+        // Point renames cluster below zoom 14 (until item 8 traces them as lines).
+        map.addLayer({id: 'ovl-' + id + '-cluster', type: 'circle', source: 'ov-' + id,
+          filter: ['has', 'point_count'],
+          paint: {'circle-color': def.color,
+                  'circle-radius': ['step', ['get', 'point_count'], 12, 3, 16, 5, 20],
+                  'circle-stroke-width': 2, 'circle-stroke-color': '#fff', 'circle-opacity': 0.95}});
+        map.addLayer({id: 'ovl-' + id + '-clustercount', type: 'symbol', source: 'ov-' + id,
+          filter: ['has', 'point_count'],
+          layout: {'text-field': ['get', 'point_count_abbreviated'],
+            'text-font': LBL_FONT, 'text-size': 11},
+          paint: {'text-color': '#fff'}});
         const lblPaint = {'text-color': id === 'renames' ? '#991b1b' : '#92400e',
                           'text-halo-color': '#ffffff', 'text-halo-width': 1.5};
         if (id === 'renames'){
@@ -1634,7 +1661,8 @@ async function setOverlayLayer(id, on){
               'text-anchor': 'top', 'text-offset': [0, 0.8]},
             paint: lblPaint});
           st.layers = ['ovl-' + id, 'ovl-' + id + '-hit', 'ovl-' + id + '-pt',
-                       'ovl-' + id + '-lbl', 'ovl-' + id + '-lbl-sm', 'ovl-' + id + '-ptlbl'];
+                       'ovl-' + id + '-lbl', 'ovl-' + id + '-lbl-sm', 'ovl-' + id + '-ptlbl',
+                       'ovl-' + id + '-cluster', 'ovl-' + id + '-clustercount'];
         } else {
           // booknames: old-name labels on the same label source, filtered to
           // this year's pairs; hidden while the renames toggle is on.
@@ -1655,7 +1683,8 @@ async function setOverlayLayer(id, on){
               'text-font': LBL_FONT, 'text-size': 11, 'text-anchor': 'center'},
             paint: lblPaint});
           st.layers = ['ovl-' + id, 'ovl-' + id + '-hit', 'ovl-' + id + '-pt',
-                       'ovl-' + id + '-lbl', 'ovl-' + id + '-lbl-sm'];
+                       'ovl-' + id + '-lbl', 'ovl-' + id + '-lbl-sm',
+                       'ovl-' + id + '-cluster', 'ovl-' + id + '-clustercount'];
         }
       } else {
         map.addLayer({id: 'ovl-' + id, type: 'circle', source: 'ov-' + id,
