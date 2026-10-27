@@ -377,6 +377,25 @@ header>*{pointer-events:auto;}
 #pointSheet .pp-list{max-height:none;}
 #pointSheet .pp-row{cursor:pointer;}
 @media(min-width:641px){#pointSheet{display:none !important;}}
+/* ---- Map key: pin legend back on the main screen ------------------------ */
+/* Desktop: always-visible card, bottom-left where the old footer key sat. */
+/* Mobile: a button top-right that opens the same card as a flyout. The card
+   sits at z-index 5, below every slide-up sheet (#results 6, #pointSheet 40,
+   #infoSheet 45, #aboutOverlay 20), so a sheet always slides OVER it and is
+   never blocked by it. */
+#mapKey{position:fixed;left:10px;bottom:10px;z-index:5;background:#fff;border-radius:10px;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);padding:8px 12px;font-size:12px;color:#4b5563;
+  display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+#keyFab{display:none;}
+@media(min-width:641px){body.split-on #mapKey{left:calc(min(380px,42vw) + 10px);}}
+@media(max-width:640px){
+  #keyFab{display:block;position:fixed;top:64px;right:12px;z-index:5;background:#fff;
+    border:1px solid #d1d5db;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;
+    color:#111827;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
+  #mapKey{display:none;left:auto;right:12px;top:108px;bottom:auto;flex-direction:column;
+    align-items:flex-start;gap:6px;max-width:230px;}
+  #mapKey.open{display:flex;}
+}
 </style>
 </head>
 <body>
@@ -387,6 +406,8 @@ header>*{pointer-events:auto;}
 <img id="bootBook" class="bookcover" src="covers/1938.jpg" alt="" decoding="async" fetchpriority="high" onerror="this.onerror=null;this.src='boot-book.jpg'">
 </div>
 <div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div></div>
+<div id="mapKey"><span><span style="color:#2563eb">●</span> <span data-i18n="legendExact">exact registry match</span></span><span><span style="color:#7c3aed">●</span> <span data-i18n="legendRegistry">registry match</span></span><span><span style="color:#d97706">●</span> <span data-i18n="legendFuzzy">fuzzy street match</span></span><span><span style="color:#e11d48">◯</span> <span data-i18n="legendInferred">inferred street name</span></span></div>
+<button id="keyFab" data-i18n="keyBtn" data-i18n-aria="keyBtnAria" aria-expanded="false">Key</button>
 <header>
   <div class="brand">
     <div id="searchDock">
@@ -533,6 +554,7 @@ en: {
   peopleWord: "people", addressesWord: "addresses",
   legendExact: "exact registry match", legendRegistry: "registry match",
   legendFuzzy: "fuzzy street match", legendInferred: "inferred street name",
+  keyBtn: "Key", keyBtnAria: "Show pin key",
   aboutIntro: "Every pin is a Vienna address with one or more people or businesses listed in <i>Lehmann's Wohnungsanzeiger</i>, Vienna's address book. The year picker switches between full layers for 1938–1942. Each record popup shows the scanned row it came from.",
   aboutLead: "This is a map of residents of Vienna over the years of 1938 through 1942. It shows movements of population, and includes information about streets that were renamed during and after the war.",
   moreLabel: "more",
@@ -679,6 +701,7 @@ de: {
   peopleWord: "Personen", addressesWord: "Adressen",
   legendExact: "exakter Registereintrag", legendRegistry: "Registertreffer",
   legendFuzzy: "ungefähre Straßenübereinstimmung", legendInferred: "abgeleiteter Straßenname",
+  keyBtn: "Legende", keyBtnAria: "Pin-Legende anzeigen",
   aboutIntro: "Jede Markierung steht für eine Wiener Adresse, unter der in Lehmanns Wohnungsanzeiger – dem Wiener Adressbuch – eine oder mehrere Personen bzw. Firmen verzeichnet sind. Über die Jahresauswahl können Sie zwischen den vollständigen Karten für 1938 bis 1942 wechseln. Zu jedem Eintrag lässt sich außerdem die entsprechende Zeile des Originalscans anzeigen.",
   aboutLead: "Dies ist eine Karte der Bewohner Wiens in den Jahren 1938 bis 1942. Sie zeigt Bevölkerungsbewegungen und enthält Informationen über Straßen, die während und nach dem Krieg umbenannt wurden.",
   moreLabel: "mehr",
@@ -1170,6 +1193,11 @@ $('yrPick').addEventListener('change', e => {
   }
   switchYear(v);
 });
+// Mobile key flyout: tap the button to open/close the pin legend.
+$('keyFab').addEventListener('click', () => {
+  const open = $('mapKey').classList.toggle('open');
+  $('keyFab').setAttribute('aria-expanded', open ? 'true' : 'false');
+});
 
 map.on('load', async () => {
   await loadYearData();
@@ -1205,6 +1233,8 @@ map.on('load', async () => {
     return map.queryRenderedFeatures(b, {layers: [layer]});
   }
   map.on('click', async e => {
+    // Tapping the map dismisses the mobile key flyout.
+    if ($('mapKey').classList.contains('open')) { $('mapKey').classList.remove('open'); $('keyFab').setAttribute('aria-expanded', 'false'); }
     const c = near(e.point, 'clusters', TAP_R)[0];
     if (c) {
       closePointSheet();
