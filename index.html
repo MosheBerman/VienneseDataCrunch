@@ -384,7 +384,7 @@ header>*{pointer-events:auto;}
 <div id="boot">
 <div class="bookwrap">
 <div class="bookpins" aria-hidden="true"><span style="--dx:-70px;--dy:-52px;--sz:7px;--d:0.85s"></span><span style="--dx:78px;--dy:-46px;--sz:12px;--d:0.90s"></span><span style="--dx:-112px;--dy:-14px;--sz:11px;--d:0.95s"></span><span style="--dx:118px;--dy:12px;--sz:7px;--d:1.00s"></span><span style="--dx:-92px;--dy:26px;--sz:6px;--d:1.05s"></span><span style="--dx:96px;--dy:42px;--sz:13px;--d:0.88s"></span><span style="--dx:-142px;--dy:48px;--sz:13px;--d:0.93s"></span><span style="--dx:144px;--dy:-24px;--sz:9px;--d:1.10s"></span><span style="--dx:-62px;--dy:62px;--sz:8px;--d:1.15s"></span><span style="--dx:66px;--dy:66px;--sz:11px;--d:1.20s"></span><span style="--dx:-122px;--dy:-62px;--sz:10px;--d:1.25s"></span><span style="--dx:126px;--dy:62px;--sz:6px;--d:0.98s"></span></div>
-<img class="bookcover" src="boot-book.jpg" alt="" decoding="async" fetchpriority="high">
+<img id="bootBook" class="bookcover" src="covers/1938.jpg" alt="" decoding="async" fetchpriority="high" onerror="this.onerror=null;this.src='boot-book.jpg'">
 </div>
 <div class="spin"></div><div data-i18n="bootStatic">Loading 481,219 people at 58,601 addresses…</div></div>
 <header>
@@ -929,6 +929,9 @@ let CUR_YEAR = '1938';
   const keys = Object.keys(YEARS).join('|');
   const m = location.hash.match(new RegExp('^#(' + keys + ')\\/([\\d.]+)\\/(-?[\\d.]+)\\/(-?[\\d.]+)'));
   if (m && YEARS[m[1]]) { CUR_YEAR = m[1]; window._sharedView = {zoom: +m[2], lat: +m[3], lng: +m[4]}; }
+  // Boot screen shows the cover of the year being loaded, not a generic book.
+  const bb = document.getElementById('bootBook');
+  if (bb) bb.src = 'covers/' + CUR_YEAR + '.jpg';
 })();
 const showResearch = () => { try { return localStorage.getItem('lehmann.showResearch') === '1'; } catch (e) { return false; } };
 function buildYearPicker(){
@@ -1146,6 +1149,7 @@ async function loadYearData(){
 async function switchYear(year){
   if (year === CUR_YEAR || !YEARS[year] || YEARS[year].kind !== 'layer') return;
   CUR_YEAR = year;
+  $('bootBook').src = 'covers/' + year + '.jpg';
   $('boot').classList.remove('gone');
   $('boot').lastElementChild.textContent = t('bootLoading', {year: YC().label});
   await loadYearData();
@@ -1284,6 +1288,8 @@ map.on('load', async () => {
   // Empty basemap is up (we are inside the map load handler): drop the book
   // toward the viewer, onto the map.
   $('boot').classList.add('mapready');
+  // Warm the cache for the other years' boot covers so a year switch swaps instantly.
+  for (const y in YEARS) if (y !== CUR_YEAR && YEARS[y].kind === 'layer') { const im = new Image(); im.src = 'covers/' + y + '.jpg'; }
   setTimeout(finishIntro, 12000);
 });
 
