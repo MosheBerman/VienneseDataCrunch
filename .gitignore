@@ -8,3 +8,9 @@
 /pipeline/*.log
 # OS
 .DS_Store
+
+# Cypress test tooling
+node_modules/
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/

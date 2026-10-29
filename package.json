@@ -1,0 +1,1 @@
+{"description":"Lehmann Vienna address map. The site itself is static (index.html); this package only carries the Cypress regression suite.","devDependencies":{"cypress":"^13.17.0"},"name":"viennese-data-crunch","private":true,"scripts":{"test:e2e":"cypress run","test:e2e:open":"cypress open"},"version":"1.4.1"}
