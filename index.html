@@ -208,6 +208,12 @@ header>*{pointer-events:auto;}
    one line below it */
 .pp-act .pp-info{position:absolute;top:8px;right:4px;}
 .pp-tuer .pp-act .pp-info{top:34px;}
+/* mobile list decoration chevron: right-pointing, purely visual, never
+   interactive (pointer-events none, so the row tap itself pushes the
+   detail); tür rows keep their top-right pill, so it drops one line below */
+.pp-nav{position:absolute;top:8px;right:4px;width:22px;height:22px;color:#6b7280;pointer-events:none;}
+.pp-nav::after{content:'';position:absolute;left:50%;top:50%;width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translate(-50%,-50%) rotate(-45deg);}
+.pp-tuer .pp-nav{top:34px;}
 
 #aboutBox h3{margin:16px 0 6px;font-size:15px;}
 #aboutBox p{font-size:14px;line-height:1.6;color:#1f2937;margin:8px 0;}
@@ -392,6 +398,9 @@ header>*{pointer-events:auto;}
 .is-backbar{margin:2px 0 10px;}
 .is-back{border:0;background:transparent;color:#2563eb;font-size:15px;cursor:pointer;padding:4px 0;}
 .is-detail{animation:sheetpush .25s ease-out;}
+/* detail bottom actions: scan buttons, corrections, follow, all visible
+   below a separator, at the bottom of the pushed detail */
+.is-detail-bottom{margin-top:14px;padding-top:12px;border-top:1px solid #e5e7eb;}
 @keyframes sheetpush{from{transform:translateX(24px);opacity:0;}to{transform:none;opacity:1;}}
 @media(min-width:641px){#pointSheet{display:none !important;}}
 /* ---- Map key: pin legend back on the main screen ------------------------ */
@@ -1131,10 +1140,12 @@ function togglePpInfo(btn){
   if (body) body.classList.toggle('open');
   btn.classList.toggle('open', !!body && body.classList.contains('open'));
 }
-// The chevron expands the record's detail body in place on every surface
-// (scan buttons, corrections, add-address). On mobile, the row itself
-// pushes the full per-person detail into the point sheet (delegated row
-// handler below); the chevron never navigates. The chevron is a bare
+// The chevron expands the record's detail body in place on desktop
+// (scan buttons, corrections, add-address). On mobile the person list
+// shows no buttons at all: each row carries only a right-pointing
+// decoration chevron, and tapping the row pushes the full per-person
+// detail into the point sheet (delegated row handler below), where the
+// buttons and the follow row sit at the bottom. The chevron is a bare
 // glyph, no circle (see .pp-info).
 function infoTap(btn){ togglePpInfo(btn); }
 // Superseded by the point-sheet navigation stack (pushPointDetail); kept
@@ -1963,9 +1974,9 @@ document.addEventListener('click', async e => {
   }
 });
 // Mobile point-sheet row tap: highlight the row and push its per-person
-// detail into the sheet. Controls keep their own behavior: the chevron
-// expands the row in place, follow/scans/corrections act directly, and
-// taps inside the expanded body never navigate.
+// detail into the sheet. Mobile rows carry no controls (only a decoration
+// chevron), so any tap on a row navigates; desktop rows keep their own
+// controls and never reach this handler.
 document.addEventListener('click', e => {
   if (isDesktop()) return;
   const row = e.target.closest('#pointSheet .pp-list .pp-row');
@@ -2059,11 +2070,33 @@ function closePointSheet(){
   dockFollowPanel(); // sheet closed: follow panel drops back to the bottom
 }
 // Point-sheet navigation stack (mobile): tapping a person row pushes the
-// per-person detail into the sheet; the back bar pops to the list.
+// per-person detail into the sheet; the back bar pops to the list. The
+// detail shows the record's info on top and all of its buttons plus the
+// follow row at the bottom, always visible (no expander: the list rows
+// carry no buttons, so the detail is where the actions live).
+function sheetDetailHTML(r){
+  corrKeyFor(r); // prime the correction cache (mobile rows no longer do it)
+  const key = recKey(r);
+  const qk = key ? key.replace(/'/g, "\\'") : '';
+  let h = '<div class="pp pp-single' + (r.u ? ' pp-tuer' : '') + '">' + tuerPill(r) +
+    '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>';
+  if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
+  h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
+  h += rescueLine(r);
+  const corr = key ? '<button class="pp-abtn" onclick="openCorr(\'' + qk + '\')">' + t('suggestCorrection') + '</button>' : '';
+  const add = (key && !r._added) ? '<button class="pp-abtn" onclick="openAddOverlay(\'' + qk + '\')">' + t('addAddr') + '</button>' : '';
+  const flw = followBtn(r);
+  h += '<div class="is-detail-bottom">' +
+    (key ? '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>' : '') + rowSnippetPH(r) +
+    ((corr || add) ? '<div class="pp-actbtns">' + corr + add + '</div>' : '') +
+    (flw ? '<div class="pp-followrow">' + flw + '</div>' : '') + '</div>';
+  h += '</div>';
+  return h;
+}
 function pushPointDetail(r){
   const body = $('pointSheet').querySelector('.is-body');
   body.innerHTML = '<div class="is-backbar"><button class="is-back" onclick="popPointDetail()">‹ ' + esc(t('sheetBack')) + '</button></div>' +
-    '<div class="is-detail">' + popupHTML(r) + '</div>';
+    '<div class="is-detail">' + sheetDetailHTML(r) + '</div>';
   pointSheetPushed = true;
   dockFollowPanel();
 }
@@ -2102,11 +2135,17 @@ async function groupPopupHTML(f, highlightId){
     const r = list[ri];
     const hl = (highlightId !== null && r._id === highlightId ? ' hl' : '');
     const tp = r.u ? ' pp-tuer' : '';
+    // Desktop rows keep their controls (follow row, chevron, expandable
+    // body). Mobile rows show no buttons: only a right-pointing decoration
+    // chevron, and the row tap pushes the detail, where the buttons and
+    // the follow row sit at the bottom.
     const flw = followBtn(r);
+    const rowBtns = isDesktop()
+      ? (flw ? '<div class="pp-followrow">' + flw + '</div>' : '') + '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r)
+      : '<span class="pp-nav" aria-hidden="true"></span>';
     h += '<div class="pp-row' + hl + tp + '" data-idx="' + ri + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>' +
-      (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) +
-      (flw ? '<div class="pp-followrow">' + flw + '</div>' : '') + '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
+      (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) + rowBtns + '</div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + t(hidden === 1 ? 'moreHidden1' : 'moreHiddenN', {n: hidden}) + '</div>';
