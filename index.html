@@ -591,7 +591,7 @@ header>*{pointer-events:auto;}
 <li data-i18n-html="licItem11">Visitor statistics: <a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener">Cloudflare Web Analytics</a> (no cookies).</li>
 </ul>
 <h3 data-i18n="siteVersion">Site version</h3>
-<p data-i18n-html="sourceLine">Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>v1.4.1</code></p>
+<p data-i18n-html="sourceLine">Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>v1.4.2</code></p>
 <h3 data-i18n="codeLibs">Code libraries</h3>
 <p><a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">Mapbox GL JS</a> v3.30.0 — BSD 3-Clause.</p>
 <h3 data-i18n="creditTitle">Credit</h3>
@@ -605,7 +605,7 @@ header>*{pointer-events:auto;}
 // LANG drives every user-facing string via t(). Static markup carries
 // data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
 // Release version (bumped with each tagged semver release).
-const SITE_VERSION = 'v1.4.1';
+const SITE_VERSION = 'v1.4.2';
 // data-i18n-aria (aria-label); applyI18n() walks them on every switch.
 // Record content (names, streets, occupations from the book) is never
 // translated. Persisted in localStorage; defaults to the browser language.
@@ -2416,6 +2416,10 @@ function minimizeResults(){
 function showResultsBox(){
   const box = $('results');
   const wasHidden = box.style.display !== 'block';
+  // Visible BEFORE the dock move below: focus() on an input inside a
+  // display:none subtree is dropped by the browser, so restoring focus
+  // after the move only works once the sheet is displayed.
+  box.style.display = 'block';
   if (isDesktop()){
     const h = document.querySelector('header');
     box.style.top = (h.offsetTop + h.offsetHeight + 6) + 'px';
@@ -2434,7 +2438,6 @@ function showResultsBox(){
       if (hadFocus) { q.focus(); if (sel) { try { q.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
     }
   }
-  box.style.display = 'block';
   if (wasHidden) {
     box.classList.remove('unfurl');
     void box.offsetWidth;
