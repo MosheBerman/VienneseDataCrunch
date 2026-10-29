@@ -1,4 +1,4 @@
-const CACHE='lehmann1938-20261029152236';
+const CACHE='lehmann1938-20261029152752';
 const SHELL=['./','./index.html'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()));
