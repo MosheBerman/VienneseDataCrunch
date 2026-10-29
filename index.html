@@ -398,9 +398,15 @@ header>*{pointer-events:auto;}
 .is-backbar{margin:2px 0 10px;}
 .is-back{border:0;background:transparent;color:#2563eb;font-size:15px;cursor:pointer;padding:4px 0;}
 .is-detail{animation:sheetpush .25s ease-out;}
-/* detail bottom actions: scan buttons, corrections, follow, all visible
-   below a separator, at the bottom of the pushed detail */
+/* detail bottom actions: the meta line only, below a separator; the
+   excerpt, follow rows, and action buttons live in the mid zone above it */
 .is-detail-bottom{margin-top:14px;padding-top:12px;border-top:1px solid #e5e7eb;}
+/* inline follow rows in the pushed detail: year, then the match (tappable)
+   or the gap note; no Follow button, no floating panel */
+.is-detail-follow{margin:10px 0 2px;}
+.is-fw-row{padding:6px 0;border-bottom:1px solid #f3f4f6;font-size:14px;}
+.is-fw-row:last-child{border-bottom:none;}
+.is-fw-hit{border:0;background:transparent;color:#2563eb;font-size:14px;cursor:pointer;padding:0;font-family:inherit;text-align:left;}
 @keyframes sheetpush{from{transform:translateX(24px);opacity:0;}to{transform:none;opacity:1;}}
 @media(min-width:641px){#pointSheet{display:none !important;}}
 /* ---- Map key: pin legend back on the main screen ------------------------ */
@@ -425,9 +431,10 @@ header>*{pointer-events:auto;}
   #mapKey .keySep{width:100%;height:1px;}
 }
 /* Layer control (Google/Apple Maps style): a floating button that opens a
-   card with the map-layer toggles, moved out of Settings. Same z-index 5
-   as the key, below every slide-up sheet. Opening one flyout closes the
-   other, so Key and Layers never overlap. */
+   card with the Nazi sites and street-rename toggles only; the research
+   toggles live in Settings. Same z-index 5 as the key, below every
+   slide-up sheet. Opening one flyout closes the other, so Key and Layers
+   never overlap. */
 #layersFab{position:fixed;top:64px;right:12px;z-index:5;background:#fff;
   border:1px solid #d1d5db;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;
   color:#111827;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;}
@@ -456,9 +463,6 @@ header>*{pointer-events:auto;}
 <button id="layersFab" data-i18n="layersBtn" data-i18n-aria="layersBtnAria" aria-expanded="false">Layers</button>
 <div id="layersPanel" aria-labelledby="layersTitleH">
 <h3 id="layersTitleH" data-i18n="layersTitle">Layers</h3>
-<div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b data-i18n="setB2t">Green dots — 1938 Band 2 preview</b><small data-i18n="setB2d">Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b data-i18n="setB2ct">Teal dots — 1938 Band 2 clean-only preview</b><small data-i18n="setB2cd">Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
-<div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b data-i18n="setInferT">Rose ring — inferred street names</b><small data-i18n="setInferD">Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setRenames"><label for="setRenames"><b data-i18n="setRenamesT">Renamed streets — Nazi-era &rarr; modern</b><small data-i18n="setRenamesD">Streets the Nazis renamed, traced as lines through directory addresses that used the old name.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setBookNames"><label for="setBookNames"><b data-i18n="setBookNamesT">Nazi-era names from the book</b><small data-i18n="setBookNamesD">The Nazi street renames, traced for the current year's book — 1938 shows what the book's streets were renamed to; 1939–41 show the book's Nazi-era names against modern names.</small></label></div>
 <div class="setrow"><input type="checkbox" id="setSites"><label for="setSites"><b data-i18n="setSitesT">Historical sites — Sammellager &amp; deportations</b><small data-i18n="setSitesD">Hand-picked: collection camps, the Aspangbahnhof deportation point, Gestapo HQ.</small></label></div>
@@ -560,6 +564,9 @@ header>*{pointer-events:auto;}
 <h2 data-i18n="settingsTitle">Research settings</h2>
 <div class="setrow"><label for="langPick" style="flex:1"><b data-i18n="languageLabel">Language</b><small data-i18n="languageDesc">Interface language.</small></label><select id="langPick" aria-label="Language"><option value="en">English</option><option value="de">Deutsch</option></select></div>
 <div class="setrow"><input type="checkbox" id="setResearch"><label for="setResearch"><b data-i18n="setResearchT">Show Research section in the year picker</b><small data-i18n="setResearchD">Reveals research views such as the family migration demo in the year dropdown.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setB2"><label for="setB2"><b data-i18n="setB2t">Green dots — 1938 Band 2 preview</b><small data-i18n="setB2d">Unreviewed OCR of the 1938 Häuserverzeichnis, drawn as green pins. Alternate with the clean-only pass below.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setB2c"><label for="setB2c"><b data-i18n="setB2ct">Teal dots — 1938 Band 2 clean-only preview</b><small data-i18n="setB2cd">Unreviewed OCR from an alternate cleaning pass, drawn as teal pins.</small></label></div>
+<div class="setrow"><input type="checkbox" id="setInfer"><label for="setInfer"><b data-i18n="setInferT">Rose ring — inferred street names</b><small data-i18n="setInferD">Pins whose address was placed through an inferred historical&rarr;modern street mapping get a rose ring. The pin's own color still shows match quality.</small></label></div>
 <h3 data-i18n="mapSection">Map</h3>
 <p><label for="flt"><b data-i18n="pinFilter">Pin quality filter</b></label><br>
 <select id="flt">
@@ -688,7 +695,7 @@ en: {
   viewInScan: "View in scan",
   showScanRow: "Show Scan Excerpt",
   hideScanRow: "Hide Scan Excerpt",
-  originalScan: "Original Scan",
+  originalScan: "Full Scan",
   suggestCorrection: "Suggest correction",
   corrPill: "corrected",
   corrPillTitle: "This entry includes an approved correction",
@@ -840,7 +847,7 @@ de: {
   viewInScan: "Im Scan ansehen",
   showScanRow: "Scanausschnitt anzeigen",
   hideScanRow: "Scanausschnitt ausblenden",
-  originalScan: "Originalscan",
+  originalScan: "Vollständiger Scan",
   suggestCorrection: "Korrektur vorschlagen",
   corrPill: "korrigiert",
   corrPillTitle: "Dieser Eintrag enthält eine übernommene Korrektur",
@@ -1565,7 +1572,7 @@ $('setInfer').addEventListener('change', e => {
 // ---- overlay layers: renames, Nazi-era book names (per year), historic sites
 const OVERLAYS = {
   renames:   {box: 'setRenames',   key: 'lehmann.showRenames',   file: 'layers/renames.geojson',         color: '#DD0000', r: 5, line: true, def: true},
-  booknames: {box: 'setBookNames', key: 'lehmann.showBookNames', perYear: 'renamed-lines.geojson',       color: '#92400e', r: 5, line: true},
+  booknames: {box: 'setBookNames', key: 'lehmann.showBookNames', perYear: 'renamed-lines.geojson',       color: '#DD0000', r: 5, line: true},
   sites:     {box: 'setSites',     key: 'lehmann.showSites',     file: 'layers/historic-sites.geojson',  color: '#111827', r: 7, def: true},
 };
 const overlayState = {};
@@ -2071,9 +2078,10 @@ function closePointSheet(){
 }
 // Point-sheet navigation stack (mobile): tapping a person row pushes the
 // per-person detail into the sheet; the back bar pops to the list. The
-// detail shows the record's info on top and all of its buttons plus the
-// follow row at the bottom, always visible (no expander: the list rows
-// carry no buttons, so the detail is where the actions live).
+// detail shows the record's info on top, then between the address divider
+// and the bottom divider: the scan excerpt inline (no button), the follow
+// results inline (no button, no floating panel), and the full scan plus
+// correction actions; the meta line stays below the bottom divider.
 function sheetDetailHTML(r){
   corrKeyFor(r); // prime the correction cache (mobile rows no longer do it)
   const key = recKey(r);
@@ -2083,28 +2091,76 @@ function sheetDetailHTML(r){
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
   h += rescueLine(r);
+  const excerpt = (r.pg != null && r._id != null)
+    ? '<div class="rowsnip" data-pg="' + r.pg + '" data-rid="' + r._id + '"></div>' : '';
+  const full = (r.pg != null) ? '<a class="pp-btn" href="https://www.digital.wienbibliothek.at/image/view/' + r.pg +
+    '" target="_blank" rel="noopener">' + esc(t('originalScan')) + '</a>' : '';
   const corr = key ? '<button class="pp-abtn" onclick="openCorr(\'' + qk + '\')">' + t('suggestCorrection') + '</button>' : '';
   const add = (key && !r._added) ? '<button class="pp-abtn" onclick="openAddOverlay(\'' + qk + '\')">' + t('addAddr') + '</button>' : '';
-  const flw = followBtn(r);
-  h += '<div class="is-detail-bottom">' +
-    (key ? '<div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div>' : '') + rowSnippetPH(r) +
-    ((corr || add) ? '<div class="pp-actbtns">' + corr + add + '</div>' : '') +
-    (flw ? '<div class="pp-followrow">' + flw + '</div>' : '') + '</div>';
+  const acts = full + corr + add;
+  h += '<div class="is-detail-mid">' + excerpt +
+    (r._id != null ? '<div class="is-detail-follow"></div>' : '') +
+    (acts ? '<div class="pp-actbtns">' + acts + '</div>' : '') + '</div>';
+  if (key) h += '<div class="is-detail-bottom"><div class="pp-meta">' + YC().label + ' \u00b7 ' + esc(qLabel(r.m)) + '</div></div>';
   h += '</div>';
   return h;
 }
+// Guards the detail's async fills (inline follow): a stale fill never
+// writes into a detail the user already left.
+let detailSeq = 0;
 function pushPointDetail(r){
   const body = $('pointSheet').querySelector('.is-body');
+  const tok = ++detailSeq;
   body.innerHTML = '<div class="is-backbar"><button class="is-back" onclick="popPointDetail()">‹ ' + esc(t('sheetBack')) + '</button></div>' +
     '<div class="is-detail">' + sheetDetailHTML(r) + '</div>';
   pointSheetPushed = true;
   dockFollowPanel();
+  hydrateSnippets(body); // the inline excerpt loads now (no toggle button)
+  const slot = body.querySelector('.is-detail-follow');
+  if (slot) renderInlineFollow(r, tok, slot);
+}
+// Inline follow for the pushed detail: this person's matches in the other
+// years, one row per year, reusing the follow panel's matcher. Tapping a
+// match pushes that year's record detail.
+async function renderInlineFollow(src, tok, slot){
+  const years = FW_YEARS.filter(y => y !== CUR_YEAR);
+  slot.innerHTML = years.map(y => '<div class="is-fw-row" data-year="' + esc(y) + '"><b>' + esc(y) + '</b> · <span class="is-fw-res">…</span></div>').join('');
+  for (const y of years){
+    if (tok !== detailSeq || !slot.isConnected) return;
+    const row = slot.querySelector('.is-fw-row[data-year="' + y + '"]');
+    if (!row) continue;
+    const res = row.querySelector('.is-fw-res');
+    const st = {year: y, id: null, rec: null, self: false, score: 0, why: [], conf: null, alts: []};
+    try {
+      const cands = await fwFind(src, y);
+      fwApplyResult(st, cands);
+    } catch (e) { st.conf = 'error'; }
+    if (tok !== detailSeq || !slot.isConnected) return;
+    if (st.conf && st.rec){
+      const b = document.createElement('button');
+      b.className = 'is-fw-hit';
+      b.textContent = [fwAddr(st.rec), st.rec.o].filter(Boolean).join(' · ') + ' (' + fwConfLabel(st.conf) + ')';
+      const sid = st.id;
+      b.addEventListener('click', async () => {
+        const rec = await fwGetRec(y, sid);
+        if (rec){ rec._id = sid; pushPointDetail(rec); }
+      });
+      res.innerHTML = '';
+      res.appendChild(b);
+    } else {
+      res.textContent = (st.conf === 'error') ? '…' : t('fwGap');
+    }
+  }
 }
 function popPointDetail(){
   const body = $('pointSheet').querySelector('.is-body');
   body.innerHTML = pointSheetRoot;
   pointSheetPushed = false;
   dockFollowPanel();
+  // Back lands on the person the detail came from (search taps never
+  // showed the list, so this scroll is what puts the person in view).
+  const hl = body.querySelector('.pp-row.hl');
+  if (hl) hl.scrollIntoView({behavior: 'auto', block: 'center'});
 }
 // Builds the group-popup HTML (shared by the desktop popover and the mobile
 // bottom sheet). Returns null when the record shard failed to load.
@@ -2379,6 +2435,31 @@ function selectResRow(row){
   }
   const rec = row.rec, rid = row.id;
   rec._id = rid;
+  if (!isDesktop()){
+    // Sheet-stack flow: the map jumps instantly (no fly), the building
+    // list goes on the stack without ever being shown, and the person
+    // detail pushes on top. Back lands on the building list, scrolled
+    // to the person (popPointDetail scrolls to the highlight, no anim).
+    map.jumpTo({center: [+rec.lo, +rec.la], zoom: 16});
+    closeInfoSheet();
+    const f = featByRec.get(rid);
+    if (f){
+      lastGroupF = f;
+      groupPopupHTML(f, rid).then(h => {
+        if (h === null){ showPointSheet(groupFailHTML()); return; }
+        pointSheetRoot = h; // stack base: the Back destination
+        const idx = lastSheetRecs.findIndex(r => r._id === rid);
+        pushPointDetail(idx >= 0 ? lastSheetRecs[idx] : rec);
+        const sh = $('pointSheet');
+        sh.style.display = 'block';
+        sh.setAttribute('aria-hidden', 'false');
+        dockFollowPanel();
+      });
+      return;
+    }
+    showPointSheet(popupHTML(rec));
+    return;
+  }
   map.flyTo({center: [+rec.lo, +rec.la], zoom: 16, duration: 1400});
   map.once('moveend', () => {
     const f = featByRec.get(rid);
