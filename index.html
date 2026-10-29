@@ -28,9 +28,10 @@
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.js"></script>
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.css" rel="stylesheet">
 <style>
-html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;overscroll-behavior:none;}
+body{position:fixed;inset:0;width:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
 #map{position:fixed;top:0;bottom:0;left:0;right:0;transition:left .28s ease;}
-header{position:absolute;top:10px;left:10px;right:10px;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none;}
+header{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:10px;right:10px;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none;}
 header>*{pointer-events:auto;}
 .brand{background:#111827;color:#fff;padding:6px 8px 6px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;flex:1;min-width:0;max-width:540px;}
 .brand-name{font-weight:700;font-size:15px;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;}
@@ -68,7 +69,7 @@ header>*{pointer-events:auto;}
 .rowsnip-frame{position:absolute;left:0;right:0;border:2px solid #dc2626;box-sizing:border-box;pointer-events:none;}
 @media (max-width:640px){
   /* iOS-style: slim top bar (brand + year + buttons), search in a bottom dock. */
-  header{flex-direction:row;align-items:center;top:8px;left:8px;right:8px;}
+  header{flex-direction:row;align-items:center;top:calc(8px + env(safe-area-inset-top,0px));left:8px;right:8px;}
   .brand{max-width:none;padding:6px 8px 6px 12px;}
   .brand-name{font-size:13px;}
   #searchDock{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:7;
@@ -590,7 +591,7 @@ header>*{pointer-events:auto;}
 <li data-i18n-html="licItem11">Visitor statistics: <a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener">Cloudflare Web Analytics</a> (no cookies).</li>
 </ul>
 <h3 data-i18n="siteVersion">Site version</h3>
-<p data-i18n-html="sourceLine">Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>v1.4.0</code></p>
+<p data-i18n-html="sourceLine">Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>v1.4.1</code></p>
 <h3 data-i18n="codeLibs">Code libraries</h3>
 <p><a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">Mapbox GL JS</a> v3.30.0 — BSD 3-Clause.</p>
 <h3 data-i18n="creditTitle">Credit</h3>
@@ -604,7 +605,7 @@ header>*{pointer-events:auto;}
 // LANG drives every user-facing string via t(). Static markup carries
 // data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
 // Release version (bumped with each tagged semver release).
-const SITE_VERSION = 'v1.4.0';
+const SITE_VERSION = 'v1.4.1';
 // data-i18n-aria (aria-label); applyI18n() walks them on every switch.
 // Record content (names, streets, occupations from the book) is never
 // translated. Persisted in localStorage; defaults to the browser language.
@@ -2423,7 +2424,15 @@ function showResultsBox(){
     box.style.top = '';
     // Apple Maps-style: the search dock moves into the top of the sheet.
     const dock = $('searchDock');
-    if (dock && dock.parentElement !== box){ box.prepend(dock); dock.classList.add('in-sheet'); }
+    if (dock && dock.parentElement !== box){
+      // Moving a focused input in the DOM drops its focus (and with it
+      // the iOS keyboard) mid-typing; carry focus and caret across.
+      const q = $('q');
+      const hadFocus = q && document.activeElement === q;
+      const sel = hadFocus ? [q.selectionStart, q.selectionEnd] : null;
+      box.prepend(dock); dock.classList.add('in-sheet');
+      if (hadFocus) { q.focus(); if (sel) { try { q.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
+    }
   }
   box.style.display = 'block';
   if (wasHidden) {
@@ -2817,8 +2826,19 @@ $('q').addEventListener('input', e => {
     const ntok = toks.length;
     const fHits = {}; // id -> field bitmask (1 name, 2 street, 4 occupation)
     for (const [t, mul] of xtoks) {
-      const thr = t.length <= 5 ? 1 : 2;
       const isWild = t.indexOf('*') >= 0 || t.indexOf('?') >= 0;
+      // A token that anchors nowhere (no exact, prefix, substring, or
+      // wildcard key hit) must not open the distance-2 net: it floods the
+      // list with junk (Willner -> Kellner the occupation, ~7,500 hits).
+      // Unanchored tokens search at distance 1, surfacing close variants
+      // (Willner -> Wilner) instead.
+      let anchored = false;
+      for (let ki = 0; ki < searchKeys.length && !anchored; ki++) {
+        const key = searchKeys[ki][0], fk = searchKeys[ki][1];
+        anchored = isWild ? wildMatch(fk, t)
+          : (key === t || fk === t || fk.startsWith(t) || fk.indexOf(t) >= 0);
+      }
+      const thr = anchored ? (t.length <= 5 ? 1 : 2) : 1;
       for (let ki = 0; ki < searchKeys.length; ki++) {
         const key = searchKeys[ki][0], fk = searchKeys[ki][1];
         let w = 0, ex = false;
