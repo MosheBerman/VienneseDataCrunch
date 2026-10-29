@@ -29,7 +29,7 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.30.0/mapbox-gl.css" rel="stylesheet">
 <style>
 html,body{margin:0;padding:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
-#map{position:absolute;top:0;bottom:0;left:0;right:0;transition:left .28s ease;}
+#map{position:fixed;top:0;bottom:0;left:0;right:0;transition:left .28s ease;}
 header{position:absolute;top:10px;left:10px;right:10px;z-index:5;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none;}
 header>*{pointer-events:auto;}
 .brand{background:#111827;color:#fff;padding:6px 8px 6px 14px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;flex:1;min-width:0;max-width:540px;}
@@ -604,7 +604,7 @@ header>*{pointer-events:auto;}
 // LANG drives every user-facing string via t(). Static markup carries
 // data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
 // Release version (bumped with each tagged semver release).
-const SITE_VERSION = 'v1.3.0';
+const SITE_VERSION = 'v1.4.0';
 // data-i18n-aria (aria-label); applyI18n() walks them on every switch.
 // Record content (names, streets, occupations from the book) is never
 // translated. Persisted in localStorage; defaults to the browser language.
@@ -2364,6 +2364,13 @@ const isDesktop = () => window.matchMedia && matchMedia('(min-width: 641px)').ma
 // The split-view shift animates #map{left} over .28s, so a synchronous
 // map.resize() measures the container mid-transition and leaves the canvas
 // mis-sized (white strip). Resize again once the transition settles.
+// iOS standalone can report a short viewport at first paint (the home-bar
+// inset is only settled later); refit the canvas as things settle.
+function fitMapToViewport(){ try { map.resize(); } catch (e) {} }
+window.addEventListener('load', fitMapToViewport);
+window.addEventListener('orientationchange', () => setTimeout(fitMapToViewport, 350));
+if (window.visualViewport) visualViewport.addEventListener('resize', fitMapToViewport);
+setTimeout(fitMapToViewport, 400);
 function resizeMapAfterShift(){
   const el = document.getElementById('map');
   let done = false;
