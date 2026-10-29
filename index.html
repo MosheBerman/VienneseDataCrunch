@@ -401,12 +401,10 @@ header>*{pointer-events:auto;}
 /* detail bottom actions: the meta line only, below a separator; the
    excerpt, follow rows, and action buttons live in the mid zone above it */
 .is-detail-bottom{margin-top:14px;padding-top:12px;border-top:1px solid #e5e7eb;}
-/* inline follow rows in the pushed detail: year, then the match (tappable)
-   or the gap note; no Follow button, no floating panel */
+/* inline follow in the pushed detail: the follow panel's year boxes
+   (.fw-years/.fw-cell) live here; no Follow button, no floating panel */
 .is-detail-follow{margin:10px 0 2px;}
-.is-fw-row{padding:6px 0;border-bottom:1px solid #f3f4f6;font-size:14px;}
-.is-fw-row:last-child{border-bottom:none;}
-.is-fw-hit{border:0;background:transparent;color:#2563eb;font-size:14px;cursor:pointer;padding:0;font-family:inherit;text-align:left;}
+
 @keyframes sheetpush{from{transform:translateX(24px);opacity:0;}to{transform:none;opacity:1;}}
 @media(min-width:641px){#pointSheet{display:none !important;}}
 /* ---- Map key: pin legend back on the main screen ------------------------ */
@@ -2132,37 +2130,76 @@ function pushPointDetail(r){
   const slot = body.querySelector('.is-detail-follow');
   if (slot) renderInlineFollow(r, tok, slot);
 }
-// Inline follow for the pushed detail: this person's matches in the other
-// years, one row per year, reusing the follow panel's matcher. Tapping a
-// match pushes that year's record detail.
+// Inline follow for the pushed detail: the follow panel's year boxes,
+// moved into the detail. One box per year (this record's year is the
+// start box), each filling in as its search lands. Tapping a match box
+// pushes that year's record detail; tapping a box's "others" line opens
+// the alternates list under the boxes.
 async function renderInlineFollow(src, tok, slot){
-  const years = FW_YEARS.filter(y => y !== CUR_YEAR);
-  slot.innerHTML = years.map(y => '<div class="is-fw-row" data-year="' + esc(y) + '"><b>' + esc(y) + '</b> · <span class="is-fw-res">…</span></div>').join('');
-  for (const y of years){
+  const srcYear = src._yr || CUR_YEAR;
+  const stops = FW_YEARS.map(y => ({year: y, id: y === srcYear ? src._id : null,
+    rec: y === srcYear ? src : null, self: y === srcYear,
+    score: y === srcYear ? 99 : 0, why: [], conf: y === srcYear ? 'start' : null, alts: []}));
+  const yearsBox = document.createElement('div');
+  yearsBox.className = 'fw-years';
+  slot.appendChild(yearsBox);
+  const altsBox = document.createElement('div');
+  altsBox.className = 'fw-alts';
+  altsBox.style.display = 'none';
+  slot.appendChild(altsBox);
+  const goto = async st => {
+    const rec = await fwGetRec(st.year, st.id);
+    if (!rec || tok !== detailSeq) return;
+    rec._id = st.id; rec._yr = st.year;
+    pushPointDetail(rec);
+  };
+  const showAlts = st => {
+    const name = (src.s || '') + (src.g ? ', ' + src.g : '');
+    altsBox.innerHTML = '<div class="fw-alts-h">' + t('fwAltsHead', {name: esc(name), year: esc(st.year)}) + '</div>';
+    const mk = (label, id, rec, conf, why, pick) => {
+      const b = document.createElement('button');
+      b.className = 'fw-alt' + (pick ? ' is-pick' : '');
+      b.innerHTML = esc(label) + '<small>' + esc(fwAddr(rec)) +
+        (rec.o ? ' \u00b7 ' + esc(rec.o) : '') + ' \u00b7 ' + esc(fwConfLabel(conf)) + '</small>';
+      b.addEventListener('click', () => {
+        st.id = id; st.rec = rec; st.score = null; st.conf = conf; st.why = why || [];
+        renderCells();
+        altsBox.style.display = 'none';
+        goto(st);
+      });
+      return b;
+    };
+    altsBox.appendChild(mk(t('fwCurrentPick') + (st.rec.s || '') + (st.rec.g ? ', ' + st.rec.g : ''), st.id, st.rec, st.conf, st.why, true));
+    for (const a of st.alts)
+      altsBox.appendChild(mk((a.rec.s || '') + (a.rec.g ? ', ' + a.rec.g : ''), a.id, a.rec, a.conf, a.why, false));
+    altsBox.style.display = 'block';
+  };
+  const renderCells = () => {
+    yearsBox.innerHTML = '';
+    for (const st of stops){
+      const b = document.createElement('button');
+      b.className = 'fw-cell' + (st.self ? '' : (!st.rec ? ' is-gap' : '')) + (st.self ? ' is-active' : '');
+      b.dataset.year = st.year;
+      b.innerHTML = fwCellHTML(st);
+      b.addEventListener('click', e => {
+        if (e.target.closest && e.target.closest('.fw-nalt')){ showAlts(st); return; }
+        if (st.self || !st.rec) return;
+        altsBox.style.display = 'none';
+        goto(st);
+      });
+      yearsBox.appendChild(b);
+    }
+  };
+  renderCells();
+  for (const st of stops){
+    if (st.self) continue;
     if (tok !== detailSeq || !slot.isConnected) return;
-    const row = slot.querySelector('.is-fw-row[data-year="' + y + '"]');
-    if (!row) continue;
-    const res = row.querySelector('.is-fw-res');
-    const st = {year: y, id: null, rec: null, self: false, score: 0, why: [], conf: null, alts: []};
     try {
-      const cands = await fwFind(src, y);
+      const cands = await fwFind(src, st.year);
       fwApplyResult(st, cands);
     } catch (e) { st.conf = 'error'; }
     if (tok !== detailSeq || !slot.isConnected) return;
-    if (st.conf && st.rec){
-      const b = document.createElement('button');
-      b.className = 'is-fw-hit';
-      b.textContent = [fwAddr(st.rec), st.rec.o].filter(Boolean).join(' · ') + ' (' + fwConfLabel(st.conf) + ')';
-      const sid = st.id;
-      b.addEventListener('click', async () => {
-        const rec = await fwGetRec(y, sid);
-        if (rec){ rec._id = sid; pushPointDetail(rec); }
-      });
-      res.innerHTML = '';
-      res.appendChild(b);
-    } else {
-      res.textContent = (st.conf === 'error') ? '…' : t('fwGap');
-    }
+    renderCells();
   }
 }
 function popPointDetail(){
