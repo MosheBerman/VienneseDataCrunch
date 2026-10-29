@@ -1661,6 +1661,17 @@ function ensurePrewarMap(){
   }
   return prewarMapPromise;
 }
+// Split overlay features for their sources: a clustered source only renders
+// points (line features never reach the tiles), so lines get their own
+// non-clustered source while points stay clustered for the dots.
+function splitOverlayData(data){
+  const feats = (data && data.features) || [];
+  const isLine = f => { const g = f.geometry && f.geometry.type; return g === 'LineString' || g === 'MultiLineString'; };
+  return {
+    lines: {type: 'FeatureCollection', features: feats.filter(isLine)},
+    points: {type: 'FeatureCollection', features: feats.filter(f => !isLine(f))}
+  };
+}
 async function setOverlayLayer(id, on){
   const def = OVERLAYS[id];
   const st = overlayState[id] || (overlayState[id] = {ready: false, layers: []});
@@ -1677,26 +1688,25 @@ async function setOverlayLayer(id, on){
         st.prewar = await ensurePrewarMap();
         for (const f of (data.features || [])) f.properties.pre = f.properties.pre || st.prewar[f.properties.old] || '';
       }
-      // Clustered: points cluster below zoom 14 (lines pass through
-      // unclustered); the point-cluster layers below handle the dots.
-      map.addSource('ov-' + id, {type: 'geojson', data: data, cluster: true, clusterMaxZoom: 14, clusterRadius: 55});
+      // Points stay clustered below zoom 14; lines live in their own
+      // non-clustered source, because a clustered source drops them.
+      const parts = splitOverlayData(data);
+      map.addSource('ov-' + id, {type: 'geojson', data: parts.points, cluster: true, clusterMaxZoom: 14, clusterRadius: 55});
       if (def.line){
-        const lineFilter = ['in', ['geometry-type'], ['literal', ['LineString', 'MultiLineString']]];
         const ptFilter = ['all', ['==', ['geometry-type'], 'Point'], ['!', ['has', 'point_count']]];
+        map.addSource('ov-' + id + '-ln', {type: 'geojson', data: parts.lines});
         // Thin street-like traces (like the modern streets on the basemap),
         // not fat highlight strokes.
         // Street lines sit beneath the pins (not above), and fade at
         // zoomed-out levels: faint but never fully gone.
         const pinLayer = map.getLayer('clusters') ? 'clusters'
           : (map.getLayer('unclustered-point') ? 'unclustered-point' : undefined);
-        map.addLayer({id: 'ovl-' + id, type: 'line', source: 'ov-' + id,
-          filter: lineFilter,
+        map.addLayer({id: 'ovl-' + id, type: 'line', source: 'ov-' + id + '-ln',
           paint: {'line-color': def.color, 'line-width': 2.5,
                   'line-opacity': ['interpolate', ['linear'], ['zoom'], 11, 0.2, 15, 0.9]}},
           pinLayer);
         // invisible fat line underneath: reliable tap target on touch screens
-        map.addLayer({id: 'ovl-' + id + '-hit', type: 'line', source: 'ov-' + id,
-          filter: lineFilter,
+        map.addLayer({id: 'ovl-' + id + '-hit', type: 'line', source: 'ov-' + id + '-ln',
           paint: {'line-color': def.color, 'line-width': 24, 'line-opacity': 0}},
           pinLayer);
         map.addLayer({id: 'ovl-' + id + '-pt', type: 'circle', source: 'ov-' + id,
@@ -1799,7 +1809,10 @@ async function setOverlayLayer(id, on){
       const res = await fetch(url);
       if (res.ok){
         const data = await res.json();
-        map.getSource('ov-' + id).setData(data);
+        const parts = splitOverlayData(data);
+        map.getSource('ov-' + id).setData(parts.points);
+        const ln = map.getSource('ov-' + id + '-ln');
+        if (ln) ln.setData(parts.lines);
         if (id === 'booknames'){
           st.pairs = booknamePairs(data);
           for (const lid of ['ovl-booknames-lbl', 'ovl-booknames-lbl-sm'])
