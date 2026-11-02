@@ -52,8 +52,8 @@ describe('mobile search sheet', () => {
     cy.get('#results #searchDock').should('exist');
   });
 
-  it('detail shows an expand button on the scan excerpt and no play button', () => {
-    cy.get('#fwPlay').should('not.exist');
+  it('detail shows an expand button on the scan excerpt, and the follow play button exists', () => {
+    cy.get('#fwPlay').should('exist');
     cy.get('#q').type('Bermann');
     cy.get('#results .rrow', { timeout: 30000 }).first().click();
     cy.get('#pointSheet .rowsnip-expand', { timeout: 30000 })
