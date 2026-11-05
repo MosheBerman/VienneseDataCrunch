@@ -61,4 +61,19 @@ describe('mobile search sheet', () => {
       .and('have.attr', 'href')
       .and('match', /digital\.wienbibliothek\.at\/image\/view\//);
   });
+
+  it('detail carries its own Play button for the year-by-year animation', () => {
+    // Regression (2026-11-04): the only Play button lived in the floating
+    // follow panel, which the pushed mobile detail never opens, so the
+    // animation was unreachable on a phone.
+    cy.get('#q').type('Bermann');
+    cy.get('#results .rrow', { timeout: 30000 }).first().click();
+    cy.get('#pointSheet .fw-play-btn', { timeout: 30000 }).should('be.visible');
+    cy.get('#pointSheet .fw-play-btn').click();
+    // Playing hands off to the follow panel and closes the sheet so the
+    // map (and the travelling dot) is visible.
+    cy.get('#followPanel', { timeout: 30000 }).should('be.visible');
+    cy.get('#pointSheet').should('not.be.visible');
+    cy.get('#fwPlay').should('be.visible');
+  });
 });

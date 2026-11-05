@@ -407,6 +407,12 @@ header>*{pointer-events:auto;}
 /* inline follow in the pushed detail: the follow panel's year boxes
    (.fw-years/.fw-cell) live here; no Follow button, no floating panel */
 .is-detail-follow{margin:10px 0 2px;}
+/* the detail's own Play button for the year-by-year animation: the
+   panel's #fwPlay is unreachable from here (nothing in the detail
+   opens the floating panel), so the detail carries this button;
+   tapping it hands the loaded stops to the panel and plays there */
+.fw-play-btn{display:block;width:100%;margin-top:8px;min-height:48px;border:none;border-radius:10px;
+  background:#111827;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;padding:10px 12px;}
 
 .liclist{margin:6px 0 10px;padding-left:20px;}
 .liclist li{margin:7px 0;line-height:1.45;}
@@ -594,7 +600,7 @@ header>*{pointer-events:auto;}
 <li data-i18n-html="licItem11">Visitor statistics: <a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener">Cloudflare Web Analytics</a> (no cookies).</li>
 </ul>
 <h3 data-i18n="siteVersion">Site version</h3>
-<p data-i18n-html="sourceLine">Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>v1.5.1</code></p>
+<p data-i18n-html="sourceLine">Source: <a href="https://github.com/MosheBerman/VienneseDataCrunch" target="_blank" rel="noopener">github.com/MosheBerman/VienneseDataCrunch</a> @ <code>v1.5.2</code></p>
 <h3 data-i18n="codeLibs">Code libraries</h3>
 <p><a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">Mapbox GL JS</a> v3.30.0 — BSD 3-Clause.</p>
 <h3 data-i18n="creditTitle">Credit</h3>
@@ -608,7 +614,7 @@ header>*{pointer-events:auto;}
 // LANG drives every user-facing string via t(). Static markup carries
 // data-i18n (text), data-i18n-html (rich text), data-i18n-ph (placeholder) or
 // Release version (bumped with each tagged semver release).
-const SITE_VERSION = 'v1.5.1';
+const SITE_VERSION = 'v1.5.2';
 // data-i18n-aria (aria-label); applyI18n() walks them on every switch.
 // Record content (names, streets, occupations from the book) is never
 // translated. Persisted in localStorage; defaults to the browser language.
@@ -964,6 +970,7 @@ function applyI18n(){
   if (lp) lp.value = LANG;
   const fp = document.getElementById('fwPlay');
   if (fp) fp.setAttribute('aria-label', t(fwPlaying ? 'stopTimeline' : 'playTimeline'));
+  document.querySelectorAll('.fw-play-btn').forEach(b => b.setAttribute('aria-label', t(fwPlaying ? 'stopTimeline' : 'playTimeline')));
   refreshSearchPlaceholder();
   buildYearPicker(); // rebuilds the Research optgroup label
   updateCount(allFeatures);
@@ -2212,7 +2219,8 @@ async function renderInlineFollow(src, tok, slot){
     yearsBox.innerHTML = '';
     for (const st of stops){
       const b = document.createElement('button');
-      b.className = 'fw-cell' + (st.self ? '' : (!st.rec ? ' is-gap' : '')) + (st.self ? ' is-active' : '');
+      const active = fwActiveYear != null ? st.year === fwActiveYear : st.self;
+      b.className = 'fw-cell' + (st.self ? '' : (!st.rec ? ' is-gap' : '')) + (active ? ' is-active' : '');
       b.dataset.year = st.year;
       b.innerHTML = fwCellHTML(st);
       b.addEventListener('click', e => {
@@ -2224,17 +2232,61 @@ async function renderInlineFollow(src, tok, slot){
       yearsBox.appendChild(b);
     }
   };
+  slot._renderFwCells = renderCells;
+  // Play button for the year-by-year animation. The floating follow
+  // panel's #fwPlay cannot be reached from this detail (nothing here
+  // opens the panel), so the detail carries its own: on tap it waits
+  // for the year searches, hands the loaded stops to the panel, closes
+  // the sheet so the map is visible, and plays from the panel.
+  const playBtn = document.createElement('button');
+  playBtn.className = 'fw-play-btn';
+  playBtn.innerHTML = '&#9654; ' + esc(t('playTimeline'));
+  playBtn.setAttribute('aria-label', t('playTimeline'));
+  slot.insertBefore(playBtn, altsBox);
+  playBtn.addEventListener('click', async () => {
+    if (fwPlaying){ fwStopPlay(); return; }
+    playBtn.innerHTML = '&#8230;';
+    await done;
+    if (tok !== detailSeq) return;
+    if (!stops.some(s => s.rec)){ fwSetPlayGlyph('&#9654;', 'playTimeline'); return; }
+    let srcRec = src;
+    if (srcRec.lo == null || srcRec.la == null){
+      try {
+        const f = await fwGetRec(srcYear, src._id);
+        if (f){ f._id = src._id; srcRec = f; const st0 = stops.filter(s => s.self)[0]; if (st0) st0.rec = f; }
+      } catch (e) {}
+    }
+    fwStops = stops;
+    fwSrcName = (src.s || '') + (src.g ? ', ' + src.g : '');
+    fwActiveYear = null;
+    fwAltsStop = null;
+    document.querySelector('#followPanel .fw-alts').style.display = 'none';
+    document.querySelector('.fw-name').textContent = fwSrcName;
+    document.querySelector('.fw-sub').textContent =
+      [src.o, fwAddr(srcRec)].filter(Boolean).join(' \u00b7 ') + ' \u00b7 ' + srcYear;
+    document.querySelector('.fw-status').textContent = '';
+    dismissResults(); // like startFollow: the follow view replaces the search context
+    closePointSheet();
+    const panel = $('followPanel');
+    panel.style.display = 'block';
+    panel.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('follow-open');
+    renderFwCells();
+    fwTogglePlay();
+  });
   renderCells();
-  for (const st of stops){
-    if (st.self) continue;
-    if (tok !== detailSeq || !slot.isConnected) return;
-    try {
-      const cands = await fwFind(src, st.year);
-      fwApplyResult(st, cands);
-    } catch (e) { st.conf = 'error'; }
-    if (tok !== detailSeq || !slot.isConnected) return;
-    renderCells();
-  }
+  const done = (async () => {
+    for (const st of stops){
+      if (st.self) continue;
+      if (tok !== detailSeq || !slot.isConnected) return;
+      try {
+        const cands = await fwFind(src, st.year);
+        fwApplyResult(st, cands);
+      } catch (e) { st.conf = 'error'; }
+      if (tok !== detailSeq || !slot.isConnected) return;
+      renderCells();
+    }
+  })();
 }
 function popPointDetail(){
   const body = $('pointSheet').querySelector('.is-body');
@@ -3118,11 +3170,19 @@ let fwAltsStop = null; // stop whose alternatives are currently shown
 function fwAddr(r){
   return ((r.st || '') + ' ' + (r.hn || '')).trim() + (r.d ? ', ' + r.d + '. Bez.' : '');
 }
+function fwSetPlayGlyph(html, labelKey){
+  // Every play button shows the same state: the follow panel's #fwPlay
+  // and the pushed detail's .fw-play-btn (which also carries the label
+  // text next to the glyph).
+  document.querySelectorAll('#fwPlay,.fw-play-btn').forEach(b => {
+    b.innerHTML = b.classList.contains('fw-play-btn') && labelKey ? html + ' ' + esc(t(labelKey)) : html;
+    if (labelKey) b.setAttribute('aria-label', t(labelKey));
+  });
+}
 function fwStopPlay(){
   fwPlaying = false;
   fwHaltAnim();
-  const b = $('fwPlay');
-  if (b){ b.innerHTML = '&#9654;'; b.setAttribute('aria-label', t('playTimeline')); }
+  fwSetPlayGlyph('&#9654;', 'playTimeline');
 }
 // ---- street routing (A*) for the follow-this-person animation ------------
 // The Vienna OGD street graph ships as layers/street-graph.json (built by
@@ -3360,7 +3420,7 @@ async function fwAnimateJourney(){
     ? {lng: +st.rec.lo, lat: +st.rec.la} : null;
   // Route every leg along streets (A* over the OGD street graph); a straight
   // leg is the per-leg fallback. Same-place hops (<50m) get no leg at all.
-  $('fwPlay').innerHTML = '&#8230;';
+  fwSetPlayGlyph('&#8230;', 'stopTimeline');
   const graph = await loadStreetGraph();
   const legPaths = new Array(Math.max(0, fwStops.length - 1)).fill(null);
   for (let i = 0; i + 1 < fwStops.length; i++){
@@ -3369,7 +3429,7 @@ async function fwAnimateJourney(){
     legPaths[i] = (graph && sgRouteLeg(graph, p0, p1)) ||
       [[p0.lng, p0.lat], [p1.lng, p1.lat]];
   }
-  $('fwPlay').innerHTML = '&#10074;&#10074;';
+  fwSetPlayGlyph('&#10074;&#10074;', 'stopTimeline');
   // Path line: one LineString per contiguous run of listed years, so a gap
   // never draws an unverified leg across the missing years.
   const runs = [];
@@ -3472,6 +3532,9 @@ function renderFwCells(){
     b.innerHTML = fwCellHTML(st);
     box.appendChild(b);
   }
+  // A pushed detail open behind the panel keeps its own year boxes in
+  // step (its renderer highlights the travelling year via fwActiveYear).
+  document.querySelectorAll('.is-detail-follow').forEach(s => { if (s._renderFwCells) s._renderFwCells(); });
 }
 function fwApplyResult(st, cands){
   if (!cands.length){ st.conf = 'gap'; return; }
@@ -3577,8 +3640,7 @@ async function fwTogglePlay(){
   if (fwPlaying){ fwStopPlay(); return; }
   if (!fwStops.filter(s => s.rec).length) return;
   fwPlaying = true;
-  $('fwPlay').innerHTML = '&#10074;&#10074;';
-  $('fwPlay').setAttribute('aria-label', t('stopTimeline'));
+  fwSetPlayGlyph('&#10074;&#10074;', 'stopTimeline');
   await fwAnimateJourney();
   fwStopPlay();
 }
