@@ -1,7 +1,12 @@
-// Mobile search sheet behavior, including the 2026-10-29 regression:
-// when the results sheet opened, the search dock was moved into the
-// sheet in the DOM, and moving the focused input made iOS drop the
-// keyboard mid-typing. The move now carries focus and caret across.
+// Mobile search sheet behavior. History: 2026-10-29, opening the sheet
+// moved the search dock into it in the DOM and iOS dropped the keyboard
+// mid-typing; focus/caret were carried across the move as a fix.
+// 2026-11-11 (Daniella regression): a second search firing while the
+// index loaded wiped the sheet with innerHTML and destroyed the dock
+// and input entirely. The dock now NEVER moves: it stays fixed at the
+// bottom, the sheet leaves room for it, and search operates on the
+// input's text only. These tests assert the input element is the same
+// DOM node before and after a search, with its text and focus intact.
 
 describe('mobile search sheet', () => {
   beforeEach(() => {
@@ -10,17 +15,41 @@ describe('mobile search sheet', () => {
   });
 
   it('typing keeps focus when the results sheet opens', () => {
+    let qNode;
+    cy.get('#q').then(($el) => { qNode = $el[0]; });
     cy.get('#q').type('Willner', { delay: 60 });
     cy.get('#resHead', { timeout: 30000 }).should('exist');
     cy.get('#results').should('be.visible');
-    // The dock (with the input) now lives inside the sheet...
-    cy.get('#results #searchDock').should('exist');
-    // ...and the input kept focus and its text.
+    // The dock did not move into the sheet, and the input is untouched.
+    cy.get('#results #searchDock').should('not.exist');
+    cy.get('header #searchDock').should('exist');
+    cy.get('#q').then(($el) => { expect($el[0], 'same input element').to.equal(qNode); });
     cy.focused().should('have.id', 'q');
     cy.get('#q').should('have.value', 'Willner');
-    // Typing still lands after the move.
+    // Typing still lands, at the end, after the sheet opened.
     cy.get('#q').type('s');
     cy.get('#q').should('have.value', 'Willners');
+  });
+
+  it('slow typing while the index loads keeps the box (Daniella regression)', () => {
+    // Hold the index response open so several searches fire while the
+    // first is still loading: the exact interleaving that destroyed
+    // the search box. 600 ms per keystroke is a slow, real typist.
+    cy.intercept('**/search.idx.json', (req) => {
+      req.on('response', (res) => { res.setDelay(6000); });
+    });
+    let qNode;
+    cy.get('#q').then(($el) => { qNode = $el[0]; });
+    cy.get('#q').type('Ber', { delay: 600 });
+    cy.get('#q').type('mann', { delay: 600 });
+    cy.get('#resHead', { timeout: 60000 }).should('exist');
+    cy.get('#q').should('have.value', 'Bermann');
+    cy.focused().should('have.id', 'q');
+    cy.get('#q').then(($el) => { expect($el[0], 'same input element').to.equal(qNode); });
+    cy.get('#results .rrow b', { timeout: 30000 }).should(($bs) => {
+      const names = Array.from($bs, (b) => b.textContent.trim().toLowerCase());
+      expect(names, 'results are for the final text').to.include('bermann');
+    });
   });
 
   it('clearing the query dismisses the results', () => {
@@ -37,19 +66,23 @@ describe('mobile search sheet', () => {
     const height = () => cy.get('#results').then(($el) => $el[0].getBoundingClientRect().height);
     // Opens at the half detent (~52% of 844).
     height().should('be.within', 400, 480);
-    // Drag the header up: covers the map at the full detent (97%).
+    // Drag the header up: the top detent (87%; the sheet's bottom sits
+    // above the fixed search dock, so it cannot cover the full screen).
     cy.get('#resHead').trigger('pointerdown', { clientX: 200, clientY: 600 });
     cy.get('#resHead').trigger('pointermove', { clientX: 200, clientY: 180 });
     cy.get('#resHead').trigger('pointerup', { clientX: 200, clientY: 180 });
-    height().should('be.greaterThan', 780);
-    // Drag it back down: the collapsed detent (~18%) keeps the dock
-    // and header visible instead of dismissing the sheet.
+    height().should('be.greaterThan', 700);
+    // Drag it back down: the collapsed detent (~18%) keeps the header
+    // visible instead of dismissing the sheet.
     cy.get('#resHead').trigger('pointerdown', { clientX: 200, clientY: 150 });
     cy.get('#resHead').trigger('pointermove', { clientX: 200, clientY: 800 });
     cy.get('#resHead').trigger('pointerup', { clientX: 200, clientY: 800 });
     height().should('be.within', 110, 210);
     cy.get('#results').should('be.visible');
-    cy.get('#results #searchDock').should('exist');
+    // Throughout, the dock stayed at the bottom of the screen, outside
+    // the sheet, where it always lives now.
+    cy.get('#results #searchDock').should('not.exist');
+    cy.get('#searchDock').should('exist');
   });
 
   it('detail shows an expand button on the scan excerpt, and the follow play button exists', () => {

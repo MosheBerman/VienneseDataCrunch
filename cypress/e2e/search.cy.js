@@ -62,4 +62,26 @@ describe('search', () => {
     cy.wait(600);
     cy.get('#resHead').should('not.exist');
   });
+
+  it('2-char query does not live-search, but Enter commits it', () => {
+    cy.get('#q').type('Be');
+    cy.wait(1200); // several debounce periods: live search must hold
+    cy.get('#resHead').should('not.exist');
+    cy.get('#q').type('{enter}');
+    cy.get('#resHead', { timeout: 60000 }).should('exist');
+    headCount().then((n) => {
+      expect(n, 'committed 2-char match count').to.be.greaterThan(50000);
+    });
+  });
+
+  it('live 3-char query matches prefix/exact only, not the substring flood', () => {
+    cy.get('#q').type('Ber');
+    cy.get('#resHead', { timeout: 30000 }).should('exist');
+    headCount().then((n) => {
+      // Full matching on the partial word "ber" floods to ~58k hits.
+      // Live, it is still being typed: prefix/exact only, ~9k.
+      expect(n, 'live Ber count').to.be.greaterThan(1000);
+      expect(n, 'live Ber count').to.be.lessThan(25000);
+    });
+  });
 });
