@@ -1,0 +1,1021 @@
+list_no,page,surname,given_names,birth_date,surname_raw,surname_fix,flags,ocr_line
+1,1,BEHEKLIZ,Hersch Leib,1890-06-06,BEHEKLIZ,,,l. BEHEKLIZ Hersch Leib 6.6.1890
+2,1,BSRENLIE,Salomea,1896-04-16,BSRENLIE,,,2. BSRENLIE Salomea 16.4.1896
+3,1,DUBSKY,Mathilde Sara,1879-08-07,DUBSKY,,,3. DUBSKY Mathilde Sara 7.8.1879
+4,1,GRANER,Suille Sara,1879-04-10,GRANER,,,4. GRANER Suille Sara 10.4.1879
+5,1,FRUCHTHÄNDLER,Adolf Israel,1899-05-25,FRUCHTIÄNDLER,FRUCHTIÄNDLER->FRUCHTHÄNDLER,,5. FRUCHTIÄNDLER Adolf Israel 25.5.1899
+6,1,FRUCHTHÄNDLER,Wilhelm Israel,1872-12-15,FRÜUCHTHÄNDLER,FRÜUCHTHÄNDLER->FRUCHTHÄNDLER,,6. FRÜUCHTHÄNDLER Wilhelm Israel 15.12.1872
+7,1,FRUCHTHÄNDLER,Rosalie ;ara,1871-09-25,FRUCHTHÄNDLER,,,7. FRUCHTHÄNDLER Rosalie ;ara 25.9.1871
+8,1,BACH,Selma Sara,1886-11-01,BACH,,,8. BACH Selma Sara 1.11.1886
+9,1,BERGER,Josef Israel,1886-06-09,BERGER,,number_inferred,". 9, BERGER Josef Israel 9,6.1886"
+10,1,IMBEKRMANN,Narie Sara,1896-10-24,IMBEKRMANN,,,lo. IMBEKRMANN Narie Sara 24 «10. 1896
+11,1,IMSESRMANN,Julius Israel -,1927-01-12,IMSESRMANN,,number_misread:1,il. IMSESRMANN Julius Israel - 12.1.1927
+12,1,INZERMANN,'Irude Sara,1934-01-04,INZERMANN,,,12. INZERMANN 'Irude Sara 4.1.1934
+13,1,IMBLRMANN,Regine Sara,1929-12-08,IMBLRMANN,,number_misread:15;surname_suggestion:IMBEKRMANN,15. IMBLRMANN Regine Sara 8.12.1929
+14,1,BITINGER,Hedwig Sara,1875-05-28,BITINGER,,,14. BITINGER Hedwig Sara 28. 5.1875
+15,1,ZULLER,Itte Sara,1888-04-15,ZULLER,,,15. ZULLER Itte Sara 15. 4.1888
+16,1,MARGO,Sophie Sara,1867-01-25,MARGO,,,16. MARGO Sophie Sara 25. 1.1867
+17,1,GRÜNWALD,Rutz Sara,1916-01-25,GRÜNWALD,,,17. GRÜNWALD Rutz Sara 25. 1.1916
+18,1,LÖGSNKRON,Leiser Israel,1890-10-06,LÖGSNKRON,,,18. LÖGSNKRON Leiser Israel 6.10.1890
+19,1,LGYENERON,Rosa Sara,1898-08-12,LGYENERON,,,19. LGYENERON Rosa Sara 12. 8.1898
+20,1,PIUK,Anna Sara,1889-07-23,PIUK,,,20. PIUK Anna Sara 23. 7.1889
+21,1,PICK,Margarete Sara il. 3.1923,1888-08-18,PICK,,date_missing;date_recovered,21. PICK Margarete Sara il. 3.1923
+22,1,MAYERHOFF,Josefine Sara,1876-05-15,MAYERHOFF,,,22. MAYERHOFF Josefine Sara 15.5. 1876
+23,1,WASSERVOGELArthur,Israel,1879-06-12,WASSERVOGELArthur,,,23. WASSERVOGELArthur Israel 12. 6.1879
+24,1,KATZ,Ruchel,1886-11-12,KATZ,,,24. KATZ Ruchel 12.11.1886
+25,1,SPI:LYSANN,Friedrich Israel,1900-11-19,SPI:LYSANN,,,25. SPI:LYSANN Friedrich Israel 19.11.1900
+26,1,SPI:LMANN,Hilde Sara,1801-09-20,SPI:LMANN,,,26. SPI:LMANN Hilde Sara 20. 9.1801
+27,1,SPIELMANN,Luise Sara,1871-04-08,SPIELMANN,,,27. SPIELMANN Luise Sara 8. 4.1871
+28,1,BERGER,Ürnestine Sara,1876-10-10,BERGER,,,28. BERGER Ürnestine Sara 10.10.1876
+29,1,BERGER,Dorotliea Sara,1882-03-01,BERGER,,,29. BERGER Dorotliea Sara 1. 3.1882
+30,1,BÜRHANN false LEIRHAUPT,Josef I,1897-01-15,BÜRHANN false LEIRHAUPT,,number_misread:530,530. BÜRHANN false LEIRHAUPT Josef I. 15. 1.1897
+31,1,FISCHL,Max Israel,1874-07-07,FISCHL,,,31. FISCHL Max Israel 7. 17.1874
+32,1,FISCHL,Irma Sara,1889-10-23,FISCHL,,,32. FISCHL Irma Sara 23.10. 1889
+33,1,ZUILLING,Ferdinand Israel,1891-12-10,ZUILLING,,number_misread:53,53. ZUILLING Ferdinand Israel 10.12.1891
+34,1,SCHWARZ,Itte Sara,1888-02-03,SCHWARZ,,,34. SCHWARZ Itte Sara 3. 2.1888
+35,2,HEIZLER,viktor Israel,1884-11-18,HEIZLER,,,"35, HEIZLER viktor Israel 18.11.1884"
+36,2,WSITLER,Fanny Sara,1894-07-14,WSITLER,,,36. WSITLER Fanny Sara 14. 7.1894
+37,2,PABER,Siegfried Israel,1896-10-05,PABER,,,37... PABER Siegfried Israel 5.10. 1896
+38,2,GRUBER,Mathilde Sara,1896-12-18,GRUBER,,,38. GRUBER Mathilde Sara 18.12.1896
+39,2,STEMMER,Erna Sara,1907-04-29,STEMMER,,,39. STEMMER Erna Sara 29. 4.1907
+40,2,ZIEMLICH,Siegfried Israel,1883-03-06,ZIEMLICH,,,40. ZIEMLICH Siegfried Israel 6. 3.1883
+41,2,ENGEL,Jakob Israel 16. 1.1285,1885-01-16,ENGEL,,date_missing;date_recovered,41. ENGEL Jakob Israel 16. 1.1285
+42,2,ENGEL,ANNA SAHA,1890-08-27,ENGEL,,,42. ENGEL ANNA SAHA 27.8.1890
+43,2,GOLDENBERG,Ludwig Israel,1875-12-06,GOLDENBERG,,number_misread:45,45. GOLDENBERG Ludwig Israel 6.12.1875
+44,2,GOLDENBERG,Irene Sara,1872-01-17,GOLDSNBERG,GOLDSNBERG->GOLDENBERG,,44. GOLDSNBERG Irene Sara 17. 1.1872
+45,2,BÜRGER,Johann Israel Te 7.2901,1901-07-07,BÜRGER,,date_missing;date_recovered,45. BÜRGER Johann Israel Te 7.2901
+46,2,BERGER,Selma Sara,1907-08-04,BERGER,,,46. BERGER Selma Sara 4. 8.1907
+47,2,BERGER,Albert Ruben 4. 6.1958,,BERGER,,date_missing,47. BERGER Albert Ruben 4. 6.1958
+48,2,LEYI,Leon Israel 10.53.1289,,LEYI,,date_missing,48. LEYI Leon Israel 10.53.1289
+49,2,BEWI,Mirl Sara,1892-12-01,BEWI,,,49. BEWI Mirl Sara 1.12.1892
+50,2,WLECKER,Sylva Sara 51.12.1890,1890-12-31,WLECKER,,date_missing;date_recovered,50. WLECKER Sylva Sara 51.12.1890
+51,2,FISCHLER,Franziska Sara,1880-09-27,FISCHLER,,,Sl. FISCHLER Franziska Sara 27.9.1880
+52,16,BSRNARDY,Brundilde Sara,1905-05-19,BSRNARDY,,number_misread:510;row_recovered,"510. BSRNARDY Brundilde Sara 19, 5.1905"
+53,2,TICHTER,Frieda Sara,1879-08-26,TICHTER,,gap_before:52,53. TICHTER Frieda Sara 26.8.1879
+54,2,HAAS,Julie Sara,1884-01-12,HAAS,,,54. HAAS Julie Sara 12.1.1884
+55,2,GALAMBOS,Luise Sara,1878-12-28,GALAMBOS,,,55. GALAMBOS Luise Sara 28.12.1878
+56,2,WEICH,Gittel Sara,1890-07-29,WEICH,,,56. WEICH Gittel Sara 29.7.1890
+57,7,HUTH,Herma Sara,1928-08-16,HUTH,,number_misread:257;row_recovered,257. HUTH Herma Sara 16. 8.1928
+58,2,WEIMNURE,Oskar Is»rael,1892-02-01,WEIMNURE,,gap_before:57,58. WEIMNURE Oskar Is»rael 1.2.1892
+59,2,GELLGNS,Adolf Israel,1881-05-10,GELLGNS,,number_inferred,59 GELLGNS Adolf Israel 10.5.1881
+60,2,(HWLLSS,Sara,1884-03-05,(HWLLSS,,,60. (HWLLSS Sara 5.3.1884
+61,2,ZINHORN,Hans Israel,1896-01-09,ZINHORN,,,"61. ZINHORN Hans Israel 9,1.1896"
+62,2,KRUMBSIN,Majer Israel,1888-12-19,KRUMBSIN,,,62. KRUMBSIN Majer Israel 19.12.1888
+63,2,KRUKHPEIN,Sime Ksther Sara,1889-04-14,KRUKHPEIN,,,63. KRUKHPEIN Sime Ksther Sara 14.4. 1889
+64,2,DUSCHNITZ,Georg Israel,1888-12-11,DUSCHNITZ,,,64. DUSCHNITZ Georg Israel 11.12.1888
+65,2,DUSCHNITZ,Fanny Vilma Sara,1896-05-24,DUSCHNITZ,,,65. DUSCHNITZ Fanny Vilma Sara 24.5. 1896
+66,2,HANLLE,Gittel Itte Sara,1888-06-23,HANLLE,,,66. HANLLE Gittel Itte Sara 23.6. 1888
+67,2,NALL:Kurt,Israel,1924-11-21,NALL:Kurt,,,67. NALL:Kurt Israel 21.11.1924
+68,2,BRÜCKNER,Jenny Sara _,1907-01-04,BIRÜCKNER,BIRÜCKNER->BRÜCKNER,,68. BIRÜCKNER Jenny Sara _ 4. 1.1907
+69,2,BITJICKNER,Wilhelm Israel,1929-10-20,BITJICKNER,,,69. BITJICKNER Wilhelm Israel 20.10.1929
+70,2,OLESKER,Leopold Israscl,1892-12-04,OLESKER,,,70. OLESKER Leopold Israscl 4.12.1892
+71,2,OLESKER,Marjem Sara,1891-02-24,OLERKER,OLERKER->OLESKER,,"71. OLERKER Marjem Sara 24. 2.1891 ;
+72. OLESKER ""lisabeth Sara 16. 8.1925"
+72,2,ENGEL,ANNA SAHA,1890-08-27,ENGEL,,number_misread:42;row_recovered,42. ENGEL ANNA SAHA 27.8.1890
+73,2,JOKL,ärnst Israel,1901-11-19,JOKL,,gap_before:72,73. JOKL ärnst Israel 19.11.1901
+74,2,ROSZIMANNT,Resi Sara,1883-08-30,ROSZIMANNT,,,74. ROSZIMANNT Resi Sara 30. 8.1883
+75,3,HAUSER,Rina Sara,1886-01-12,HAUSER,,,"75. HAUSER Rina Sara 12, 1,1886"
+76,3,FRAHKAL,Else Sara,1894-01-30,FRAHKAL,,,76. FRAHKAL Else Sara 30» 1.1894
+77,3,TI,BRÜCKHER Frits Israel 3010.1904,1922-06-27,TI,,number_inferred;date_missing;date_recovered,TI BRÜCKHER Frits Israel 3010.1904
+78,3,BRÜCKNER,HELENE Sara,1906-07-30,BRÜCKNER,,,"78. BRÜCKNER HELENE Sara 30, 7.1906"
+79,3,R2ZINf&lias,Israel -,1900-06-29,R2ZINf&lias,,,79. R2ZINf&lias Israel - 29. 6.1900
+80,3,BE:!GHANN,Hang Israol,1891-11-05,BE:!GHANN,,,"80. BE:!GHANN Hang Israol 5,11.1891"
+81,3,GRUF,Iudolfi Israek 12. 5.1580,,GRUF,,date_missing,Bl. GRUF Iudolfi Israek 12. 5.1580
+82,3,GRÜN,Frieda Sara,1890-09-22,GRÜN,,,"82. GRÜN Frieda Sara 22, 9.1890"
+83,3,HATSCHEK,Robert Israel,1911-02-05,HATSCHEK,,number_misread:85,"85. HATSCHEK Robert Israel 5. 2,1911"
+84,3,HATSONREK,Totte Sara,1905-03-09,HATSONREK,,,"84. HATSONREK Totte Sara 9, 3.1905"
+85,3,“er,GOTRLIEB Richard Israel,1909-01-16,“er,,number_inferred,“er GOTRLIEB Richard Israel 16. 1.1909
+86,3,ORF,Regina Sara,1907-12-30,ORF,,,86. ORF Regina Sara 30.12.1907
+87,3,EKSTEIN,Isidor Ierael,1883-11-05,EKSTEIN,,,87. EKSTEIN Isidor Ierael 5.11.1883
+88,3,EKSTEIN,Ida Sara,1892-02-02,EKSTESIN,EKSTESIN->EKSTEIN,,88. EKSTESIN Ida Sara 2. 2.1892
+89,3,HEILBLUM,Theresia Sara 25. 6.1974,,HEILBLUM,,date_missing,89. HEILBLUM Theresia Sara 25. 6.1974
+90,3,PiUER,Karkus Israel,1870-11-17,PiUER,,,90. PiUER Karkus Israel 17.11.1870
+91,3,GOLPE,Fritz iuuard Israel,1899-02-02,GOLPE,,number_inferred,7 GOLPE Fritz iuuard Israel 2Ta2. 1899
+92,3,DEUTSCH,Priedrich Israel,1887-12-14,DEUTSCH,,,92. DEUTSCH Priedrich Israel 14.12.1887
+93,3,FEUER,Gisela Saypa,1870-04-10,FEUER,,number_misread:95,95. FEUER Gisela Saypa 10. 4.1870
+94,3,HANYG,Klara Sara,1872-06-12,HANYG,,,94. HANYG Klara Sara 12.6. 1872
+95,3,WOLF,BAmuel,1880-01-31,WOLF,,,"95. WOLF BAmuel 31. 1,1880"
+96,3,WOLP,Julie,1882-02-17,WOLP,,,96. WOLP Julie 17. 2.1882
+97,3,ZLABOGEN,Philipp Israel,1891-04-20,ZLABOGEN,,,97. ZLABOGEN Philipp Israel 20. 4.1891
+98,3,ELTEOGSR,Katharina Sara lo. 5.1922,,ELTEOGSR,,date_missing,98. ELTEOGSR Katharina Sara lo. 5.1922
+99,3,ELTBOGENR,Blanka Sara,1901-10-19,ELTBOGENR,,,"99, ELTBOGENR Blanka Sara 19.10,1901"
+100,3,ZLTEOGEN,Gertrude Sara,1925-09-14,ZLTEOGEN,,,loo. ZLTEOGEN Gertrude Sara 14. 9.1925
+101,3,Wr,VATER An,,Wr,,number_inferred;date_missing,Wr VATER An
+102,4,KEERFER,,,KEERFER,,number_inferred;date_missing,> KEERFER
+103,4,LÖÜWI,Richard Israel lo. 2.1880,1924-03-12,LÖÜWI,,number_misread:101;date_missing;date_recovered;surname_suggestion:LÖWI,lol. LÖÜWI Richard Israel lo. 2.1880
+104,4,LÖWI,Sophie Sara,1899-02-25,LÖWI,,number_misread:102,102. LÖWI Sophie Sara 25. 2.1899
+105,4,LÖWI,Margarete Sara,1924-03-12,LÖWI,,number_misread:103,103. LÖWI Margarete Sara 12. 3.1924
+106,4,LÖWL,Robert Israel,1935-08-02,LÖWL,,number_misread:1104,l1o4. LÖWL Robert Israel 2. 8.1935
+107,4,GRÜNBERGER,Olga Sara,1885-07-14,GRÜNBERGER,,number_misread:105,105. GRÜNBERGER Olga Sara 14. 7. 1885
+108,4,GRÜNBERGER,Martina Sara,1907-02-27,GRÜNBERGER,,number_misread:106,106. GRÜNBERGER Martina Sara 27. 2. 1907
+109,4,DEUTSCH,Theresia Sara,1894-07-31,DEUTSCH,,number_misread:107,107. DEUTSCH Theresia Sara 31. 7. 1894
+110,4,D&äUWSCH,Albert Israel,1881-06-22,D&äUWSCH,,number_misread:108,108. D&äUWSCH Albert Israel 22. 6. 1881
+111,4,DEUTSCH,Rifka Sara,1894-06-03,DEUTSCH,,number_misread:109,109. DEUTSCH Rifka Sara 3. 6. 1894
+112,4,FANTL,Ida Sara,1884-12-24,FANTL,,number_misread:110,11o. FANTL Ida Sara 24.12.1884
+113,4,JUCHT,Zolten Israel,1907-11-26,JUCHT,,number_misread:111,111. JUCHT Zolten Israel 26.11.1907
+114,4,MATZNER,Viktor Israel,1888-10-09,MATZNER,,number_misread:112,112. MATZNER Viktor Israel 9.10.1888
+115,4,MATZNER,Margarete Sara lo. 3.1894,1874-06-15,MATZNER,,number_misread:113;date_missing;date_recovered,113. MATZNER Margarete Sara lo. 3.1894
+116,4,FRIEDL,Hans Israel,1892-11-02,FRIEDL,,number_misread:114,114. FRIEDL Hans Israel 2.11.1892
+117,4,BUCHWÄLDER,Nathan,1874-06-15,BUCHWÄLDER,,number_misread:115,115. BUCHWÄLDER Nathan 15. 6.1874
+118,4,BUCHWÄLDER,Sidonie Sara,1885-05-24,BUCHWÄLDER,,number_misread:116,116. BUCHWÄLDER Sidonie Sara 24.5. 1885
+119,4,LATZER,Zduard Israel,1888-01-24,LATZER,,number_misread:117,117. LATZER Zduard Israel 24.1. 1888
+120,4,ENGEL,Georg Israel,1928-03-04,ENGEL,,number_misread:118,118. ENGEL Georg Israel 4. 3.1928
+121,4,METZINGSR,Sabine Sara,1894-09-20,METZINGSR,,number_misread:119,119. METZINGSR Sabine Sara 20.9. 1894
+122,4,BOHSNZKI,Samuel,1892-09-08,BOHSNZKI,,number_misread:120;surname_suggestion:BOHENZKI,120. BOHSNZKI Samuel 8.9.1892
+123,4,BOHENZKI,Cilli Sara,1894-05-12,BOHENZKI,,number_misread:121,121. BOHENZKI Cilli Sara 12.5.1894
+124,4,BOH&ENZKI,Anna Sara,1921-11-27,BOH&ENZKI,,number_misread:122,122. BOH&ENZKI Anna Sara 27.11.1921
+125,4,FRIEDMANN,Julius Israel,1883-08-10,FRIEDMANN,,number_misread:123,123. FRIEDMANN Julius Israel 10.8.1883
+126,4,ENGEL,Rudolf Israel,1889-07-23,ENGEL,,number_misread:124,124. ENGEL Rudolf Israel 23.7.1889
+127,4,BÜCHLER,rekte ROS:NKRANZ S,1882-10-25,BÜCHLER,,number_misread:125,125. BÜCHLER rekte ROS:NKRANZ S. 25.10.1882
+128,4,BÜCHLER,rekte ROSENKRANZ R,1889-04-25,BÜCHLER,,number_misread:126,126. BÜCHLER rekte ROSENKRANZ R. 25.4.1889
+129,4,BÜCHLüÜR,rekte ROSENKRANZ B»,1921-04-09,BÜCHLüÜR,,number_misread:127,127. BÜCHLüÜR rekte ROSENKRANZ B» 9.4.1921
+130,4,BIRNER,Oswald Israel,1909-09-11,BIRNER,,number_misread:128,128. BIRNER Oswald Israel 11.9.1909
+131,4,BRCODHSIM,Lilli Sara,1917-02-27,BRCODHSIM,,number_misread:129,129. BRCODHSIM Lilli Sara 27.2.1917
+132,4,DEUTSCH,Robert Imel,1907-01-13,DEUTSCH,,number_misread:1530,1530. DEUTSCH Robert Imel 13.1.1907
+133,4,GLAS,z2lisabeth Sara,1898-10-16,GLAS,,number_misread:131,131. GLAS z2lisabeth Sara 16.10.1898
+134,4,GLAS,Richard Israel,1926-08-04,GLAS,,number_misread:132,132. GLAS Richard Israel 4. 8.1926
+135,4,BERG,Otto Israel,1897-12-19,BERG,,number_misread:133,133. BERG Otto Israel 19.12.1897
+136,4,GASPAR,Simon Israel,1881-06-01,GASPAR,,number_misread:134,134. GASPAR Simon Israel 1. 6.1881
+137,4,FERBER,Katharina Sara 29. 6.1:%%,1902-06-29,FERBER,,number_misread:136;date_missing;date_recovered,136. FERBER Katharina Sara 29. 6.1:%%
+138,4,FERBER,Alexander Israel,1902-06-29,FERBER,,number_misread:137,137. FERBER Alexander Israel 29. 6.1902
+139,4,BAUMANN,Rudolf ISRASL,1898-07-18,BAUMANN,,number_misread:138,138. BAUMANN Rudolf ISRASL 18. 7.1898
+140,4,SCHWACH,Julius Israel,1895-10-21,SCHWACH,,number_misread:339,"339, SCHWACH Julius Israel 21.10.1895"
+141,4,BOHATY,Otto +srael,1894-02-20,BOHATY,,number_misread:140,140. BOHATY Otto +srael 20. 2.1894
+142,5,BLOCH,Olga Sara,1897-03-17,BLOCH,,number_inferred,. BLOCH Olga Sara 17. 3.1897
+143,5,BRENDER,Laura Sara 50. 4.1898,,BRENDER,,number_inferred;date_missing,» BRENDER Laura Sara 50. 4.1898
+144,5,BRENDER,Cäcilie Sara,1927-03-21,BRENDER,,number_inferred,+. BRENDER Cäcilie Sara 21. 3.1927.
+145,5,GLASER,Kalvina Sara,1908-08-25,GLASER,,number_inferred,. GLASER Kalvina Sara 25. 8.1908
+146,5,KRAUSZ,Eugen Israel,1897-05-26,KRAUSZ,,number_inferred,. KRAUSZ Eugen Israel 26.5. 1897
+147,5,KRAUSZ,Margarete Sara,1898-01-11,KRAUSZ,,number_inferred,". KRAUSZ Margarete Sara 11. 1.1898
+. KRAUSZ Alice Sara 4. 8.1927"
+148,5,SCHKOLNIK,Jonas Israel,1883-05-23,SCHKOLNIK,,number_inferred,. SCHKOLNIK Jonas Israel 23. 5.1883
+149,5,e,SCHKOLNIK Friede Sara,1886-12-07,e,,number_inferred,.e SCHKOLNIK Friede Sara 7.12.1886
+150,5,STERNI,Ignatz Israel,1887-05-26,STERNI,,number_inferred,. STERNI Ignatz Israel 26. 5.1887
+151,5,FREUD,Ludwig Israel,1894-09-24,FREUD,,number_inferred,« FREUD Ludwig Israel 24. 9.1894
+152,5,EFREUD,Hilde Sara,1894-11-20,EFREUD,,number_inferred,. EFREUD Hilde Sara 20.11.1894
+153,5,Link,Markus Israel,1880-08-12,Link,,number_inferred,. Link Markus Israel 12. 8.1880
+154,5,LINK,Ida Sara,1886-10-20,LINK,,number_inferred,« LINK Ida Sara 20.10.1886
+155,5,WOLF,Rudolf Israel,1876-05-11,WOLFF,WOLFF->WOLF,number_inferred,. WOLFF Rudolf Israel 11. 5.1876
+156,5,WOLF,&lsa Sara,1889-08-21,WOLF,,number_inferred,. WOLF &lsa Sara 21. 8.1889
+157,5,WUNSCH,ALOIS ISRAbL,1881-10-27,WUNSCH,,number_inferred,. WUNSCH ALOIS ISRAbL 27.10.1881
+158,5,WUNSCH,Margarete Sara,1898-11-09,WUNSCH,,number_inferred,. WUNSCH Margarete Sara 9.11.1898 |
+159,5,WUNSCH,Gärda Sophie Sara,1931-05-13,WUNSCH,,number_inferred,. WUNSCH Gärda Sophie Sara 13. 5.1931 |
+160,5,BORTSTIBER,Ludwig Israel,1897-06-01,BORTSTIBER,,number_inferred,« BORTSTIBER Ludwig Israel 1. 6.1897 |
+161,5,HAN,Oskar Israel,1885-08-05,HAN,,number_inferred,. HAN Oskar Israel 5. 8.1885 |
+162,5,HAHN,Oftilie Sara,1898-06-23,HAHN,,number_inferred,. HAHN Oftilie Sara 23. 6.1898 |
+163,5,HAHN,Josef Israel,1921-03-15,HAHN,,number_inferred,. HAHN Josef Israel 15. 3.1921 |
+164,5,HAHN,ürich Israel,1925-10-24,HAHN,,number_inferred,. HAHN ürich Israel 24.10.1925 |
+165,5,LEBOWIU!SCH,Moriz Isracl,1875-10-28,LEBOWIU!SCH,,number_inferred,. LEBOWIU!SCH Moriz Isracl 28.10.1875 |
+166,5,GRÜNFELD,Seligmann Israel,1872-08-12,GRÜNBELD,GRÜNBELD->GRÜNFELD,number_inferred,. GRÜNBELD Seligmann Israel 12. 8.1872 |
+167,5,GRÜNFELD,Olga Sara,1885-09-20,GRÜNFELD,,number_inferred,'. GRÜNFELD Olga Sara 20. 9.1885 |
+168,5,KRYS,Nathan Israel,1874-11-10,KRYS,,number_inferred,'. KRYS Nathan Israel 10.11.1874 |
+169,5,KAYS,Klara Emma Sara lo. 4.1886,,KAYS,,number_inferred;date_missing,. KAYS Klara Emma Sara lo. 4.1886 |
+170,5,'e,PRÄGER Samuel ;,1880-11-05,'e,,number_inferred,"'e PRÄGER Samuel ; 5,11.1880 |"
+171,5,PRÄGÄR,jeannste Sara,1876-01-21,PRÄGÄR,,number_inferred,‚. PRÄGÄR jeannste Sara 21. 1.1876 |
+172,5,'e,FLSISSIG Richard Israel,1889-05-11,'e,,number_inferred,'e FLSISSIG Richard Israel 11. 5.1889 |
+173,5,e,WAGITER Ludwig Israel,1885-12-29,e,,number_inferred,.e WAGITER Ludwig Israel 29.12.1885 |
+174,5,WAGNER,Johanna Sara,1897-10-01,WAGNER,,number_inferred,‚. WAGNER Johanna Sara 1.10.1897 |
+175,5,)e,WAGNER Fritz Israel,1925-04-21,)e,,number_inferred,)e WAGNER Fritz Israel 21. 4.1925 |
+176,5,GUTGIESSER,Heinz Israel,1922-05-21,GUTGIESSER,,number_inferred,"', GUTGIESSER Heinz Israel 21. 5.1922 |"
+177,5,je,KONN ürnst Israel,1884-11-26,je,,number_inferred,je KONN ürnst Israel 26.11.1884 |
+178,5,I).,KOHN Dwore Sara,1886-01-04,I).,,number_inferred,I). KOHN Dwore Sara 4. 1.1886 l
+179,5,)e,KLSIN FüaNZIsrael,1908-09-01,)e,,number_inferred,")e KLSIN FüaNZIsrael 1, 9.1908 I"
+180,5,Klein,Berta Sara,1879-07-26,Klein,,number_inferred,. Klein Berta Sara 26. 7.1879 |
+181,5,POLAWZIEK,Rosa Sara Bo. 4.1874,,POLAWZIEK,,number_inferred;date_missing,’. POLAWZIEK Rosa Sara Bo. 4.1874 |
+182,5,POLACZSK,Ernst Israel,1902-10-29,POLACZSK,,number_inferred,ı. POLACZSK Ernst Israel 29.10.1902 |
+183,5,WEINER,Josef Israel 2. 21877 l,,WEINER,,number_inferred;date_missing,. WEINER Josef Israel 2. 21877 l
+184,5,WSINER,imma Sara,1877-10-02,WSINER,,number_inferred,) WSINER imma Sara 2.10.1877 |
+185,5,)e,POTSCHER Lotti Sara,1883-10-25,)e,,number_inferred,)e POTSCHER Lotti Sara 25.10.1883 |
+186,6,SCHULZ,Max Israel,1892-05-15,SCHULZ,,number_misread:137,137. SCHULZ Max Israel 15.5.1892
+187,6,SCHULZ,Max Israel,1892-05-15,SCHULZ,,number_misread:137;row_recovered,137. SCHULZ Max Israel 15.5.1892
+188,6,HORN,Isak Abraham,1919-02-08,HORN,,gap_before:187,188. HORN Isak Abraham 8.2.1919
+189,6,HORN,Gertrude Sara 31.141923,,HORN,,date_missing,189. HORN Gertrude Sara 31.141923
+190,6,SCHMETTERLING,Ludwig Isr,1896-10-11,SCHMETTERLING,,,190. SCHMETTERLING Ludwig Isr. 11.10.1896
+191,6,SCHMETTERLING,Hedwig Sara,1909-11-18,SCHMETTERLING,,,"191, SCHMETTERLING Hedwig Sara 18.11.1909"
+192,6,EHRLICH,Nachum Hersch,1875-04-29,EHRLICH,,,192. EHRLICH Nachum Hersch 29. 4.1875
+193,6,EHRLICH,Cecilia Sara,1895-11-04,EHRLICH,,,"193, EHRLICH Cecilia Sara 4.11.1895"
+194,6,EHRLICH,Sima Sulamith,1919-07-05,EHRLICH,,,194. EHRLICH Sima Sulamith 5. 7.1919
+195,6,EHRLICH,Abraham Arje,1922-01-05,EHRLICH,,,195. EHRLICH Abraham Arje 5. 1.1922
+196,6,EHRLICH,Ruth Sara,1925-12-26,EHRLICH,,,196. EHRLICH Ruth Sara 26.12.1925
+197,6,LILIEN,Israel,1875-10-03,LILIEN,,,197. LILIEN Israel 3.10.1875
+198,6,SCHÜNFELD,Hermine Sara,1895-05-25,SCHÜNFELD,,,"198. SCHÜNFELD Hermine Sara 25, 5.1895"
+199,6,299»,SOHONFERB Ghnrioite Sara,1922-06-16,299»,,number_inferred,299» SOHONFERB Ghnrioite Sara 16. ‚6.1922
+200,6,DIENEN,TE ZE,,DIENEN,,number_inferred;date_missing,DIENEN TE ZE
+201,6,PA,/ en EEE nOSEEET EIS EERT ER,,PA,,number_inferred;date_missing,PA / en EEE nOSEEET EIS EERT ER.
+202,7,TÜRKEL,Josef Israel,1887-08-29,TÜRKEL,,number_misread:201,2ol. TÜRKEL Josef Israel 29.8.1887
+203,7,GLÜCKSMANN,Georg Israel,1906-07-16,GLÜCKSMANN,,number_misread:202,202. GLÜCKSMANN Georg Israel 16.7.1906
+205,7,SANDOR,Moses,1877-12-28,SANDOR,,gap_before:204,205. SANDOR Moses 28.12.1877
+206,7,SANDOR,Berta Sara 17.2.1.1582,,SANDOR,,number_misread:204;date_missing,204. SANDOR Berta Sara 17.2.1.1582
+207,7,LANGER,Fanny Sara 24.11.2367,1921-05-28,LANGER,,number_misread:206;date_missing;date_recovered,206. LANGER Fanny Sara 24.11.2367
+208,7,SCHWARZ,Zolten Zoli Isr,1921-05-28,SCHWARZ,,number_misread:207,207. SCHWARZ Zolten Zoli Isr. 28.5.1921
+209,7,PRAGER,Hugo Isr,1894-07-16,PRAGER,,number_misread:208,208. PRAGER Hugo Isr. 16.7.1894
+210,7,PRAGHR,Johanna Sara,1904-07-29,PRAGHR,,number_misread:209;surname_suggestion:PRAGER,209. PRAGHR Johanna Sara 29.7.1904
+211,7,PNRAGHER,Kurt Israel,1931-05-12,PNRAGHER,,number_misread:210,210. PNRAGHER Kurt Israel 12.5.1931
+212,7,GYÖRI,Desiderius Israel,1881-04-18,GYÖRI,,number_misread:211,211. GYÖRI Desiderius Israel 18.4.1881
+213,7,GRÜNDALD,"Oskar lIsr,",1889-05-17,GRÜNDALD,,number_misread:212;surname_suggestion:GRÜNWALD,"212. GRÜNDALD Oskar lIsr, 17.5.1889"
+214,7,GRÜNWALD,Irene Sara,1888-05-16,GRÜNWALD,,number_misread:213,213. GRÜNWALD Irene Sara 16.5.1888
+215,7,GRUNYALD,Ricnarda Isracl,1919-08-10,GRUNYALD,,number_misread:214,214. GRUNYALD Ricnarda Isracl 10.8.1919
+216,7,St3äRN,Sigmund Israel,1872-06-26,St3äRN,,number_misread:215,215. St3äRN Sigmund Israel 26.6.1872
+217,7,STERN,Berta Sara,1883-07-28,STERN,,number_misread:216,216. STERN Berta Sara 28.7.1883
+218,7,SCHAFFER,Riwcze Sara,1887-12-26,SCHAFFER,,number_misread:217,217. SCHAFFER Riwcze Sara 26.12.1887
+219,7,SCHAFFER,Mendel Isr,1924-05-24,SCHAFFER,,number_misread:218,218. SCHAFFER Mendel Isr. 24. 5.1924
+220,7,GABEL,Lisidor,1887-11-30,GABEL,,number_misread:219,219. GABEL Lisidor 30.11.1887
+221,7,GABEL,Nalvine Sara,1897-10-19,GABEL,,number_misread:220,220. GABEL Nalvine Sara 19.10.1897
+222,7,ROSENBAUM,Tauber,1888-08-18,ROSENBAUM,,number_misread:221,221. ROSENBAUM Tauber 18.8.1888
+223,7,SCHLESINSTEIN,zster Sara,1874-01-09,SCHLESINSTEIN,,number_misread:222,222. SCHLESINSTEIN zster Sara 9.1.1874
+224,7,WSINER,Therese Sara,1876-08-01,WSINER,,number_misread:223,223. WSINER Therese Sara 1.8.1876
+225,7,re,myAU Reisel Sara,1885-04-02,re,,number_inferred,re myAU Reisel Sara 2.4.1885
+226,7,SIURN,Irma Sara,1884-05-15,SIURN,,number_misread:225,225. SIURN Irma Sara 15.5.1884
+227,7,TRAMPLER,Luäwig Israel,1890-08-10,TRAMPLER,,number_misread:226,226. TRAMPLER Luäwig Israel 10.8.1890
+228,7,LISCUHNAR,Moses Israel,1880-07-10,LISCUHNAR,,number_misread:227,227. LISCUHNAR Moses Israel 10.7.1880
+229,7,ENOCH,Leopold Israel,1895-10-07,ENOCH,,number_misread:228,228. ENOCH Leopold Israel 7.10.1895
+230,7,SNOCH,Irma Sara,1896-04-11,SNOCH,,number_misread:229,"229. SNOCH Irma Sara 11, 4.1896"
+231,7,FOLGMANN,Salomon,1896-09-30,POLGMANN,POLGMANN->FOLGMANN,number_misread:230,230. POLGMANN Salomon 30.9.1896
+232,7,FOLGLIANN,Nacha Sara,1868-05-01,FOLGLIANN,,number_misread:231,231. FOLGLIANN Nacha Sara 1.5.1868
+233,7,FOLGMANN,Siegmund Israel,1905-08-04,FOLGMANN,,number_misread:252,252. FOLGMANN Siegmund Israel 4.8.1905
+234,7,FANIL,Blime Sara,1895-11-23,FANIL,,number_misread:233,233. FANIL Blime Sara 23.11.1895
+235,7,HUTH,Alois Israel,1896-02-26,HUTH,,number_misread:234,234. HUTH Alois Israel 26. 2.1896
+236,7,HUTH,Fanni Sara,1896-10-28,HUTH,,number_misread:55,e55. HUTH Fanni Sara 28.10.1896
+237,7,IIUfH,Thea Sara,1924-08-01,IIUfH,,number_misread:256,256. IIUfH Thea Sara 1. 8.1924
+238,7,HUTH,Herma Sara,1928-08-16,HUTH,,number_misread:257,257. HUTH Herma Sara 16. 8.1928
+239,7,VOGEL,l’oses,1887-07-01,VOGEL,,number_misread:58,e58. VOGEL l’oses 1. 7.1887
+240,7,VOGEL,Mariam Sara,1889-12-20,VOGEL,,number_misread:59,<59. VOGEL Mariam Sara 20.12.1889
+241,8,AUFRICHTIG,Paul Israel,1899-08-18,AUFRICHTIG,,number_misread:240,240. AUFRICHTIG Paul Israel 18. 8. 1899
+242,8,AUFRICHTIG,Hedwig Sara,1898-01-10,AUFRICHTIG,,number_misread:241,241. AUFRICHTIG Hedwig Sara 10. 1. 1898
+243,8,242.,AUFRICHTIG Lieselotte Sara,1930-06-18,242.,,number_inferred,. 242. AUFRICHTIG Lieselotte Sara 18. 6. 1930
+244,8,POLESIUK,Rachel Sara,1895-07-17,POLESIUK,,number_misread:243,243. POLESIUK Rachel Sara 17. 7. 1895
+245,8,MANDEL,Nelanie Sara,1872-07-24,MANDEL,,number_misread:244,244. MANDEL Nelanie Sara 24. 7. 1872
+246,8,KOHN,Alfred Israel,1881-09-30,KOHN,,number_misread:245,245. KOHN Alfred Israel 30. 9. 1881
+247,8,KOHN,Katharina Sara,1896-11-24,KOHN,,number_misread:246,246. KOHN Katharina Sara 24.11. 1896
+248,8,KOUN,Ilse Sara,1915-09-10,KOUN,,number_misread:247,247. KOUN Ilse Sara 10. 9. 1915
+249,8,KON,Gerda Sara,1921-02-18,KON,,number_misread:248,248. KON Gerda Sara 18. 2. 1921
+250,8,KATZ,Grete 3ara,1902-01-14,KATZ,,number_misread:249,249. KATZ Grete 3ara 14. 1.1902
+251,8,BAUMGARTIKN,Arthur Israel,1885-09-05,BAUMGARTIKN,,number_misread:250,250. BAUMGARTIKN Arthur Israel 5. 9. 1885
+252,8,BAUNMGARTEN,Helene Sara,1884-02-22,BAUNMGARTEN,,number_misread:251,251. BAUNMGARTEN Helene Sara 22. 2. 1884
+253,8,SCHWARZWALD,Breindle Berta,1881-07-16,SCHWARZWALD,,number_misread:252,252. SCHWARZWALD Breindle Berta 16. 7. 1881
+254,8,DIN&S,Isidor,1889-07-02,DIN&S,,number_misread:253,253. DIN&S Isidor 2. 7. 1889 N
+255,8,DINSS,Paula Sara,1885-12-12,DINSS,,number_misread:254,"254. DINSS Paula Sara 12,12. 1885 5"
+256,8,ARON,Perla,1892-04-17,ARON,,number_misread:255,"255, ARON Perla 17, 4. 1892"
+257,8,GiKTLER,Ignatz Israel,1884-04-25,GiKTLER,,number_misread:256,256. GiKTLER Ignatz Israel 25. 4. 1884
+258,8,GSRTLER,Adele Sara,1891-12-28,GSRTLER,,number_misread:257,257. GSRTLER Adele Sara 28.12. 1891
+259,8,ELBRRT,Isidor Israel,1884-04-20,ELBRRT,,number_misread:258;surname_suggestion:ELBGRT,258. ELBRRT Isidor Israel 20. 4. 1884
+260,8,ELBGRT,Kurt Israel,1927-03-12,ELBGRT,,,260. ELBGRT Kurt Israel 12. 3. 1927
+261,8,KOPSTSIN,Rudolf Israel,1886-06-20,KOPSTSIN,,,261. KOPSTSIN Rudolf Israel 20. 6. 1886
+262,8,KOPSTZIN,Regine Sara,1885-10-30,KOPSTZIN,,surname_suggestion:KOPSTSIN,262. KOPSTZIN Regine Sara 30.10. 1885
+263,8,SCHALK,Hermann Israel,1885-09-02,SCHALK,,number_misread:265,265. SCHALK Hermann Israel 2. 9. 1885
+264,8,JELLINEK,Sigmund Israel,1875-12-22,JELLINSK,JELLINSK->JELLINEK,,264. JELLINSK Sigmund Israel 22.12. 1875
+265,8,JELLINEK,Josefine Sara,1878-05-23,JELLINEK,,,265. JELLINEK Josefine Sara 23. 5. 1878
+266,8,JELLIN“K,Alexander Israel 24. 4. 191o,1910-04-24,JELLIN“K,,date_missing;date_recovered,266. JELLIN“K Alexander Israel 24. 4. 191o
+267,8,JuLL.NEK,Rosa Sara,1911-11-24,JuLL.NEK,,,"267,» JuLL.NEK Rosa Sara 24.11. 1911"
+268,8,TE®LHEIM,Stefanie sjara,1905-03-18,TE®LHEIM,,,268. TE®LHEIM Stefanie sjara 18. 3. 1905
+269,8,TACHAUGR,Fanny Sara,1879-03-19,TACHAUGR,,,269. TACHAUGR Fanny Sara 19. 3. 1879
+270,8,AUFRICHTIG,Paul Israel,1899-08-18,AUFRICHTIG,,number_misread:240;row_recovered,240. AUFRICHTIG Paul Israel 18. 8. 1899
+271,8,LEDERSTEGER,Sabine Sara,1904-06-17,LEDERSTEGER,,gap_before:270,271. LEDERSTEGER Sabine Sara 17. 6. 1904
+272,8,TRISDMANN,Elisabeth Sara,1889-12-15,TRISDMANN,,,272. TRISDMANN Elisabeth Sara 15.12. 1889
+273,8,FRIEDMANN,Rachela Sara,1922-04-18,FRIEDMANN,,number_misread:2753,2753. FRIEDMANN Rachela Sara 18. 4. 1922
+274,8,\ÜüBL,Benno Israel,1889-06-21,\ÜüBL,,,274. \ÜüBL Benno Israel 21. 6. 1889
+275,8,LÖBL,zlsa Sara,1895-06-02,LÖBL,,number_inferred,273 LÖBL zlsa Sara 2. 6% 1895
+276,8,KAUFTHSLL,Hermann Israel 531.10. 1887,1887-10-31,KAUFTHSLL,,date_missing;date_recovered;surname_suggestion:KAUFTHELL,276. KAUFTHSLL Hermann Israel 531.10. 1887
+277,8,KAUFTHELL,Olga Sara lo. 1. 1900,1900-01-10,KAUFTHELL,,date_missing;date_recovered,277. KAUFTHELL Olga Sara lo. 1. 1900
+278,8,KAUFTHELL,Kurt Israel,1923-08-31,KAUFTHELL,,,278. KAUFTHELL Kurt Israel 31. 8. 1923
+279,8,KATZ,Grete 3ara,1902-01-14,KATZ,,number_misread:249;row_recovered,249. KATZ Grete 3ara 14. 1.1902
+280,8,WsISS,Wilhelm Israel,1876-02-18,WsISS,,gap_before:279,280. WsISS Wilhelm Israel 18. 2. 1876
+281,8,WSL)5,Franziska Sara,1879-01-15,WSL)5,,,281. WSL)5 Franziska Sara 15. 1. 1879
+282,9,EPSTEIN,Feiga Sara,1876-04-17,EPSTEIN,,,282. EPSTEIN Feiga Sara 17.4. 1876
+283,9,TOCH,Fritz Israel,1896-10-26,TOCH,,number_misread:2853,2853. TOCH Fritz Israel 26.10.1896
+284,9,SPRINGER,Jonathan Isr,1882-03-08,SPRINGER,,,284. SPRINGER Jonathan Isr. 8. 3.1882
+285,9,SPRINGER,Sali Sara,1884-03-12,SPRINGER,,,285. SPRINGER Sali Sara 12. 3.1884
+286,9,ZARWANITZER,Israel,1890-12-23,ZARWANITZER,,,286. ZARWANITZER Israel 23.12.1890
+287,9,287:,ZAHWANITZER Frieda Sara,1893-02-05,287:,,number_inferred,287: ZAHWANITZER Frieda Sara 5. 2.1893
+288,9,STIEBER,Samuel Isr,1877-02-14,STIEBER,,,288. STIEBER Samuel Isr. 14. 2.1877
+289,9,STIEBER,Zilli Sara,1881-11-11,STIEBER,,,289. STIEBER Zilli Sara 11.11.1881
+290,9,KORITSCHONER,Moses Moritz,1881-12-10,KORITSCHONER,,,290. KORITSCHONER Moses Moritz 10.12.1881
+291,9,KLEIN,Max Israel,1882-08-01,KLEIN,,,291. KLEIN Max Israel 1. 8.1882
+292,9,WERNER,SIegfried Israel,1889-08-28,WERNER,,,"292. WERNER SIegfried Israel 28, 8.1889"
+293,9,STEININGER,Erich Israel 5. 1891,,STEININGER,,date_missing,293. STEININGER Erich Israel 5. 1891
+294,9,STEININGER,Margarete Sara,1891-11-16,STEININGERM,STEININGERM->STEININGER,,294. STEININGERM Margarete Sara 16.11.1891
+295,9,TERSCH,Norbert Israel,1899-12-11,TERSCH,,,"295, TERSCH Norbert Israel 11.12.1899"
+296,9,KALLOS,Adele Sara,1880-05-29,KALLOS,,,296. KALLOS Adele Sara 29. 5.1880
+297,9,ROSSNGARTEN,Kornelie Sara,1919-05-05,ROSSNGARTEN,,,297. ROSSNGARTEN Kornelie Sara 5. 5.1919
+298,9,FRIEDMANN,Isidor,1879-12-02,FRIEDMANN,,,298. FRIEDMANN Isidor 2.12.1879
+299,9,FRIEDMANN,Helene Sara,1878-11-30,FRIEDMANN,,,299. FRIEDMANN Helene Sara 30.11.1878
+300,9,MÜTZ,Samuel Israel,1888-11-30,MÜTZ,,,300. MÜTZ Samuel Israel 30.11.1888
+301,9,MiTZ,Itte Sara,1898-02-13,MiTZ,,number_misread:3001,30ol. MiTZ Itte Sara 13. 2.1898
+302,9,BERKE,”,1873-10-04,BERKE,,number_inferred;date_missing;date_recovered,BERKE ”
+303,10,j,302. GLASZ Josef Israel,1873-10-04,j,,number_inferred,j 302. GLASZ Josef Israel 4.10.1873
+304,10,REICHEL,"Heinrich Isr,",1894-11-21,REICHEL,,row_recovered,"304. REICHEL Heinrich Isr, 21.11.1894"
+305,10,GLASZ,Fanny Sara,1874-04-09,GLASZ,,gap_before:304,305. GLASZ Fanny Sara 9. 4.1874
+306,10,REICHEL,"Heinrich Isr,",1894-11-21,REICHEL,,number_misread:304,"304. REICHEL Heinrich Isr, 21.11.1894"
+307,10,REICHEL,Schewe Sara l.. 5.1891,1891-08-18,REICHEL,,number_misread:305;date_missing;date_recovered,305. REICHEL Schewe Sara l.. 5.1891
+308,10,FOLKMANNMoritz,Isr,1883-11-12,FOLKMANNMoritz,,number_misread:706,706. FOLKMANNMoritz Isr. 12.11.1883
+309,10,FINK,Elsa Sara,1885-08-10,FINK,,number_misread:308,308. FINK Elsa Sara 10. 8.1885
+310,10,FINK,Helene Sara,1912-03-27,FINK,,number_misread:309,309. FINK Helene Sara 27. 3.1912
+311,10,METZINGER,Trude Sara,1927-07-11,METZINGER,,number_misread:3110,31lo. METZINGER Trude Sara 11. 7.1927
+312,10,ASPIS,Sabine Sara,1894-06-24,ASPIS,,number_misread:311,311. ASPIS Sabine Sara 24. 6.1894
+313,10,WEINSTEIN,Szpreindel Sara,1895-11-24,WEINSTEIN,,number_misread:312,312. WEINSTEIN Szpreindel Sara 24.11.1895
+314,10,FÜRST,Siegmund Israel,1883-09-21,FÜRST,,number_misread:313,313. FÜRST Siegmund Israel 21. 9.1883
+315,10,FÜRST,Sara,1880-12-11,FÜRST,,number_misread:5314,5314. FÜRST Sara 11.12.1880
+316,10,KALHMAR,Gustav Israel,1881-11-20,KALHMAR,,number_misread:315,315. KALHMAR Gustav Israel 20.11.1881
+317,10,KALMAR,Nelly Sara,1894-06-15,KALMAR,,number_misread:316;surname_suggestion:KALHMAR,316. KALMAR Nelly Sara 15. 6.1894
+318,10,OPLATKA,Karl Isr. 10.2. 18753,,OPLATKA,,number_misread:517;date_missing,517. OPLATKA Karl Isr. 10.2. 18753
+319,10,OPLATKA,Hermine Sara,1882-11-05,OPLATKA,,number_misread:318,318. OPLATKA Hermine Sara 5.11.1882 \
+320,10,KAHNE,Oskar Israel,1895-09-18,KAHNE,,number_misread:319,319. KAHNE Oskar Israel 18. 9.1895
+321,10,FSUURSTEIN,Taube l. 4.1871,1910-02-19,FSUURSTEIN,,number_misread:320;date_missing;date_recovered,320. FSUURSTEIN Taube l. 4.1871
+322,10,REUERSTEIN,Adele,1910-02-19,REUERSTEIN,,number_misread:321,321. REUERSTEIN Adele 19. 2.1910
+323,10,YFEUBERSTEIN,Franziska,1907-01-02,YFEUBERSTEIN,,number_misread:322,322. YFEUBERSTEIN Franziska 2. 1.1907
+324,10,FLEISOHNER,Hugo ler,1886-10-05,FLEISOHNER,,number_misread:323,323. FLEISOHNER Hugo ler. 5.10.1886
+325,10,WLEISCHNER,Ilka Sara,1889-11-29,WLEISCHNER,,number_misread:324,324. WLEISCHNER Ilka Sara 29.11.1889
+326,10,SCHÖNMANN,Israel 4. 53.1879,1877-10-31,SCHÖNMANN,,number_misread:325;date_missing;date_recovered,325. SCHÖNMANN Israel 4. 53.1879
+327,10,SCHÖNMANN,Paula Sara,1877-10-31,SCHÖNMANN,,number_misread:326,326. SCHÖNMANN Paula Sara 31.10.1877
+328,10,SCHIFFERMANN,Schewa,1879-12-03,SCHIFFERMANN,,number_misread:527,527. SCHIFFERMANN Schewa 3.12.1879
+329,10,WEINTRAUB,Henriette Sara,1909-03-20,WEINTRAUB,,number_misread:328,328. WEINTRAUB Henriette Sara 20.3.1909
+330,10,WEINTRAUB,Ruth Sara,1930-02-20,WZINTRAUB,WZINTRAUB->WEINTRAUB,number_misread:329,329. WZINTRAUB Ruth Sara 20.2.1930
+331,10,MEHL,Bernhard Israel,1871-12-25,MEHL,,number_misread:330,330. MEHL Bernhard Israel 25.12.1871
+332,10,FUNK,Sabine Sara 12.251837,1884-03-17,FUNK,,number_misread:351;date_missing;date_recovered,351. FUNK Sabine Sara 12.251837
+333,10,LÖWY,Rudolf Israel,1884-03-17,LÖWY,,number_misread:332,332. LÖWY Rudolf Israel 17.3.1884
+334,10,WINKLER,Joel,1884-07-08,WINKLER,,number_misread:533,533. WINKLER Joel 8.7.1884
+335,10,WINKLER,Frieda Sara,1890-11-08,WINKLER,,number_misread:534,534. WINKLER Frieda Sara 8.11.1890
+336,10,MAYER,Chinke 50.6.1882,,MAYER,,number_misread:335;date_missing,335. MAYER Chinke 50.6.1882
+337,10,MAYER,"Norbert Isr,",1924-08-24,MAYER,,number_misread:5336,"5336. MAYER Norbert Isr, 24.8:1924"
+338,10,ROTH,Walther Israel,1897-05-17,ROTH,,number_misread:337,337. ROTH Walther Israel 17.5.1897
+339,10,ROTH,Mirel Sara,1899-03-31,ROTH,,number_misread:338,338. ROTH Mirel Sara 31.3.1899
+340,10,DRAB,Robert Isr,1896-01-19,DRAB,,number_misread:5339,5339. DRAB Robert Isr. 19.1.1896
+341,10,DRAB,Grete Sara,1893-04-15,DRAB,,number_misread:340,340. DRAB Grete Sara 15.4.1893
+342,10,de,MAJO Robert Israel,1905-08-05,de,,number_misread:41,#41. de MAJO Robert Israel 5.8.1905
+343,10,de,MAJO Helene Sara,1905-12-31,de,,number_misread:342,..342. de MAJO Helene Sara 31.12.1905
+344,10,CZUCZKA,Arthur Israel,1889-11-02,CZUCZKA,,number_misread:545,545. CZUCZKA Arthur Israel 2.11.1889
+345,10,BAUER,Osias Israel,1872-01-18,BAUER,,number_misread:544,544. BAUER Osias Israel 18.1. 1872
+346,10,BAUER,Bassie Sara,1879-05-17,BAUER,,number_misread:5345,5345. BAUER Bassie Sara 17.5.1879
+347,11,KLAR,Viktor Israel,1885-05-07,KLAR,,number_misread:346,346. KLAR Viktor Israel 7.5.1885
+348,11,KLAR,Therese Sara,1891-06-04,KLAR,,number_misread:347,347. KLAR Therese Sara 4.6.1891
+349,11,348.,GRISS Jonas Israel,1895-01-24,348.,,number_inferred,. 348. GRISS Jonas Israel 24.1.1895
+350,11,GRISS,Kamilla Sara,1897-08-21,GRISS,,number_misread:349,349. GRISS Kamilla Sara 21.8.1897
+351,11,3501,GRISS Gertrude Sara,1928-03-18,3501,,number_inferred,3501 GRISS Gertrude Sara 18.3.1928
+352,11,SCHREIER,Anna Sara,1869-07-26,SCHREIER,,number_misread:351,351. SCHREIER Anna Sara 26.7.1869
+353,11,ELPFENBEIN,Chane,1888-04-05,ELPFENBEIN,,number_misread:352,352. ELPFENBEIN Chane 5.4.1888
+354,11,ELP&NBEIN,Lotte Sara,1920-02-15,ELP&NBEIN,,number_misread:353,353. ELP&NBEIN Lotte Sara 15.2.1920
+355,11,RIESENFELD,Oskar Isr,1885-07-18,RIESENPELD,RIESENPELD->RIESENFELD,number_misread:354,354. RIESENPELD Oskar Isr. 18.7.1885
+356,11,RIESENFELD,Zerline Sara,1890-04-29,RIESENFELD,,number_misread:355,355. RIESENFELD Zerline Sara 29.4.1890
+357,11,AUERBACH,Nathan,1911-02-16,AUERBACH,,number_misread:356,356. AUERBACH Nathan 16.2.1911
+358,11,SÜSZ,Benedikt Isr,1881-05-21,SÜSZ,,number_misread:357,357. SÜSZ Benedikt Isr. 21.5.1881
+359,11,sisz,Aranka Sara,1885-01-05,sisz,,number_misread:358,358. sisz Aranka Sara 5.1.1885
+360,11,FRANK,Rudolf Isr,1894-01-30,FRANK,,number_misread:359,359. FRANK Rudolf Isr. 30.1.1894
+361,11,FRANK,Ida Sara,1894-06-10,FRANK,,number_misread:360,360. FRANK Ida Sara 10.6.1894
+362,11,LUSTIG,Jakob Isr,1880-10-21,LUSTIG,,number_misread:361,361. LUSTIG Jakob Isr. 21.10.1880
+363,11,HIRSCHEL,Samuel,1875-08-05,HIRSCHEL,,number_misread:362,"362, HIRSCHEL Samuel 5.8.1875"
+364,11,HIRSCHEL,Lilli Sara,1887-07-06,HIRSCHEL,,number_misread:5363,5363. HIRSCHEL Lilli Sara 6.7.1887
+365,11,ZUNGLER,recote WILDER Joh,1908-09-02,ZUNGLER,,number_misread:364,364. ZUNGLER recote WILDER Joh. 2.9.1908
+366,11,MAYER,Max,1890-04-11,MAYER,,number_misread:365,365. MAYER Max 11.4.1890
+367,11,MAYER,Rudolfine,1897-01-27,MAYER,,number_misread:366,366. MAYER Rudolfine 27.1.1897
+368,11,KAYSR,Trude Sara,1921-08-11,KAYSR,,number_misread:367,367. KAYSR Trude Sara 11.8.1921
+369,11,ROSENBERG,Heinrich Salomon,1871-10-03,ROSENBÜRG,ROSENBÜRG->ROSENBERG,number_misread:368,368. ROSENBÜRG Heinrich Salomon 3.10.1871
+370,11,ROSENBERG,Paula ra,1885-05-29,ROSENBERG,,number_misread:369,369. ROSENBERG Paula ra 29.5.1885
+371,11,SKREIKUS,Heinr. Isr,1878-03-16,SKREIKUS,,number_misread:370,370. SKREIKUS Heinr. Isr. 16.3.1878.
+372,11,GOLDSTEIN,Sophie Sara,1906-04-06,GOLDSTEIN,,number_misread:371,371. GOLDSTEIN Sophie Sara 6.4.1906
+373,11,LEDERER,Friederike Sara,1918-06-12,LEDERER,,number_misread:372,372. LEDERER Friederike Sara 12.6.1918
+374,29,YI)GEL,"Adolf Inr,",1874-12-24,YI)GEL,,number_misread:3774;row_recovered,"3774. YI)GEL Adolf Inr, 24.12.1874"
+375,11,BANDLER,Benzion Isr,1868-07-06,BANDLER,,gap_before:374,375. BANDLER Benzion Isr. 6.7.1868
+376,11,BANDLER,Rosa Sara,1874-01-06,BANDLER,,number_misread:574,574. BANDLER Rosa Sara 6.1.1874
+377,11,REICH,Saul,1895-11-24,REICH,,number_misread:375,375. REICH Saul 24.11.1895
+378,11,REICH,Josefine Sara,1896-03-19,REICH,,number_misread:376,376. REICH Josefine Sara 19. 3.1896
+379,11,REICH,Elfriede Sara,1930-07-10,REICH,,number_misread:377,377. REICH Elfriede Sara 10.7.1930
+380,11,ESITH,Rosa Sara,1895-12-05,ESITH,,number_misread:578,578. ESITH Rosa Sara 5.12.1895
+381,11,FEITH,Lilly Sara,1922-12-16,FEITH,,number_misread:5379,5379. FEITH Lilly Sara 16.12.1922
+382,11,WEISS,Ottokar lIsr,1883-03-03,WEISS,,number_misread:580,580. WEISS Ottokar lIsr. 3. 3.1883
+383,11,SCHWARZ,"Leo Isr,",1892-07-20,SCHWARZ,,number_misread:381,"381. SCHWARZ Leo Isr,. 20.7.1892"
+384,11,EISNER,Hans Isr,1904-09-12,EISNER,,number_misread:382,382. EISNER Hans Isr. 12.9.1904
+385,11,EISNÄR,Paul Isr,1905-12-22,EISNÄR,,number_misread:383;surname_suggestion:EISNER,383. EISNÄR Paul Isr. 22.12. 1905
+386,11,TAUSKY,Max Isr. 20. 5.185,,TAUSKY,,number_misread:384;date_missing,384. TAUSKY Max Isr. 20. 5.185
+387,11,TAUSKY,Fanny Sara,1891-03-04,TAUSKY,,number_misread:585,585. TAUSKY Fanny Sara 4.3.1891
+388,11,ANLER,LEOPOLD Isr,1904-02-17,ANLER,,number_misread:386,386. ANLER LEOPOLD Isr. 17.2.1904
+389,11,ADLER,"Maxisilian Isr, 26.12.1%2",,ADLER,,number_misread:387;date_missing,"387. ADLER Maxisilian Isr, 26.12.1%2"
+390,11,SPRINGER,Olga Sara,1889-11-24,SPRINGER,,number_misread:389,389. SPRINGER Olga Sara 24.11.1889
+391,11,FLEISCHMANN,Elsa Sara,1891-06-28,FLEISCHMANN,,number_misread:390,390. FLEISCHMANN Elsa Sara 28.6.1891
+392,12,PIBEIMANN,"Heinrich Isr,",1904-03-20,PIBEIMANN,,number_misread:391,"391. PIBEIMANN Heinrich Isr, 20. 3.1904"
+393,12,MAYER,Rosa Sara,1879-12-10,MAYER,,number_misread:392,392. MAYER Rosa Sara 10.12.1879
+394,12,DRZIPVUSS,Isidor,1893-01-26,DRZIPVUSS,,number_misread:5394,"5394. DRZIPVUSS Isidor 26, 1.1893"
+395,12,DREIPFUSS,Soheindel 17. 81895,1907-04-29,DREIPFUSS,,date_missing;date_recovered,395. DREIPFUSS Soheindel 17. 81895
+396,12,SNCEL,Margit Yara,1895-12-05,SNCEL,,,396. SNCEL Margit Yara 5.12.1895
+397,12,BLOCH,Therese Sara,1876-01-25,BLOCH,,number_misread:597,597. BLOCH Therese Sara 25. 1.1876
+398,12,ELSTER,Karl lem,1884-11-25,ELSTER,,number_misread:598,598. ELSTER Karl lem 25.11.1884
+399,12,»ISINRGER,"Allred lar,",1874-05-11,»ISINRGER,,number_misread:490,"490. »ISINRGER Allred lar, 11, 5,1874"
+400,12,40ol«,SISINGER Josefine Sara,1886-07-07,40ol«,,number_inferred,40ol« SISINGER Josefine Sara 7. 7.1886
+401,12,40ol«,SISINGER Josefine Sara,1886-07-07,40ol«,,number_inferred;row_recovered,40ol« SISINGER Josefine Sara 7. 7.1886
+402,13,SCHWARZ,PFElix Israel,1887-05-10,SCHWARZ,,gap_before:401,402. SCHWARZ PFElix Israel 10.5.1887
+403,13,SCHWARZ,Anna Sara,1894-05-24,SCHWARZ,,number_misread:405,405. SCHWARZ Anna Sara 24.5.1894
+404,13,WOLF,Hans Israel,1896-11-17,WOLF,,,404. WOLF Hans Israel 17.11.1896
+406,13,SCHWARZ,kudolf Israel,1908-01-23,SCHWARZ,,gap_before:405,406. SCHWARZ kudolf Israel 23.1.1908
+407,13,ASCHNER,Viktor Israel,1901-01-16,ASCHNER,,,407. ASCHNER Viktor Israel 16.1.1901
+408,13,BADER,Olga Sara,1886-12-05,BADER,,,408. BADER Olga Sara 5.12.1886
+409,13,BADER,Melanie Sara,1896-01-03,BADER,,,409. BADER Melanie Sara 3. 1.1896
+410,13,FELIX,Theodor Israel,1870-07-10,FELIX,,,410. FELIX Theodor Israel 10.7.1870
+411,13,BUCZACZ,Perle,1894-07-05,BUCZACZ,,,411. BUCZACZ Perle 5.7.1894
+412,13,FELDMANN,Wilh. Isr,1894-04-05,FELDMANN,,,412. FELDMANN Wilh. Isr. 5.4.1894
+413,13,FELDMANN,Paula Sara,1895-11-11,FSLDMANN,FSLDMANN->FELDMANN,number_misread:4153,4153. FSLDMANN Paula Sara 11.11.1895
+415,13,TEPPER,Hinda Ruchla,1916-02-14,TEPPER,,gap_before:414,415. TEPPER Hinda Ruchla 14.2.1916
+416,13,TEPPER,Szeindla Perla,1921-05-19,TEPPER,,number_misread:16,Al6. TEPPER Szeindla Perla 19.5.1921
+417,13,HESS,Martha Sara,1902-09-10,HESS,,,417. HESS Martha Sara 10.9.1902
+418,13,BILBEL,Adele Sara,1880-10-01,BILBEL,,,418. BILBEL Adele Sara 1.10.1880
+419,13,BASS,David Israel,1889-02-19,BASS,,,419. BASS David Israel 19.2.1889
+420,13,BASS,äürna Sara,1900-03-14,BASS,,,420. BASS äürna Sara 14.3.1900
+421,13,DOCHT,iletti,1884-07-27,DOCHT,,,"421, DOCHT iletti 27.7.1884"
+422,13,LAZAR,Jacques Israel,1885-10-15,LAZAR,,,"422, LAZAR Jacques Israel 15.10.1885"
+423,13,KOHN,Edmund Israel,1883-05-21,KOHN,,,423. KOHN Edmund Israel 21. 5.1883
+424,13,ROSENZWEIG,Hermann,1886-08-15,ROSENZWEIG,,,424. ROSENZWEIG Hermann 15. 8.1886
+425,13,FISCHER,Alfred Israel,1880-10-17,FISCHER,,,425. FISCHER Alfred Israel 17.10.1880
+426,13,HOROWITZ,Jakob Israel,1880-04-30,HOROWILTZ,HOROWILTZ->HOROWITZ,,426. HOROWILTZ Jakob Israel 30. 4.1880
+427,13,HOROWITZ,Josefine Sara,1894-03-25,HOROWITZ,,,427. HOROWITZ Josefine Sara 25. 3.1894
+428,13,WIENER,Artur Isr,1886-07-03,WIENER,,,428. WIENER Artur Isr. 3. :7.1886
+429,13,KRÄMER,Aranka Sara,1888-08-28,KRÄMER,,,"429. KRÄMER Aranka Sara 28. 8,1888"
+430,13,KRÄMER,Margareihs sure,1921-02-15,KRÄMER,,number_misread:50,#50. KRÄMER Margareihs sure 15. 2.1921
+432,13,KRÄMER,Klara Sara,1915-07-10,KRÄMER,,gap_before:431,432. KRÄMER Klara Sara 10. 7.1915
+433,13,KRÄMER,Franz Israel,1919-05-18,KRÄMER,,,433. KRÄMER Franz Israel 18. 5.1919
+435,13,AHON,Chaje Dwora Sara,1908-05-31,AHON,,gap_before:434,435. AHON Chaje Dwora Sara 31. 5.1908
+436,13,SCHNABL,Wilh. Isr,1895-04-28,SCHNABL,,,436. SCHNABL Wilh. Isr. 28. 4.1895
+437,13,SCHNABL,Valerie Sara,1896-03-12,SCHNABL,,,437. SCHNABL Valerie Sara 12. 3.1896
+438,13,KUSSY,Hildegard Sara,1898-07-04,KUSSY,,number_misread:4538,4538. KUSSY Hildegard Sara 4. 7.1898
+439,13,GOTTFRIED,"Noriz Wilh,. Isr",1880-02-14,GOTTFRIED,,,"439. GOTTFRIED Noriz Wilh,. Isr. 14. 2.1880"
+440,13,LÖBL,slise Sara,1897-09-28,LÖBL,,,"440. LÖBL slise Sara 28. 9,1897"
+441,13,PISKÄR,Franz Israel,1885-05-15,PISKÄR,,,441. PISKÄR Franz Israel 15. 5.1885
+442,13,PISKEZR,Stefanie Sara,1897-07-18,PISKEZR,,,442. PISKEZR Stefanie Sara 18. 7.1897
+443,13,RUHTRATM,Denno Isr. 2.10.1016,,RUHTRATM,,date_missing,443. RUHTRATM Denno Isr. 2.10.1016
+444,14,'DIAMANT,"Salo Ier,",1885-07-29,'DIAMANT,,,"444. 'DIAMANT Salo Ier, 29. 7.1885"
+445,14,445.,'DIAMANT Cäcilie Sara,1898-03-03,445.,,number_inferred,° 445. 'DIAMANT Cäcilie Sara 3. 3.1898 |
+446,14,KORMANN,Sluwe,1888-12-03,KORMANN,,,446. KORMANN Sluwe 3.12.1888
+447,14,ALMA,Harry Ier,1909-12-17,ALMA,,,447. ALMA Harry Ier.. 17.12.1909
+448,14,STEINER,"Karl ler,",1887-12-29,STEINER,,,"448. STEINER Karl ler, 29.12.1887"
+449,14,STEINER,Eugenie Sara,1896-09-18,STEINER,,,"449. STEINER Eugenie Sara 18. 9,1896"
+450,14,STRÄUHSLER,Einst Israel,1892-12-17,STRÄUHSLER,,,450. STRÄUHSLER Einst Israel 17.12.1892
+451,14,FANTO,Salomon,1881-07-31,FANTO,,,451. FANTO Salomon 31. .7.1881
+452,14,FANTO,Gisela Sara,1883-06-12,FANTO,,,452. FANTO Gisela Sara 12. :6.1883
+453,14,HEILPERN,Chune Israel,1881-09-05,HEILPERN,,number_misread:455,455. HEILPERN Chune Israel 5. :9.1881
+454,14,BAUER,"Rudolf ler,",1884-04-04,BAUER,,,"454. BAUER Rudolf ler, 4. 4.1884"
+455,14,454%.,BAUER Risa Sara Ls 1.1892,,454%.,,number_inferred;date_missing,454%. BAUER Risa Sara Ls 1.1892
+456,14,PRIESTER,Ignaz Ier,1882-08-05,PRIESTER,,,456. PRIESTER Ignaz Ier. 5. 8.1882
+457,14,‚ABle-,PRIESmER Hedeie re 1asaseı,,‚ABle-,,number_inferred;date_missing,‚ABle- PRIESmER Hedeie re 1asaseı
+458,14,STEINER,"Karl ler,",1887-12-29,STEINER,,number_misread:448;row_recovered,"448. STEINER Karl ler, 29.12.1887"
+459,14,KLEIN,Ernestine Sara,1885-01-27,KLEIN,,gap_before:458,459. KLEIN Ernestine Sara 27. 1.1885
+460,14,KLEIN,Josef Markus,1882-03-29,KLEIN,,,"460. KLEIN Josef Markus 29, 3.1882"
+461,14,KLUGER,"Robert Isr,",1900-04-29,KLUGER,,,"461. KLUGER Robert Isr, 29, 4.1900"
+462,14,KLUGER,Olga Sara,1905-08-26,KLUGER,,,462. KLUGER Olga Sara 26. 8.1905
+463,14,KLUGER,"Heinrich Isr,",1926-08-25,KLUGER,,,"463. KLUGER Heinrich Isr, 25. 8.1926"
+464,14,SCHÖNGUT,Mirjam Marie,1876-10-25,SCHÖNGUT,,,464. SCHÖNGUT Mirjam Marie 25.10.1876
+465,14,MENCZEL,Walter Isr,1891-03-09,MENCZEL,,,"465. MENCZEL Walter Isr. 9, 3.1891"
+466,14,MENCZEL,BERTA Sara,1896-07-12,MENCZEL,,,466. MENCZEL BERTA Sara 12. 7.1896
+467,14,LAZAROWITSCH,Wax Isar,1895-07-14,LAZAROWITSCH,,,467. LAZAROWITSCH Wax Isar. 14. 7.1895
+468,14,LAZAROWITSCH,Marie Sara,1904-12-05,LAZAROWITSCH,,,468. LAZAROWITSCH Marie Sara 5.12. 1904
+469,14,BEINHACKER,Arnold Israel,1892-10-15,BBINHACKER,BBINHACKER->BEINHACKER,,469. BBINHACKER Arnold Israel 15.10.1892
+470,14,BEINHACKER,Margarethe Sara,1893-10-17,BEINHACKER,,,470. BEINHACKER Margarethe Sara 17.10.1893
+471,14,BEINHACKER,Eugen Israel,1936-06-02,BEINHACKER,,,471. BEINHACKER Eugen Israel 2. 6.1936
+472,14,BLOCH,Rudolf Isr,1901-11-03,BLOCH,,,472. BLOCH Rudolf Isr. 3.11.1901
+473,14,BLOCH,Ita Malka Sara,1902-07-30,BLOCH,,number_misread:4753,4753. BLOCH Ita Malka Sara 30. 7.1902
+474,14,474«,BLOCH Felix Ior,1931-11-01,474«,,number_inferred,474« BLOCH Felix Ior. 1.11.1931
+475,14,HAHN,Richard Iesr,1900-11-13,HAHN,,,475. HAHN Richard Iesr. 13.11.1900
+476,14,4A77s,HAHN Berta Sara,1881-03-30,4A77s,,number_inferred,4A77s HAHN Berta Sara 30. 3.1881
+477,14,ALMA,Harry Ier,1909-12-17,ALMA,,number_misread:447;row_recovered,447. ALMA Harry Ier.. 17.12.1909
+478,14,JAKAB,Izsak,1886-05-10,JAKAB,,gap_before:477,478. JAKAB Izsak 10. 5.1886
+479,14,JAKAB,Helene Sara,1884-02-29,JAKAB,,,"479. JAKAB Helene Sara 29. 2,1884"
+480,14,PESSLER,Bernhard Isr,1898-07-12,PESSLER,,,480. PESSLER Bernhard Isr. 12. 7.1898
+481,14,PFRSSLER,Valerie Sara,1893-06-05,PFRSSLER,,,481. PFRSSLER Valerie Sara 5. 6.1893
+482,14,KÜHNBERG,Otto Isr,1905-11-16,KÜHNBERG,,,"482, KÜHNBERG Otto Isr. 16.11.1905"
+483,14,KÜHNBERG,Olga Sara,1911-08-25,KÜHNBERG,,number_misread:4853,4853. KÜHNBERG Olga Sara 25. 8.1911 |
+484,14,POLLAK,"Max Isr, l, 1.1884",,POLLAK,,date_missing,"484, POLLAK Max Isr, l, 1.1884"
+485,14,GRÜNWALD,"Julius Icrr,",1880-09-15,GRÜNWALD,,,"485. GRÜNWALD Julius Icrr, 15.9.1880"
+486,14,GRÜNWALD,Edith Sara 71.5.1894,,GRÜNWALD,,date_missing,486. GRÜNWALD Edith Sara 71.5.1894
+487,14,MOSER,JAkob Isr,1872-04-05,MOSER,,,487. MOSER JAkob Isr. 5.4.1872
+488,14,MOSER,Regina Sara,1879-07-29,MOSER,,,488. MOSER Regina Sara 29.7.1879
+489,14,ZARWANITZER,Lipa Wolf Ier,1886-05-28,ZARWANITZER,,,489. ZARWANITZER Lipa Wolf Ier. 28.5.1886
+490,14,ZARSAMITRZER,Mineie Sara 21 1n.-VRR%,1874-05-11,ZARSAMITRZER,,date_missing;date_recovered,490. ZARSAMITRZER Mineie Sara 21 1n.-VRR%
+491,14,FANTO,Salomon,1881-07-31,FANTO,,number_misread:451;row_recovered,451. FANTO Salomon 31. .7.1881
+492,15,ECKLER,Reisel Sara,1881-11-11,ECKLER,,gap_before:491,492. ECKLER Reisel Sara 11.11.1881
+493,15,ECKLER,Robert Israel,1925-01-09,ECKLER,,number_misread:495,495. ECKLER Robert Israel 9. 1.1925
+494,15,494.,GOTTFRIED Jankel Isr,1884-10-14,494.,,number_inferred,° 494. GOTTFRIED Jankel Isr. 14.10.1884
+495,15,495.,GOTPFRIED Elsa Sara,1885-03-03,495.,,number_inferred,. 495. GOTPFRIED Elsa Sara 3. 3.1885 '
+496,15,BERGER,Julius Israel,1884-05-30,BERGER,,,496. BERGER Julius Israel 30. 5.1884
+497,15,HÜTTNER,"Heinr, Isr",1875-07-02,HÜTTNER,,,"497. HÜTTNER Heinr, Isr. 2. 7.1875"
+498,15,HÜTTNER,Adele Sara °,1892-03-15,HÜTTNER,,,498. HÜTTNER Adele Sara ° 15. 3.1892
+499,15,HOCHFZLSEN,"Julius Isr,",1888-04-15,HOCHFZLSEN,,,"499. HOCHFZLSEN Julius Isr,. 15. 4.1888"
+500,15,500»,HOCHFELSEN Irma Sara ',1901-01-30,500»,,number_inferred,500» HOCHFELSEN Irma Sara ' 30. 1.1901
+501,15,en,"zn Szurpse s rain SLRALEN _ [u > u \ r-_ , an e a Ur vs Sn; ii",,en,,number_inferred;date_missing,"en zn Szurpse s rain
+SLRALEN _ [u >
+u \ r-_ ,
+an e a Ur vs Sn; ii"
+502,16,Fe,EEE Me En ENUNT sS20 2 BE. BE EI BiBt. DE HE AR,,Fe,,number_inferred;date_missing,Fe EEE Me En ENUNT sS20 2 BE. BE EI BiBt. DE HE AR
+503,16,S5ols,PoPrFäk Tlse Sara,1885-06-02,S5ols,,number_inferred,S5ols PoPrFäk Tlse Sara 2. 6.1885
+504,16,HINDERN,Rifka Leja,1864-12-10,HINDERN,,number_misread:502,"502, HINDERN Rifka Leja 10.12.1864"
+505,16,HINDES,Anna u,1896-10-16,HINDES,,number_misread:503,"503. HINDES Anna u 16, 10.1896"
+506,16,KORP,"Pritz Ilar,",1909-01-20,KORP,,number_misread:504,"504. KORP Pritz Ilar, 20. 1,1909"
+507,16,KORP,Hermine 3ara,1883-09-29,KORP,,number_misread:505,"505. KORP Hermine 3ara 29. 9,1883"
+508,16,SCHWADRON,Ida ara,1876-07-31,SCHWADRON,,number_misread:506,506. SCHWADRON Ida ara 31. 7.1876
+509,16,ECKSTSIN,Johanna Sara,1873-09-15,ECKSTSIN,,number_misread:507,507. ECKSTSIN Johanna Sara 15. 9.1873
+510,16,REISG,"Ludwig ler,",1880-08-08,REISG,,number_misread:508,"508. REISG Ludwig ler, 8. 8.1880"
+511,16,HBIRRB,Flora 3ara 21s 5.1988,,HBIRRB,,number_misread:509;date_missing,"509, HBIRRB Flora 3ara 21s 5.1988"
+512,16,BSRNARDY,Brundilde Sara,1905-05-19,BSRNARDY,,number_misread:510,"510. BSRNARDY Brundilde Sara 19, 5.1905"
+513,16,FSLDMANN,Anna,1907-11-11,FSLDMANN,,number_misread:511,511. FSLDMANN Anna 11.11.1907
+514,16,KOPPSTEIN,Max Morädschei,1900-11-27,KOPPSTEIN,,number_misread:512,512. KOPPSTEIN Max Morädschei 27.11.1900
+515,16,KOPFSTSIN,Dorothea Sara,1895-11-25,KOPFSTSIN,,,515. KOPFSTSIN Dorothea Sara 25.11.1895
+516,16,KOPPSTEIN,Kurt ler. 26.10.1954,,KOPPSTEIN,,number_misread:514;date_missing,514. KOPPSTEIN Kurt ler. 26.10.1954
+517,16,KOPPSTEIN,Joh. Sara 24. 7.1957,,KOPPSTEIN,,number_misread:515;date_missing,515. KOPPSTEIN Joh. Sara 24. 7.1957
+518,16,WRISS,"Robert Isr, ıil. 3.1892",1882-11-05,WRISS,,number_misread:516;date_missing;date_recovered,"516. WRISS Robert Isr, ıil. 3.1892"
+519,16,WEISS,Faula Sara,1893-09-25,WEISS,,number_misread:517,"517. WEISS Faula Sara 25. 9,1893"
+520,16,WNISS,Susanne Sara,1931-05-27,WNISS,,number_misread:518,"S18.. WNISS Susanne Sara 27, 5.1931"
+521,16,WELISCH,"Josef Ier,",1899-06-22,WELISCH,,number_misread:519,"519. WELISCH Josef Ier, 22. 6.1899"
+522,16,KLSIN,"Josef Isr,",1889-07-06,KLSIN,,number_misread:520,"520. KLSIN Josef Isr, 6. 7.1889"
+523,16,SCHLEIER,THRODORA. Sara,1912-01-30,SCHLEIER,,number_misread:521,"521. SCHLEIER THRODORA. Sara 30. 1,1912"
+524,16,GUTMANN,"Lipot lur,",1885-06-24,GUIMANN,GUIMANN->GUTMANN,number_misread:522,"522. GUIMANN Lipot lur, 24. 6.1885"
+525,16,GUTMANN,Fanny.Sara,1882-03-08,GUTMANN,,number_misread:523,523. GUTMANN Fanny.Sara 8. 3.1882
+526,16,GRIMM,"Heinr. lsr,",1886-11-09,GRIMM,,number_misread:524,"524. GRIMM Heinr. lsr, 9.11.1886"
+527,16,BERGER,"Alfred Isar,",1887-05-22,BERGER,,number_misread:525,"525. BERGER Alfred Isar, 22.5.1887"
+528,16,BÜRGER,Regina Sara,1894-11-26,BÜRGER,,number_misread:526,526. BÜRGER Regina Sara 26.11.1894
+529,16,527%.,SCHNEEBAUM Rosa Sara,1884-01-28,527%.,,number_inferred,527%. SCHNEEBAUM Rosa Sara 28.1.1884
+530,16,LWOFICZ,Golde Beilo,1869-04-08,LWOFICZ,,number_misread:528,528. LWOFICZ Golde Beilo 8.4.1869
+531,16,NADELETECHER,Juda Jakob,1876-12-08,NADELETECHER,,number_misread:529,529. NADELETECHER Juda Jakob 8.12.1876
+532,16,SINGER,"Bela Isar,",1902-10-07,SINGER,,number_misread:530,"530. SINGER Bela Isar, 7.10.1902"
+533,16,BINGER,Auguste Sara,1907-07-30,BINGER,,number_misread:531,531. BINGER Auguste Sara 30.7.1907
+534,16,BAUBSTEIOER,"Julius Isr,",1904-10-27,BAUBSTEIOER,,number_misread:532,"532. BAUBSTEIOER Julius Isr, 27.10.1904"
+535,16,MAIER,"Banmuel Ier,",1881-03-09,MAIER,,number_misread:533,"533. MAIER Banmuel Ier, 9. 3.1881"
+536,16,KESTLER,Leo Isr,1882-06-12,KEBTLER,KEBTLER->KESTLER,number_misread:534,534. KEBTLER Leo Isr. 12. 6.1882
+537,16,KESTLER,Ilka Sara,1892-10-27,KESTLER,,number_misread:535,535. KESTLER Ilka Sara 27.10.1892
+538,16,KSSTLER,"Paul Isr,",1927-08-16,KSSTLER,,number_misread:536;surname_suggestion:KESTLER,"536, KSSTLER Paul Isr, 16. 8.1927"
+539,17,DEUTSCH,Kosa Sara,1881-08-12,DEUTSCH,,number_misread:5537,"5537, DEUTSCH Kosa Sara 12.8.1881"
+540,17,OPOUZINSKY,Semul Bojsie,1891-12-26,OPOUZINSKY,,number_misread:538,"538. OPOUZINSKY Semul Bojsie 26,12.1891"
+541,17,OPOUZINSKY,Debora Sara,1890-08-23,OPOUZINSKY,,number_misread:559,"559. OPOUZINSKY Debora Sara 23, 8.1890"
+542,17,ROSKRBERGIRTrecHhe,Fleischer,,ROSKRBERGIRTrecHhe,,number_misread:540;date_missing,540. ROSKRBERGIRTrecHhe Fleischer
+543,17,Gisele,Sara,1893-09-04,Gisele,,number_inferred,Gisele Sara 4. 9.1893
+544,17,SINGER,Rudolf ler,1878-03-15,SINGER,,number_misread:541,541. SINGER Rudolf ler. 15.3.1878
+545,17,SIEGER,Elsa Rebecca J3ara 5.6.1688,1889-11-02,SIEGER,,number_misread:542;date_missing;date_recovered,542. SIEGER Elsa Rebecca J3ara 5.6.1688
+546,17,SINGEN,Ingeborg SBofile Sara,1925-10-23,SINGEN,,number_misread:543;surname_suggestion:SINGER,"543, SINGEN Ingeborg SBofile Sara 23.10.1925"
+547,17,HALPFON,Adele Bara,1868-04-14,HALPFON,,number_misread:544,"544. HALPFON Adele Bara 14. 4,1868"
+548,17,STHSINER,Julie Sera 50.1.1877,,STHSINER,,number_misread:545;date_missing,545. STHSINER Julie Sera 50.1.1877
+549,17,BECK,Friedrich Isr,1896-09-11,BECK,,number_misread:546,546. BECK Friedrich Isr. 11.19.1896
+550,17,54T.,SNGEL Bofie Sara,1898-07-20,54T.,,number_inferred,54T. SNGEL Bofie Sara 20. 7.1898
+551,17,GELBART,"Abrahum Isr, Ir 4.1879",,GELBART,,number_misread:548;date_missing,"548. GELBART Abrahum Isr, Ir 4.1879"
+552,17,LAZAR,"Norbert Ior,",1892-09-02,LAZAR,,number_misread:549,"549. LAZAR Norbert Ior, 2. 9.1892"
+553,17,LAZAR,Mathilde Sara,1893-02-12,LAZAR,,number_misread:5509,5509. LAZAR Mathilde Sara 12. 2.1893
+554,17,BIRNDBAUH,Julie Sara,1886-06-20,BIRNDBAUH,,number_misread:551,551. BIRNDBAUH Julie Sara 20. 6.1886
+555,17,ORBUSTKIN,Irene Sara Te 4.1914,,ORBUSTKIN,,number_misread:552;date_missing,552. ORBUSTKIN Irene Sara Te 4.1914
+556,17,SPISGEL,Adalbert Isr,1905-04-17,SPISGEL,,number_misread:5553,5553. SPISGEL Adalbert Isr. 17. 4.1905
+557,17,LUSTIG,Hermann lsr,1879-11-08,LUSTIG,,number_misread:554,554. LUSTIG Hermann lsr. 8.11.1879
+558,17,LUSTIG,Elisabeth Franziska,1889-04-28,LUSTIG,,number_misread:555,555. LUSTIG Elisabeth Franziska 28.4.1889
+559,17,556%,PIZEMCEZRY Nern. Ior,1891-01-10,556%,,number_inferred,"556% PIZEMCEZRY Nern. Ior. 109,1.1891"
+560,17,STERR,Simon ler,1879-09-02,STERR,,number_misread:557,557. STERR Simon ler. 2.9.1879
+561,17,DRAB,"Yiktor lar. 3,0.1898",,DRAB,,number_misread:558;date_missing,"558. DRAB Yiktor lar. 3,0.1898"
+562,17,559-,"ZISLER Bernhardt isr,",1878-05-15,559-,,number_inferred,"559- ZISLER Bernhardt isr, 15.5.1878"
+563,17,KISLUR,0SKar Isr. 12.221911,,KISLUR,,number_misread:560;date_missing,560. KISLUR 0SKar Isr. 12.221911
+564,17,PISK,Paula are,1886-06-07,PISK,,number_misread:561,561. PISK Paula are 7.6.1886
+565,17,HERZOG,Gisela Sara 5.93.1868,1890-07-29,HERZOG,,number_misread:562;date_missing;date_recovered,"562, HERZOG Gisela Sara 5.93.1868"
+566,17,HIRRZOG,Kamllla Zara,1874-06-29,HIRRZOG,,number_misread:5653,"5653, HIRRZOG Kamllla Zara 29.6.1874"
+567,17,HERZOG,Laurn Sara,1872-05-28,HERZOG,,number_misread:564,"564. HERZOG Laurn Sara 28,5.1872"
+568,17,JAPKR,Moses ‚,1880-08-26,JAPKR,,number_misread:565,565. JAPKR Moses ‚ 26.8.1880
+569,17,RSICH,Leopold ler. 50.11.1891,,RSICH,,number_misread:566;date_missing,566. RSICH Leopold ler. 50.11.1891
+570,17,REICH,Adele Sara,1900-04-09,REICH,,number_misread:567,"567. REICH Adele Sara 9, 4.1900"
+571,17,JAROCINSKI,Stanislause,1899-05-20,JAROCINSKI,,number_misread:568,568. JAROCINSKI Stanislause 20. 5.1899
+572,17,zuysR,Rachnmil leur,1866-03-13,zuysR,,number_misread:569,569. zuysR Rachnmil leur. 13. 3.1866
+573,17,Buuer,Jutta Sara,1871-09-19,Buuer,,number_misread:70,70. Buuer Jutta Sara 190. 9.1871
+574,17,FREIBIMGER,Olga Tara,1888-03-11,FREIBIMGER,,number_misread:571,571. FREIBIMGER Olga Tara 11. 3.1888
+575,17,572«,SEGALL Walter,1925-04-26,572«,,number_inferred,572« SEGALL Walter 26» 4.1925
+576,17,573»,JANSNPELD Hanla Sara,1890-03-29,573»,,number_inferred,"573» JANSNPELD Hanla Sara 29, 3.1890"
+577,17,JAMSUPELD,Hersan,1894-12-25,JAMSUPELD,,number_misread:574,574. JAMSUPELD Hersan 25.12.1894
+578,17,WEISS,Josefine Sara,1911-10-15,WEISS,,number_misread:575,575. WEISS Josefine Sara 15.10.1911
+579,17,PWSRTHUBIMER,"Artur Isar,",1879-02-10,PWSRTHUBIMER,,number_misread:576,"576. PWSRTHUBIMER Artur Isar, 10. 2,1879"
+580,18,577«,KIEBELSTEIN Chaje Beila 147. 1874,,577«,,number_inferred;date_missing,577« KIEBELSTEIN Chaje Beila 147. 1874
+581,18,578»,KBLLER Rosa,1894-01-02,578»,,number_inferred,578» KBLLER Rosa 2l.ı1l. 1894
+582,18,BERGER,Ester Sara,1871-04-08,BERGER,,number_misread:579,"579. BERGER Ester Sara 8,4. 1871"
+583,18,5804,JEULINEK Klare Sara,1907-09-16,5804,,number_inferred,5804 JEULINEK Klare Sara 16.9. 1907
+584,18,SOl»,BELLAK Elsa fara,1888-06-23,SOl»,,number_inferred,"SOl» BELLAK Elsa fara 23,6.1888"
+585,18,URBACH,"Hermann ler, 21.718681",,URBACH,,number_misread:582;date_missing,"582. URBACH Hermann ler, 21.718681"
+586,18,KOHN,Kalwine Sara,1895-06-18,KOHN,,number_misread:583,583. KOHN Kalwine Sara 18.6.1895
+587,18,KOHN,Hatti Sara,1869-10-16,KOHN,,number_misread:534,534. KOHN Hatti Sara 16.10.1869
+588,18,"585%,",SUCHER Rachel,1896-12-17,"585%,",,number_inferred,"585%, SUCHER Rachel 17 „12. 1896"
+589,18,BINDER,BAlomon,1903-02-26,BINDER,,number_misread:586,"586. BINDER BAlomon 26. 2,1903"
+590,18,KOHN,Rudolf Ire,1879-07-05,KOHN,,number_misread:587,587. KOHN Rudolf Ire. 5. 7.1879
+591,18,RAAB,Arnold lor,1892-12-16,RAAB,,number_misread:588,"588. RAAB Arnold lor. 16,12. 1892"
+592,18,STERH,Ignaz Ier,1879-03-27,STERH,,number_misread:589,589. STERH Ignaz Ier. 27. 3.1879
+593,18,DIAMANT,Sigmund Isar,1879-11-14,DIAKANT,DIAKANT->DIAMANT,number_misread:590,590. DIAKANT Sigmund Isar. 14.11.1879
+594,18,KOUN,Emma Sara 24 2.1587,,KOUN,,number_misread:591;date_missing,591. KOUN Emma Sara 24 2.1587
+595,18,BERAN,"Wlih, ler",1865-05-15,BERAN,,number_misread:592,"592. BERAN Wlih, ler. 15.5.1865"
+596,18,BREB,Hermine,1871-02-03,BREB,,number_misread:593,593. BREB Hermine 3.2.1871
+597,18,SCHAUDER,Marye,1894-03-02,SCHAUDER,,number_misread:554,554. SCHAUDER Marye 2.3.1894
+598,18,SCHARF,Alexandra Sara,1896-09-10,SCHARF,,number_misread:595,595. SCHARF Alexandra Sara 10.9.1896
+599,18,ÖÜSTERRBICHSR,Pauline Sara,1879-01-19,ÖÜSTERRBICHSR,,number_misread:596,596. ÖÜSTERRBICHSR Pauline Sara 19.1.1879
+600,18,597«,FEHNER Dionysia Sara,1887-08-02,597«,,number_inferred,597« FEHNER Dionysia Sara 2.8.1887
+601,18,DIAMANT,Josefine Sara,1885-12-24,DIAMANT,,number_misread:598,598. DIAMANT Josefine Sara 24.12.1885
+602,18,RONINGER,BIssie Isar,1880-12-23,RONINGER,,number_misread:599;surname_suggestion:ROHINGER,599. RONINGER BIssie Isar. 23.12.1880
+603,18,ROHINGER,0I8ela Sara,1880-03-26,ROHINGER,,number_misread:600,"600. ROHINGER 0I8ela Sara 26, 3.1880"
+604,18,Stantesat,„LITE,,Stantesat,,number_inferred;date_missing,Stantesat „LITE
+605,19,MITTLER,Adele Sara,1903-04-02,MITTLER,,number_misread:601,"6ol, MITTLER Adele Sara 2, 4.1903"
+606,19,AIFTLER,"Friedrich Isr,",1924-02-16,AIFTLER,,number_misread:602,"602, AIFTLER Friedrich Isr, 16.2.1924"
+607,19,HITTLER,Susi Sara,1927-10-20,HITTLER,,number_misread:603;surname_suggestion:MITTLER,"603, HITTLER Susi Sara 20.10.1927"
+608,19,SZGZEKAUZ,Mlohal Sara,1896-10-12,SZGZEKAUZ,,number_misread:604,"604, SZGZEKAUZ Mlohal Sara 12.10.1896"
+609,19,HUSCHAK,Rachela Sara,1895-06-01,HUSCHAK,,number_misread:605,"605. HUSCHAK Rachela Sara 1, 6.1895"
+610,19,HUSCHAK,"Margarete Sara 3. 821921 607, UISCHAK Hans Isr,",1927-01-28,HUSCHAK,,number_misread:606,"606. HUSCHAK Margarete Sara 3. 821921
+607, UISCHAK Hans Isr, 28.1.1927"
+611,19,60B=,"SCHWARZ Babetta Sara TuB,1891",,60B=,,number_inferred;date_missing,"60B= SCHWARZ Babetta Sara TuB,1891"
+612,19,SCHLEGL,Benno luor«,1883-07-26,SCHLEGL,,number_misread:609,"609, SCHLEGL Benno luor« 26.7.1883"
+613,19,SCHLEGL,Betty Sara,1883-02-24,SCHLEGL,,number_misread:610,"610. SCHLEGL Betty Sara 24.2.1883
+614. SCHLEGL Hertha Sara 19.5.1923"
+614,19,ur:,"612, SUHLEGL GRETI Sara",1922-05-21,ur:,,number_inferred,"ur: 612, SUHLEGL GRETI Sara 21.5.1922"
+615,19,KOTH,Kurt lIor. R,1927-08-06,KOTH,,number_misread:613,613. KOTH Kurt lIor. R 6.8.1927
+616,19,ROZH,ottilye Sara,1894-09-21,ROZH,,number_misread:614,614. ROZH ottilye Sara 21.9.1894
+617,19,BILENBERG,Breim Zara,1877-05-15,BILENBERG,,number_misread:615,615. BILENBERG Breim Zara 15.5.1877
+618,19,GOTPPRIED,Paje Gittel,1885-05-16,GOTPPRIED,,number_misread:616,616. GOTPPRIED Paje Gittel 16.5.1885
+619,19,SSINBERGER,Alfred Ior,1881-07-26,SSINBERGER,,number_misread:617,617. SSINBERGER Alfred Ior. 26.7.1881
+620,19,SZIDON,"Ignaz Isr,",1875-03-12,SZIDON,,number_misread:618,"618. SZIDON Ignaz Isr, 12.3.1875"
+621,19,SZIDON,Fanny Sara,1876-06-05,SZIDON,,number_misread:619,619. SZIDON Fanny Sara 5.6.1876
+622,19,KOUN,"Karl Ier,",1895-03-17,KOUN,,number_misread:620,"620. KOUN Karl Ier, 17.3.1895"
+623,19,KOHN,lielene Sara,1928-06-16,KOHN,,number_misread:621,621. KOHN lielene Sara 16.6.1928
+624,19,SENZOFPF,Regina Sera,1887-04-24,SENZOFPF,,number_misread:622,622. SENZOFPF Regina Sera 24.4.1887
+625,19,GOTTLIEB,Sieymund Iar,1887-07-09,GOTTLIER,GOTTLIER->GOTTLIEB,number_misread:623,623. GOTTLIER Sieymund Iar. 9.7.1887
+626,19,GOTPLINB,Rosa Sara,1895-02-20,GOTPLINB,,number_misread:624,624. GOTPLINB Rosa Sara 20.2.1895
+627,19,GOTTLIEB,"Hanse ler,",1927-05-21,GOTTLIEB,,number_misread:625,"625. GOTTLIEB Hanse ler, 21.5.1927"
+628,19,FÄNRSER,Herma Sara,1895-05-29,FÄNRSER,,number_misread:626,626. FÄNRSER Herma Sara 29.5.1895
+629,19,PÄRBER,"Günther Krich Iur,",1926-05-30,PÄRBER,,number_misread:627,"627. PÄRBER Günther Krich Iur, 30.5.1926"
+630,19,SIRDER,Narger. Bara,1902-04-23,SIRDER,,number_misread:628,628. SIRDER Narger. Bara 23.4.1902
+631,19,HOPIPMANN,Aron Adolf Isr,1868-12-24,HOPIPMANN,,number_misread:629,"629. HOPIPMANN Aron Adolf Isr. 24,12. 1868"
+632,19,HOFPHANH,Panny Sara,1872-01-04,HOFPHANH,,number_misread:630,630. HOFPHANH Panny Sara 4.1.1872
+633,19,YFOLP,Jakob ler,1890-01-16,YFOLP,,number_misread:651,651. YFOLP Jakob ler. 16.1.1890
+634,19,WOLF,Anna Sara,1890-06-01,WOLF,,number_misread:632,632. WOLF Anna Sara 1.6.1890
+635,19,MÜLLER,Ludwig Karl Isr,1877-06-06,MÜLLER,,number_misread:633,633. MÜLLER Ludwig Karl Isr. 6.6.1877
+636,19,„a,KORNBLITH Chana,1884-06-23,„a,,number_inferred,644 „a KORNBLITH Chana 23.6.1884
+637,19,PLATZ,Mordko 14.22.1894,,PLATZ,,number_misread:635;date_missing,635. PLATZ Mordko 14.22.1894
+638,19,PLATZ,lianni Sara,1900-01-29,PLATZ,,number_misread:636,636. PLATZ lianni Sara 29.1.1900
+639,19,"65%,",GRWÜRZ Chaje Sara,1867-11-18,"65%,",,number_inferred,"65%, GRWÜRZ Chaje Sara 18.11.1867"
+640,20,EIER,- “ ae 2 ae ee . .. FETTE,,EIER,,number_inferred;date_missing,EIER - “ ae 2 ae ee . .. FETTE
+641,20,Ss,Dr EL ERRRTETUUEEN Bu m. = De * x vn na Pr _ ı 9 > SB09,,Ss,,number_inferred;date_missing,Ss Dr EL ERRRTETUUEEN Bu m. = De * x vn na Pr _ ı 9 > SB09
+642,20,R,".6%8, SchIcK Julius lIsr",1875-05-10,R,,number_inferred,"R  .6%8, SchIcK Julius lIsr. 10.5.1875"
+643,20,..,"639, SCHICK Scheindel Sara",1876-10-16,..,,number_inferred,"’ .. 639, SCHICK Scheindel Sara 16.10.1876"
+644,20,WERBER,Karl ter,1884-06-22,WERBER,,number_misread:640,"640. WERBER Karl ter. 22., 6.1884"
+645,20,WERBER,Rachel,1895-09-16,WERBER,,number_misread:641,"641. WERBER Rachel 16., 9.1895"
+646,20,GLASER,Johanna Sara +,1897-03-24,GLASER,,number_misread:642,"642... GLASER Johanna Sara + 24,3.1897"
+647,20,DIAMANT,Gertrude Sara,1935-06-27,DIAMANT,,number_misread:643,643. DIAMANT Gertrude Sara 27.6.1935
+648,20,LÖBL,Ella Sara,1918-10-27,LÖBL,,number_misread:644,644. LÖBL Ella Sara 27.10.1918
+649,20,RAMLER,Siegfried Bruno Isr,1896-03-14,RAMLER,,number_misread:645,645.. RAMLER Siegfried Bruno Isr. 14.3.1896
+650,20,RAMLER,Reisel Sara,1887-01-13,RAMLER,,number_misread:646,646. RAMLER Reisel Sara 13.1.1887
+651,20,LEIBEL,Paula Sara,1873-12-29,LEIBEL,,number_misread:647,647. LEIBEL Paula Sara 29.12.1873
+652,20,HERLINGER,Szerens Sara,1910-12-24,HERLINGER,,number_misread:648,648. ' HERLINGER Szerens Sara 24.12.1910
+653,20,MARGULIES,Riwka Sara,1892-01-11,MARGULIES,,number_misread:649,649. MARGULIES Riwka Sara 11.1.1892
+654,20,LANGERMANN,Regina Sara,1915-06-26,LANGERMANN,,number_misread:651,"651., LANGERMANN Regina Sara 26.6.1915
+652. LANGERMANN Noah 17.1.1882"
+655,20,LANGERMANN,Jente Sara,1889-11-19,LANGERMANN,,number_misread:653,653. LANGERMANN Jente Sara 19.11.1889
+656,20,SALZER,Hugo Isr,1881-06-02,SALZER,,number_misread:654,654. SALZER Hugo Isr. 2.6. 1881
+657,20,SALZER,Therese Sara il. 5.1900,,SALZER,,number_misread:655;date_missing,655. SALZER Therese Sara il. 5.1900
+658,20,MAX,"Julie Sara 10,.. 4.1858 - 657. MAX imilie Sara",1891-03-23,MAX,,number_misread:656,"656. MAX Julie Sara 10,.. 4.1858
+- 657. MAX imilie Sara 23. 3.1891"
+659,20,MAX,Hedwig Sara,1886-07-11,MAX,,number_misread:658,"658. MAX Hedwig Sara 11. 7.1886
+659. MAX Isabella Sara 29.1. 1899"
+660,20,DIRNFELD,MArkus Israel,1901-10-10,DIRNFELD,,,660. DIRNFELD MArkus Israel 10.10.1901
+661,20,DIRNFELD,Ohaje Sara,1904-07-15,DIRNFELD,,,661. DIRNFELD Ohaje Sara 15. 7.1904
+662,20,DIRNFELD,"Herbert Ier,",1935-12-15,DIRNPELD,DIRNPELD->DIRNFELD,,"662. DIRNPELD Herbert Ier, . 15.12.1935"
+663,20,BERG,"Manes ler,",1882-02-23,BERG,,,"663. BERG Manes ler, 23. 2.1882"
+664,20,BERG,Hedwig Sara,1882-01-22,BERG,,,664. BERG Hedwig Sara 22. 1.1882
+665,20,STRAUSS,"Alois Isr,",1871-05-15,STRAUSS,,,"665. STRAUSS Alois Isr, 15. 5.1871"
+666,20,WEISS,Albert Israel,1888-07-24,WEISS,,,666.. WEISS Albert Israel 24. 7.1888
+667,20,667».,BAUNÖL Leo Israel,1907-03-06,667».,,number_inferred,667». BAUNÖL Leo Israel 6. 3.1907
+668,20,SCHERZ,"Rudolf Isr, s",1900-12-07,SCHERZ,,,"66B.. SCHERZ Rudolf Isr, s 7.12.1900"
+669,20,PORJESZ,Marjem Sara -,1884-10-22,PORJESZ,,,669.. PORJESZ Marjem Sara - 22.10.1884
+670,20,ZENTNER,Salomon,1881-11-20,ZENTNER,,,670. ZENTNER Salomon 20.11.1881
+671,20,ZENTNER,Narjem Sara,1884-11-17,ZENTNER,,,671. ZENTNER Narjem Sara 17.11.1884
+672,20,POLATSCHEK,Theres Sara 24. 53.1875,,POLATSCHEK,,date_missing,672. POLATSCHEK Theres Sara 24. 53.1875
+673,20,POLATSCHEK,Marianne Sara,1906-04-04,POLATSCHEK,,,673. POLATSCHEK Marianne Sara 4. 4.1906
+674,20,674»,"KLÜGER Moritz Isr,",1882-12-27,674»,,number_inferred,"674» KLÜGER Moritz Isr,. 27.12.1882"
+675,20,KLÜGER,Kamilla Sara,1883-02-07,KLÜGER,,,675. KLÜGER Kamilla Sara 7. 2.1883
+676,20,FISCH,Charlotte Sara,1904-12-13,FISCH,,,676. FISCH Charlotte Sara 13.12.1904
+677,20,FISCH,Erika Sara,1929-11-16,FISCH,,,677. FISCH Erika Sara 16.11.1929
+678,20,Ehrmann,Elsa Sara,1918-09-05,Ehrmann,,,"678. Ehrmann Elsa Sara .. 5. 9,1918"
+679,21,679.,HACKER Salomon,1880-05-04,679.,,number_inferred,$ 679. HACKER Salomon 4. 5.1880
+680,21,680.,HACKER Katharina Sara,1887-03-25,680.,,number_inferred,\ 680. HACKER Katharina Sara 25.3.1887
+681,21,ÖSTERREICHER,Magdalena Sara 18.101913,,ÖSTERREICHER,,date_missing,681. ÖSTERREICHER Magdalena Sara 18.101913
+682,21,ACKERMANN,MOses,1883-09-20,ACKERMANN,,,682. ACKERMANN MOses 20.9.1883
+683,21,ACKERMANN,Esther Riwe,1889-03-08,ACKERMANN,,,683. ACKERMANN Esther Riwe 8.3.1889
+684,21,ALBIN,Jeannette Sara,1886-03-18,ALBIN,,,684. ALBIN Jeannette Sara 18.3.1886
+685,21,ALBIN,"Hans Isr,",1921-06-23,ALBIN,,,"685. ALBIN Hans Isr, 23.6.1921"
+686,21,TRANKL,Ludwig Isr,1884-09-19,TRANKL,,number_misread:685,685. TRANKL Ludwig Isr. 19.9.1884
+687,21,FRANKL,ülsa Sara,1891-08-26,FRANKL,,,687. FRANKL ülsa Sara 26.8.1891
+688,21,REICH,Hans Israel,1895-05-04,REICH,,,688. REICH Hans Israel 4.5.1895
+689,21,KATZ,"Leib Isr, 713.1889",,KATZ,,date_missing,"689. KATZ Leib Isr, 713.1889"
+690,21,KATZ,Cylia Sara,1894-07-06,KATZ,,,690. KATZ Cylia Sara 6.7.1894
+691,21,FÜRST,"Karl Isr,",1881-05-29,FÜRST,,,"691. FÜRST Karl Isr, 29.5.1881"
+692,21,i,692. GÜNSBERGER Katharina Sara,1883-04-25,i,,number_inferred,i 692. GÜNSBERGER Katharina Sara 25.14.1883
+693,21,GÜNSBERGER,Netti Sara,1881-04-15,GÜNSBERGER,,,693. GÜNSBERGER Netti Sara 15.4.1881
+694,21,SCIWEZIZER,Mayem Sara,1896-07-06,SCIWEZIZER,,,694. SCIWEZIZER Mayem Sara 6.7.1896
+695,21,KLEINER,Markus Salomon,1900-06-09,KLEINER,,,695. KLEINER Markus Salomon 9.6.1900
+696,21,ALT,Josef Isr,1894-10-27,ALT,,,696. ALT Josef Isr. 27.10.1894
+697,21,ALT,Rosa Sara,1900-03-04,ALT,,,697. ALT Rosa Sara 4.. 3.1900
+698,21,ALT,Robert Isr,1926-06-23,ALT,,,698. ALT Robert Isr. 23. 6.1926
+699,21,ELFENBEIN,Jachel,1881-06-14,ELFENBEIN,,,699. ELFENBEIN Jachel 14.6.1881
+700,21,SCHLESINGER,Eva Sara,1880-05-02,SCHLESINGER,,,700. SCHLESINGER Eva Sara 2.5.1880
+701,21,Geheinsa,"Santonati,.: Stocker nößolizei a SYUUT./NDE 3. “",,Geheinsa,,number_inferred;date_missing,"; Geheinsa Santonati,.:
+Stocker nößolizei a
+SYUUT./NDE 3. “"
+702,22,k,"Tol» JANZETZ Manuel ior,",1900-02-04,k,,number_inferred,"k Tol» JANZETZ Manuel ior, 4. 2.1900"
+703,22,702.,DEUZSCH Siegmund Isr,1896-06-11,702.,,number_inferred,[ 702. DEUZSCH Siegmund Isr. 11.6.1896
+704,22,703.,"POLLAK Siegfr. ler,",1899-05-14,703.,,number_inferred,"| 703. POLLAK Siegfr. ler, 14.5.1899"
+705,22,i,704. POLLAK Kmilie Sara IL 1897,,i,,number_inferred;date_missing,i 704. POLLAK Kmilie Sara IL 1897
+706,22,E,705. KPSIEIN Prans ler,1906-02-14,E,,number_inferred,E 705. KPSIEIN Prans ler. 14.2.1906
+707,22,F,706. FPU2RIN Bophie Sara,1906-06-30,F,,number_inferred,F 706. FPU2RIN Bophie Sara 30.6.1906
+708,22,rd,,1895-10-25,rd,,number_inferred,| rd 25.10.1895
+709,22,F,109. RBegall irnst Ier,1926-05-30,F,,number_inferred,F 109. RBegall irnst Ier. 30. 5.1926
+710,22,E,710. DIAMANT Heinz ler. 15. 3.2923,,E,,number_inferred;date_missing,E 710. DIAMANT Heinz ler. 15. 3.2923
+711,22,E,12. Kunz Frites Ion,1895-06-15,E,,number_inferred,E 12. Kunz Frites Ion 15.6.1895
+712,22,E,715. Kun ürnet Isr,1889-01-05,E,,number_inferred,E 715. Kun ürnet Isr. 5.1.1889
+713,22,E,714. BIRNBACH Heinr. Iser,1872-03-12,E,,number_inferred,E 714. BIRNBACH Heinr. Iser. 12.3.1872
+714,22,E,115. BIRNBACH Alice Sara,1899-11-16,E,,number_inferred,E 115. BIRNBACH Alice Sara 16.11.1899
+715,22,716%,BINNBACH Lilli Sara,1924-01-10,716%,,number_inferred,; 716% BINNBACH Lilli Sara 10. 1.1924
+716,22,B,717. BIRNBACH Ruth Sara,1922-12-23,B,,number_inferred,"B 717. BIRNBACH Ruth Sara 23,12.1922"
+717,22,E,T18. SCHNEEBAUM ugenie Sara,1890-01-08,E,,number_inferred,"E T18. SCHNEEBAUM ugenie Sara 8, 1.1890"
+718,22,i,719. SCHWARZ Regine Sara,1869-03-20,i,,number_inferred,i 719. SCHWARZ Regine Sara 20.3.1869
+719,22,k,720. RCKSTEIN Grote Sara,1896-04-19,k,,number_inferred,k 720. RCKSTEIN Grote Sara 19.4.1896
+720,22,E,721. NSISER Lea Sara 22.53.1894,,E,,number_inferred;date_missing,E 721. NSISER Lea Sara 22.53.1894
+721,22,E,722. GOWTDENKER Mario Sara,1902-07-29,E,,number_inferred,E 722. GOWTDENKER Mario Sara 29.7.1902
+722,22,E,123. WENKART Huren Äsrael,1900-06-13,E,,number_inferred,E 123. WENKART Huren Äsrael 13.6.1900
+723,22,724.,YENKANT Klara Sara,1907-05-28,724.,,number_inferred,# 724. YENKANT Klara Sara 28.5.1907
+724,22,E,"725. FRISCH David Ior,",1889-10-13,E,,number_inferred,"E 725. FRISCH David Ior, 13.10.1889"
+725,22,726.,FRÄNKEL Mirjam Sara,1889-04-30,726.,,number_inferred,% 726. FRÄNKEL Mirjam Sara 30. 4.1889
+726,22,Bi,"727. FRÄNK:L Heinr. Iar,",1927-01-13,Bi,,number_inferred,"Bi 727. FRÄNK:L Heinr. Iar, 13, 1.1927"
+727,22,E,728. BEURSCH Paul Isr,1902-06-27,E,,number_inferred,E 728. BEURSCH Paul Isr. 27. 6.1902
+728,22,E,729. ROUWNENSTÄRICH Kosos,1887-05-05,E,,number_inferred,E 729. ROUWNENSTÄRICH Kosos 5. 5.1887
+729,22,E,730. ROFHENITRZRICH Anna Sara,1902-05-02,E,,number_inferred,E 730. ROFHENITRZRICH Anna Sara 2. 5.1902
+730,22,E,"731. KARP Rudolf LIur,",1894-10-26,E,,number_inferred,"E 731. KARP Rudolf LIur, 26.10,1894"
+731,22,E,7524 KARP Fanny Sara 22.22 1895,1922-04-05,E,,number_inferred;date_missing;date_recovered,E 7524 KARP Fanny Sara 22.22 1895
+732,22,Ei,753. SCHAPIRA Lina Sara 23.9.2901,,Ei,,number_inferred;date_missing,Ei 753. SCHAPIRA Lina Sara 23.9.2901
+733,22,E,"734. KOHNN Vorbert Ier. 25 90, 1903",,E,,number_inferred;date_missing,"E 734. KOHNN Vorbert Ier. 25 90, 1903"
+734,22,E,735. ROSENFELD Nudolfine Sara,1904-12-28,E,,number_inferred,E 735. ROSENFELD Nudolfine Sara 28.12.1904
+735,22,736.,ZELLISCH Joh. Saru 18. 441905,,736.,,number_inferred;date_missing,4 736. ZELLISCH Joh. Saru 18. 441905
+736,22,E,"757. LIRDAUER Vhaisn Isak f,",,E,,number_inferred;date_missing,"E 757. LIRDAUER Vhaisn Isak f,"
+737,22,Ziegellaub,,1884-05-17,Ziegellaub,,number_inferred,"5 Ziegellaub 17, 5.1884"
+738,22,738.,PLENHER Irnst Ic 5. 53.1880,,738.,,number_inferred;date_missing,4 738. PLENHER Irnst Ic 5. 53.1880
+739,23,FERETEETEETETEEDETEEEIETENEREET,TEE NESPEIL N BERNIEN DREI PENERZELFEREN,,FERETEETEETETEEDETEEEIETENEREET,,number_inferred;date_missing,FERETEETEETETEEDETEEEIETENEREET TEE NESPEIL N BERNIEN DREI PENERZELFEREN
+740,23,RETTET,LITER TEENS EEE TRETEN ET ETEEST IE ZONE LEE EEE RR a ERTEILEN ET TE LT EEE TEN EEE ET RE EBEE,1883-08-30,RETTET,,number_inferred;date_missing;date_recovered,RETTET LITER TEENS EEE TRETEN ET ETEEST IE ZONE LEE EEE RR a ERTEILEN ET TE LT EEE TEN EEE ET RE EBEE
+741,23,739.,PALUDI Blinabeth ara,1898-03-04,739.,,number_inferred,"© 739. PALUDI Blinabeth ara | 4.3.1898 :
+25 1408 BUOHWALD Johanna Bara .-3943.1902"
+742,23,See,"2.3705 0.942. BYK HRRSCH Iurı 022,10 143% BYK Henriette Sara 0 BLI21884",,See,,number_inferred;date_missing,"See 2.3705
+0.942. BYK HRRSCH Iurı 022,10
+143% BYK Henriette Sara 0 BLI21884"
+743,23,a,"1055 FISCHER Hichael, ler. ME",1887-06-21,a,,number_inferred,"a 1055 FISCHER Hichael, ler. ME 21.6.1887"
+744,23,MAUS,Olga Sara et,,MAUS,,number_misread:708;date_missing,"708, MAUS Olga Sara et"
+745,23,747%,OHRINGER Marie Sara ',1927-11-29,747%,,number_inferred,"747% OHRINGER Marie Sara '  29,11.1927 Bea"
+746,23,748%,OHRIRGER: Hertha Sara +. 254341923 A,,748%,,number_inferred;date_missing,.. 748% OHRIRGER: Hertha Sara +. 254341923 A
+747,23,007494,ONRINGER Zdith Sara . 1848.1926 rg,1927-11-29,007494,,number_inferred;date_missing;date_recovered,007494 ONRINGER Zdith Sara . 1848.1926 rg
+748,23,750%,BERNSTEIN Lea Reinel 57 2943.1977 2,,750%,,number_inferred;date_missing,750% BERNSTEIN Lea Reinel 57 2943.1977 2
+749,23,EHRE,TITTEN Er nee % ENTER ER U I [DZ a . ”,,EHRE,,number_inferred;date_missing,EHRE TITTEN Er nee % ENTER ER U I [DZ a . ”
+750,23,The,BIPTMANN Fika 23481886,,The,,number_inferred;date_missing,The BIPTMANN Fika 23481886
+751,23,MANDEL,Josefa Sara 3847.1877,,MANDEL,,number_misread:152;date_missing,"152, MANDEL Josefa Sara  3847.1877"
+752,23,RAPTIN,Leon Ir 84741897,,RAPTIN,,number_inferred;date_missing,534 RAPTIN Leon Ir 84741897
+754,23,SCHWARZ,"Harkus Iur, 27143.1882",,SCHWARZ,,gap_before:753;date_missing,"754, SCHWARZ Harkus Iur, 27143.1882"
+755,23,:DENENBARK,"Jakob Iur. Ge 2.049,1893",,:DENENBARK,,date_missing,"755. :DENENBARK Jakob Iur. Ge 2.049,1893"
+756,23,DENENHAIK,Bhanka Sara 204541907,,DENENHAIK,,date_missing,756. DENENHAIK Bhanka Sara 204541907
+757,23,SILBERMARN,Rozia Sara,1888-11-18,SILBERMARN,,,757. SILBERMARN Rozia Sara 18.11.1888
+758,23,T5B..,BIDBERHANN Jetti Sara,1922-04-05,T5B..,,number_inferred,". T5B.. BIDBERHANN Jetti Sara 5%, 4.1922"
+759,23,HEEIG,Chane Lea,1839-12-29,HEEIG,,,"759.. HEEIG Chane Lea 29,12.1839"
+760,23,NANDEL,"Jakob Iur, 34u_3s4893",,NANDEL,,date_missing,"760. NANDEL Jakob Iur, 34u_3s4893"
+761,23,HANDEL,Henriette Sara 14.11.1592,,HANDEL,,date_missing,761. HANDEL Henriette Sara 14.11.1592
+762,23,GIMPL,Paje Jara \,1879-10-27,GIMPL,,number_misread:162,"162, GIMPL Paje Jara \ 27.10.1879"
+763,23,"76%,",HITPUER MARGARETE Barca,1901-04-08,"76%,",,number_inferred,"76%, HITPUER MARGARETE Barca 8: 4.1901"
+764,23,ZOCH,Katharina Sara,1870-07-26,ZOCH,,,"764. ZOCH Katharina Sara. 26. 7,1870"
+765,23,#E138,Jonef Isar,1897-01-03,#E138,,,765. #E138 Jonef Isar. 3» 1.1897
+766,23,TRIGER,Julius Inr« 3249n1891,,TRIGER,,date_missing,766. TRIGER Julius Inr« 3249n1891
+767,23,THIOEN,Nosalia Laura Sara,1894-06-26,THIOEN,,number_misread:7167,7167. THIOEN Nosalia Laura Sara 26.6.1894
+768,23,WIISENTHAL,"Jakob Ior,",1882-05-26,WIISENTHAL,,number_misread:7168,"7168. WIISENTHAL Jakob Ior, . 26.5.1882"
+769,23,SCURBE,Klara Sara 19.53.1839,,SCURBE,,number_misread:759;date_missing,759. SCURBE Klara Sara 19.53.1839
+770,23,BOHNEE,Heinz Isr,1922-06-27,BOHNEE,,,770. BOHNEE Heinz Isr. 27.6.1922
+771,23,HOLLÄNDER,"Rodort iur,",1882-09-26,HOLLÄNDER,,number_inferred,". 77 HOLLÄNDER Rodort iur, 26 “ 9 . 1882"
+772,23,HOLLÄNDER,Camilla Sara,1886-08-01,HOLLÄNDER,,number_misread:972,972. HOLLÄNDER Camilla Sara 1.8.1886
+773,23,773«,"TOCH Ludwig Isar,",1886-09-14,773«,,number_inferred,"773« TOCH Ludwig Isar, 14.9.1886"
+774,23,LUSTOARTEN,Elisa ler,1882-03-24,LUSTOARTEN,,,774. LUSTOARTEN Elisa ler 24.3.1882
+775,23,775%,GROSSMANN Jakob Ior«,1879-10-15,775%,,number_inferred,775% GROSSMANN Jakob Ior« 15.10.1879
+776,23,716.,OROSSKANN: Suter Sara,1885-05-28,716.,,number_inferred,. 716. OROSSKANN: Suter Sara 28. 5.1885
+777,23,"TTT,HOROSHSTERN.",Nelene Sara,1918-01-24,"TTT,HOROSHSTERN.",,number_inferred,"TTT,HOROSHSTERN. Nelene Sara 24.1.1918"
+778,23,BRAGLANSKI,Abraham,1881-02-10,BRAGLANSKI,,,778. BRAGLANSKI Abraham 10.2.1881
+779,23,BRAGLAVSKI,Helene,1893-03-18,BRAGLAVSKI,,surname_suggestion:BRAGLANSKI,779. BRAGLAVSKI Helene 18.3.1893
+780,23,BUDABZEWSKI,Aron,1876-06-08,BUDABZEWSKI,,number_misread:7180,7180. BUDABZEWSKI Aron 8.6.1876
+781,23,BUNDASZERBKI,Reilzie 241884,,BUNDASZERBKI,,date_missing,781. BUNDASZERBKI Reilzie 241884
+782,24,En,U rn TUE ET TE ET TE TEE TEEN IE TEE EETEBETG (ME BEE DDR TEN Tu nann TEN ARTE TI BET GTETETEEEERNEEN DUEEERE DL ET EEE TIERE LITT N mn aa Emmi,,En,,number_inferred;date_missing,En U rn TUE ET TE ET TE TEE TEEN IE TEE EETEBETG (ME BEE DDR TEN Tu nann TEN ARTE TI BET GTETETEEEERNEEN DUEEERE DL ET EEE TIERE LITT N mn aa Emmi
+783,24,ne,EEE TR RTEE OTRLN N ENT SEEET TT ERTL LTE DEREN ET ET IT TEE TER TI ONE ST,,ne,,number_inferred;date_missing,ne EEE TR RTEE OTRLN N ENT SEEET  TT ERTL LTE DEREN ET ET IT TEE TER TI ONE ST
+784,24,EEE,DE TEE EEE EEE EGEN RENTEN TERN ROTE TER DET UT TEE ET TEE TEE RETTET LTE TEL Se Tr ET,,EEE,,number_inferred;date_missing,EEE DE TEE EEE EEE EGEN RENTEN TERN ROTE TER DET UT TEE ET TEE TEE RETTET LTE TEL Se Tr ET
+785,24,ERITREA,ET TERN TE WE FEB ET EEE NEST IE ELTERNTEIL DE ET a er,,ERITREA,,number_inferred;date_missing,ERITREA ET TERN TE WE FEB ET EEE NEST IE ELTERNTEIL DE ET a er
+786,24,TER,ARTE EERLEN TEE EEE FE EEE TEL TE EEE T TEEN ERS AESTEETLNGERTN DEE En RE EL a ET TR A TEE EEE TE EEE N FE,,TER,,number_inferred;date_missing,TER ARTE EERLEN TEE EEE FE EEE TEL TE EEE T TEEN ERS AESTEETLNGERTN DEE En RE EL a ET TR A TEE EEE TE EEE N FE
+787,24,7824,PUNDER Bohwldn 00.0184 3.1871,,7824,,number_inferred;date_missing,° 7824 PUNDER Bohwldn 00.0184 3.1871
+788,24,.185..,PUNDIK Bilsuel Dibe 14 141874,,.185..,,number_inferred;date_missing,’ .185.. PUNDIK Bilsuel Dibe 14 141874.
+789,24,784».,BAUER Moria Ior.. 250 7.1893 2.2.7854 BAUER Qlga.Sara 1141141898,,784».,,number_inferred;date_missing,"784». BAUER Moria Ior.. 250 7.1893
+2.2.7854 BAUER Qlga.Sara 1141141898. |"
+790,24,BAUBR,"Ally. Isar. U RELLIIDL | 787% BAUSR Robert Ier,. 9 Fıl926",,BAUBR,,number_misread:786;date_missing,"786. BAUBR Ally. Isar. U RELLIIDL |
+787% BAUSR Robert Ier,. 9 Fıl926."
+791,24,788%,BAUER Bdith Jara 25» Ar1923,,788%,,number_inferred;date_missing,788% BAUER Bdith Jara 25» Ar1923
+792,24,*.789»:,NIBSRL Berta Sara,1919-08-14,*.789»:,,number_inferred,"*.789»: NIBSRL Berta Sara 14. 8,1919"
+793,24,KÜLLER,Bliss ler. Ble. Yu1882,,KÜLLER,,number_misread:790;date_missing,790. KÜLLER Bliss ler. Ble. Yu1882
+794,24,791.,MÜLLER Rosa Sprinze,1882-12-14,791.,,number_inferred,.... 791. MÜLLER Rosa Sprinze 14.12.1882
+795,24,792.,"BERGER Walter Ier,",1886-06-12,792.,,number_inferred,": 792. BERGER Walter Ier, . 122.6.1886 _"
+796,24,er,ER EEE ETUI TEE NEE ARE ra BEAIETTER! W Earl zu 5,,er,,number_inferred;date_missing,er ER EEE ETUI TEE NEE ARE ra BEAIETTER! W Earl zu 5
+797,24,ALBIN,"Reisel 25, 2,1286",,ALBIN,,number_misread:799;date_missing,"799. ALBIN Reisel 25, 2,1286"
+798,24,UNE,ET ER EEE ENT RE TE TEEN TEE ICE TE NETTE © a EEE a,,UNE,,number_inferred;date_missing,UNE ET ER EEE ENT RE TE TEEN TEE ICE TE NETTE © a EEE a .
+799,24,DRUCKER,Chaje Sara 3. 841876,,DRUCKER,,number_misread:794;date_missing,794. DRUCKER Chaje Sara 3. 841876
+800,24,WEITER,"Nax Ior, 17.10.1280 . ;",,WEITER,,number_misread:195;date_missing,"195. WEITER Nax Ior, 17.10.1280 . ;"
+801,24,KRRTER,Ottille Sara,1883-02-15,KRRTER,,number_misread:796,"796, KRRTER Ottille Sara 15. 2.1883"
+802,24,RAUBER,"Alois Iars 22, 941888",,RAUBER,,number_misread:197;date_missing,"197. RAUBER Alois Iars 22, 941888"
+803,24,TAUBER,"Kurt Georg leur, 5a 441924",,TAUBER,,number_misread:198;date_missing,"198. TAUBER Kurt Georg leur, 5a 441924"
+804,24,HAGENFRATZ,Schmaja Ir,1890-09-03,HAGENFRATZ,,number_misread:1939,1939. HAGENFRATZ Schmaja Ir. 3+ 9u1890
+805,24,HASEHMATZ,PFoige Sara,1892-09-11,HASEHMATZ,,number_misread:800,800.. HASEHMATZ PFoige Sara 11.9.1892
+806,24,Te,x us um 5. j - - AFCEE nit Por r,,Te,,number_inferred;date_missing,Te x us um 5. j - - AFCEE nit Por r
+807,24,ROTEN,DATE Sur ren mi ER. m mE Turnen E . Par 2 Sen e,,ROTEN,,number_inferred;date_missing,ROTEN DATE Sur ren mi ER. m mE Turnen E . Par 2 Sen e
+808,25,HENNINCER,Rosalie Bara,1869-07-26,HENNINCER,,number_misread:8001,"BOol,HENNINCER Rosalie Bara 26.7.1869"
+809,25,5PKINGER,"Leib Isar,",1897-01-14,5PKINGER,,number_misread:802,"802.5PKINGER Leib Isar, 14.1.1897"
+810,25,5!DLOF,"Leopold Isr,",1880-07-28,5!DLOF,,number_misread:803,"803,5!DLOF Leopold Isr, 28.7.1880"
+811,25,8IDt0OF,Regine Sara,1889-12-13,8IDt0OF,,number_misread:804,804.8IDt0OF Regine Sara 13.12.1889
+812,25,GRÜBCHEER,Auslia Sara 21.3.1594,,GRÜBCHEER,,number_misread:805;date_missing,Bo5.GRÜBCHEER Auslia Sara 21.3.1594
+813,25,FERTHRIHMER,Max Ior. 21210.18793,,FERTHRIHMER,,number_misread:806;date_missing,"806 ,FERTHRIHMER Max Ior. 21210.18793"
+814,25,SOTaFZHIZER,"Anton leur,",1874-08-30,SOTaFZHIZER,,number_inferred,"SOTaFZHIZER Anton leur, 30.8.1874"
+815,25,#3INTEGER,Hermann lsxr,1882-07-15,#3INTEGER,,number_misread:808,"808, #3INTEGER Hermann lsxr. 15.7.1882"
+816,25,STRAUSE,"Hermann Isr,",1834-02-10,STRAUSE,,number_misread:809,"B09, STRAUSE Hermann Isr, 10.2.1834"
+817,25,SEITKSEN,Kkirka Mindel,1877-11-13,SEITKSEN,,number_misread:0,BLO.SEITKSEN Kkirka Mindel 13.11. 1877
+818,25,SLL.JAHRSL,Bani Sara,1891-05-07,SLL.JAHRSL,,number_inferred,SLL.JAHRSL Bani Sara 7.5.1891
+819,25,FlÜ5HS,Kelunioe Jura,1895-09-05,FlÜ5HS,,number_misread:812,"812,FlÜ5HS Kelunioe Jura 5,9.1895"
+820,25,POLLAK,"Gubriel Insr, 45.1378",,POLLAK,,number_misread:813;date_missing,"B13.POLLAK Gubriel Insr, 45.1378"
+821,25,BL4,«POLLAK ulaga Sara 1. y) [ 1889,,BL4,,number_inferred;date_missing,BL4 «POLLAK ulaga Sara 1. y) [ 1889
+822,25,WHIKSAM,Prieda Sara Tal» 10892,1857-01-08,WHIKSAM,,number_misread:5;date_missing;date_recovered,BILS.WHIKSAM Prieda Sara Tal» 10892
+823,25,8P1?7,Lotty SJarız,1867-02-17,8P1?7,,number_misread:816,816.8P1?7 Lotty SJarız 17.2 «1867 \
+824,25,BLTKLIUBERGER,"Adolf Iur, 25.4.1365",1924-01-14,BLTKLIUBERGER,,number_inferred;date_missing;date_recovered,"BLTKLIUBERGER Adolf Iur, 25.4.1365"
+825,25,COLYPIFGER,Grete Sara 14.5.1307,1924-12-12,COLYPIFGER,,number_misread:818;date_missing;date_recovered,81B.COLYPIFGER Grete Sara 14.5.1307
+826,25,CHLYFIERGER,Borta Sara 25.5.1271,1926-01-20,CHLYFIERGER,,number_misread:1;date_missing;date_recovered,BIYI.CHLYFIERGER Borta Sara 25.5.1271
+827,25,50LDPINGIER,Pauline Sara,1911-12-23,50LDPINGIER,,number_misread:820,820. 50LDPINGIER Pauline Sara 23.12.1911
+828,25,B2L.PFHRINDSL,Fanny Sara,1875-09-18,B2L.PFHRINDSL,,number_inferred,B2L.PFHRINDSL Fanny Sara 18. 9.1875
+829,25,BAAN,"Viktor lsr,",1857-01-08,BAAN,,number_misread:822,"822.BAAN Viktor lsr, 8.1.1857"
+830,25,BAAR,Margit Sara 12.1.1699,,BAAR,,number_misread:823;date_missing,823.BAAR Margit Sara 12.1.1699
+831,25,BAAR,Ruth Sara,1924-01-14,BAAR,,number_misread:824,824.BAAR Ruth Sara 14.1.1924
+832,25,BAAl,kerbert Isr,1924-12-12,BAAl,,number_misread:825,"825 ,BAAl kerbert Isr. 12.12.1924"
+833,25,BAiii,Krika Sara,1926-01-20,BAiii,,number_misread:826,826.BAiii Krika Sara 20.1.1926
+834,25,EOSSNBERGSRosa:,Sara,1899-04-05,EOSSNBERGSRosa:,,number_misread:827,827.EOSSNBERGSRosa: Sara 5.4.1899
+835,25,5CHRID,Martha Sara,1893-04-22,5CHRID,,number_misread:829,829.5CHRID Martha Sara 22.4.1893
+836,25,BI83,Anna Sara,1875-07-28,BI83,,number_misread:831,831.BI83 Anna Sara 28.7.1875
+837,25,KORHTHAL,Debora,1865-06-08,KORHTHAL,,number_misread:853,"853. KORHTHAL Debora 8,.6,1865"
+838,25,JUKSL,EXlMASara 8.7.1579,,JUKSL,,number_misread:854;date_missing,854. JUKSL EXlMASara 8.7.1579
+839,25,BIRKER,Pransieka Sara 24.32.1877,,BIRKER,,number_misread:835;date_missing,835. BIRKER Pransieka Sara 24.32.1877
+840,25,FELSENBURG,Leonore Sara,1882-02-27,FELSENBURG,,number_misread:836,836. FELSENBURG Leonore Sara 27.2.1882
+841,26,ROBERBAUN,Kugenie Sara,1882-12-29,ROBERBAUN,,number_misread:837,837. ROBERBAUN Kugenie Sara 29.12.1882
+842,26,"838,",FAHN Henriette Bara,1876-06-04,"838,",,number_inferred,". 838, FAHN Henriette Bara 4,6,1876"
+843,26,WOLLNENR,"Harkus Isr,",1874-04-22,WOLLNENR,,number_misread:839,"839. WOLLNENR Harkus Isr, 22.4.1874"
+844,26,KOLLNER,Hedwig Sarn,1881-05-02,KOLLNER,,number_misread:840,"840. KOLLNER Hedwig Sarn 2Is5,1881"
+845,26,WEISS,Isr,1875-01-25,WEISS,,number_misread:41,8ö4l. WEISS Isr. 25.1.1875
+846,26,KEPPICH,"Zlla Sara 5031,.1994",,KEPPICH,,number_misread:842;date_missing,"842. KEPPICH Zlla Sara 5031,.1994"
+847,26,KHPPICH,"Peter Isr,",1829-12-29,KHPPICH,,number_misread:843;surname_suggestion:KEPPICH,"843. KHPPICH Peter Isr, 29.12.1829"
+848,26,BLAU,"ftlchurd Isr,",1877-04-03,BLAU,,number_misread:4,"BA4, BLAU ftlchurd Isr, 3. 4.1877"
+849,26,BABUCHK,Bertha Sara,1882-03-20,BABUCHK,,number_misread:845,845. BABUCHK Bertha Sara 20.3.1882
+850,26,SRIEDMANN,Lea Sara,1889-03-29,SRIEDMANN,,number_misread:846,846. SRIEDMANN Lea Sara 29.3.1889
+851,26,PRESSER,Bax lom,1913-05-16,PRESSER,,number_misread:847,847. PRESSER Bax lom. 16.5.1913
+852,26,PRESSER,Jenny Sera,1888-01-16,PRESDER,PRESDER->PRESSER,number_misread:848,"848. PRESDER Jenny Sera ..16.1,1888"
+853,26,BECHER,"Emma Sara 9,53,1885",,BECHER,,number_misread:849;date_missing,"849. BECHER Emma Sara 9,53,1885"
+854,26,ADLER,PFriedericke Sara,1878-06-29,ADLER,,number_misread:850,850. ADLER PFriedericke Sara 29.6.1878
+855,26,BAUMANN,Isidor,1872-10-13,BAUMANN,,number_misread:851,851. BAUMANN Isidor 13.10.1872
+856,26,BAUMANN,Elisabeth Sara,1884-04-28,BAUMANN,,number_misread:852,852. BAUMANN Elisabeth Sara 28.4.1884
+857,26,BLAU,"ümanuol Inc,",1871-12-17,BLAU,,number_misread:855,"855. BLAU ümanuol Inc, 17.12.1871"
+858,26,«,BLAU Berta Sara,1896-02-03,«,,number_inferred,854 « BLAU Berta Sara 3.2 «1896
+859,26,DERGER,Karoline Sara,1866-08-29,DERGER,,number_misread:855,855. DERGER Karoline Sara 29.8.1866
+860,26,RN,"Friedericke Sara """,1869-04-19,RN,,number_misread:856,"856. RN Friedericke Sara ""19.4.1869"
+861,26,BEROER,"Phillpp Isr,",1870-08-04,BEROER,,number_misread:857,"857. BEROER Phillpp Isr, 4.8.1870"
+862,26,COIN,Nedwog Sara,1885-05-24,COIN,,number_misread:858,858. COIN Nedwog Sara 24.5.1885
+863,26,BRONNER,Flora Sara,1895-05-05,BRONNER,,number_misread:659,659. BRONNER Flora Sara 5.5.1895
+864,26,REICH,Kügina Sara,1874-10-01,REICH,,number_misread:860,860. REICH Kügina Sara 1.10.1874
+865,26,BAINHACH,Karkus leur,1875-05-05,BAINHACH,,number_misread:861,"B61. BAINHACH Karkus leur. 5 ,5,1875"
+866,26,PRAHKLL,"Kurl ier,",1904-03-05,PRAHKLL,,number_misread:862,"862. PRAHKLL Kurl ier, 5.3.1904"
+867,26,86%.,"BLAU Kalmann Ier,",1873-05-12,86%.,,number_inferred,"86%. BLAU Kalmann Ier, 12.5.1873"
+868,26,KLEIN,Johanna Sara,1895-12-05,KLEIN,,number_misread:864,864. KLEIN Johanna Sara 5.12.1895
+869,26,865%,KLEIN Gisela Sara,1918-01-01,865%,,number_inferred,"865% KLEIN Gisela Sara 1.1,1918"
+870,26,SCHRWÄCHZER,Nesi Sara,1885-11-03,SCHRWÄCHZER,,number_misread:866,866. SCHRWÄCHZER Nesi Sara 3.11.1885
+871,26,SCIWÄCHTER,Herta Sara,1929-11-12,SCIWÄCHTER,,number_misread:867,867. SCIWÄCHTER Herta Sara 12.11.1929
+872,26,STEIN,Alfreul ler,1872-04-18,STEIN,,number_misread:868,868. STEIN Alfreul ler. 18.4.1872
+873,26,SCHBANHZKOPP,Harta Sara,1882-07-17,SCHBANHZKOPP,,number_misread:65,065. SCHBANHZKOPP Harta Sara 17.7.1882
+874,26,5BZAPIRA,"Daniel Ver Ilsr,",1878-05-22,5BZAPIRA,,number_misread:870,"870.“ 5BZAPIRA Daniel Ver Ilsr, 22,5.1878"
+875,26,BZAPIKA,Liba Sara,1883-09-14,BZAPIKA,,number_misread:1,87/1. BZAPIKA Liba Sara 14.9.1883
+876,26,KORtANYI,Gisela Sara,1880-02-20,KORtANYI,,number_misread:872,"872. KORtANYI Gisela Sara 20,2,1880"
+877,27,"875,",REINER Regina Sara 244 441865,,"875,",,number_inferred;date_missing,"5 875, REINER Regina Sara 244 441865"
+878,27,BAUER,= PRIM Salomon,1885-01-01,BAUER,,number_misread:874,874. BAUER = PRIM Salomon 1.1.1885
+879,27,BALTUCH,Fanny Sara 15.94.1837,,BALTUCH,,number_misread:875;date_missing,875. BALTUCH Fanny Sara 15.94.1837
+880,27,876%,‚BERG Harle Sara 22 * 7 * 10801,,876%,,number_inferred;date_missing,876% ‚BERG Harle Sara 22 * 7 * 10801
+881,27,ERRG,Friedericke Sara,1902-07-28,ERRG,,number_misread:877,"877. ERRG Friedericke Sara 28,7.1902"
+882,27,SPSREHR,"Gerhard Isr, Els1.1520",,SPSREHR,,number_misread:878;date_missing,"878. SPSREHR Gerhard Isr, Els1.1520"
+883,27,PLAGER,Gugo ler,1873-06-26,PLAGER,,number_misread:879,879. PLAGER Gugo ler. 26.6.1873
+884,27,PIAGER,"Pranzieka Sara 22,9,1680",,PIAGER,,number_misread:880;date_missing,"880. PIAGER Pranzieka Sara 22,9,1680"
+885,27,BALL.,PUTERSACH Frimol Tara 20.3.2677,,BALL.,,number_inferred;date_missing,BALL. PUTERSACH Frimol Tara 20.3.2677
+886,27,KOTERBAGK,Selda Sara ZRıle 1595,,KOTERBAGK,,number_misread:882;date_missing,882 . KOTERBAGK Selda Sara ZRıle 1595
+887,27,88%.,"DAWIDHAHN Helnr, lorm",1904-06-07,88%.,,number_inferred,"88%. DAWIDHAHN Helnr, lorm. 7.6,1904"
+888,27,DUEOHAK,LEo Isr,1879-01-16,DUEOHAK,,number_misread:384,384. DUEOHAK LEo Isr. 16.1.1879
+889,27,BABAD,Rebekka Gars 22.10.1600,,BABAD,,number_misread:885;date_missing,885. BABAD Rebekka Gars 22.10.1600
+890,27,AUERBACH,Amalie Gara 4.324878,,AUERBACH,,number_misread:886;date_missing,886. AUERBACH Amalie Gara 4.324878
+891,27,WSINBERGER,"Eduurd Isr, lo, 4,1869 808. WSINTSRGER Idea Sara",1895-09-22,WSINBERGER,,number_misread:887,"887. WSINBERGER Eduurd Isr, lo, 4,1869
+808. WSINTSRGER Idea Sara 22. 9.1895"
+892,27,WRIYRERGENR,"Hermine Sara 44.11.1876 890. KUBIN Vekar Isr. 22, 221986 891. TLEIS üärneatine Sara 10.21.1895",,WRIYRERGENR,,number_misread:8839;date_missing,"8839. WRIYRERGENR Hermine Sara 44.11.1876
+890. KUBIN Vekar Isr. 22, 221986
+891. TLEIS üärneatine Sara 10.21.1895"
+893,27,ADLER,"Eduard Iar,",1876-03-28,ADLER,,number_misread:892,"892, ADLER Eduard Iar, 28.3.1876"
+895,27,BRÜCKUKR,Leopold Friedr. Jar,1869-08-07,BRÜCKUKR,,gap_before:894,"895, BRÜCKUKR Leopold Friedr. Jar. 7.8.1869"
+896,27,ZUSISCHMANN,liermine Sara 15.7.1592,,ZUSISCHMANN,,number_misread:894;date_missing,"894, ZUSISCHMANN liermine Sara 15.7.1592"
+897,27,WRIES,Mario Sara,1809-11-28,WRIES,,number_misread:895,895. WRIES Mario Sara 28.11.1809
+898,27,SPERLING,Paje Sara,1890-05-01,GSPERLING,GSPERLING->SPERLING,number_misread:896,"896, GSPERLING Paje Sara 1.5.1890"
+899,27,SPERLING,"U%To Isr,",1925-06-15,SPERLING,,number_misread:897,"897. SPERLING U%To Isr, 15.6.1925"
+900,27,POSKOWITZ,Josefllne Sara,1898-01-09,POSKOWITZ,,number_misread:898,898. POSKOWITZ Josefllne Sara 9.1.1898
+901,27,BRENNER,Kargarothe Sera,1893-04-22,BRENNER,,number_misread:899,899. BRENNER Kargarothe Sera 22.4.1893
+902,27,GUIGIG,Lea Tigra,1902-05-30,GUIGIG,,number_misread:900;surname_suggestion:GIGIG,"900, GUIGIG Lea Tigra 30»5.1902"
+903,27,GIGIG,Hargit Sara 12.0. 1925,,GIGIG,,number_misread:1;date_missing,Jol. GIGIG Hargit Sara 12.0. 1925
+904,28,ABRAM,Blinie Sara,1868-10-11,ABRAM,,number_misread:902,902. ABRAM Blinie Sara 11.10.1868
+905,28,r,RAUCHMANN ui sgmaund Io E37” 14 “ 2 » 4880,,r,,number_inferred;date_missing,90% r RAUCHMANN ui sgmaund Io E37” 14 “ 2 » 4880
+906,28,RAUCHMAHN,Hanny Sara,1883-01-23,RAUCHMAHN,,number_misread:904,9o4. RAUCHMAHN Hanny Sara 23.1.1883
+907,28,"905%,","STETEZNER siegfr, Sur, 35.9.1905",,"905%,",,number_inferred;date_missing,"905%, STETEZNER siegfr, Sur, 35.9.1905"
+908,28,906:,"SPEPTNER Kdith Sara 2212 ,1912",,906:,,number_inferred;date_missing,"906: SPEPTNER Kdith Sara 2212 ,1912"
+909,28,ee,,1929-03-04,ee,,number_inferred,ee 04.3.1929
+910,28,KARPEL,Hedwig Sara,1925-09-27,KARPEL,,number_misread:909,909. KARPEL Hedwig Sara 27.9s1925
+911,28,KATZ,"Alice Sura _ 16,112897",,KATZ,,number_misread:910;date_missing,"910. KATZ Alice Sura _ 16,112897"
+912,28,KATZ,Gerhard Israel,1926-11-28,KATZ,,number_misread:911,911. KATZ Gerhard Israel 28.11.1926
+913,28,ZUCKER,"Leopold lur,",1906-06-26,ZUCKER,,number_misread:912,"912. ZUCKER Leopold lur, 26. 6.1906"
+915,28,FISCHER,Rosa Sara,1892-03-07,FISCHER,,gap_before:914,915. FISCHER Rosa Sara 7.3. 1892
+916,28,LENGA,Klara Sara,1836-06-03,LENGA,,number_misread:914,914. LENGA Klara Sara . 3.6.1836
+917,28,LENGA,Auguste Sara,1921-11-01,LENGA,,number_misread:915,915. LENGA Auguste Sara 1.11. 1921
+918,28,MÜNZ,Ida Sara,1872-02-28,MÜNZ,,number_misread:916,"916. MÜNZ Ida Sara 28, 2.1872"
+919,28,MEISELMANN,Anna Vara,1801-11-08,MEISELMANN,,number_misread:917,917. MEISELMANN Anna Vara 8.11.1801
+920,28,BAUM,reote WERNER itirel 5,1875-10-26,BAUM,,number_misread:918,"918, BAUM reote WERNER itirel 5. 26.10.1875"
+921,28,BOMBACH,Na than 17 * 3 0) 1875,,BOMBACH,,number_misread:919;date_missing,919. BOMBACH Na than 17 * 3 0) 1875
+922,28,BOMBACH,Lilli Yara,1905-07-01,BOMBACH,,number_misread:929,929. BOMBACH Lilli Yara 1.7.1905
+923,28,9211,"BLOND Kalmann Isar,",1830-07-10,9211,,number_inferred,"9211 BLOND Kalmann Isar, 10.7.1830"
+924,28,HOFFMANN,Hälene Sure,1885-03-30,HOFFMANN,,number_misread:922,922. HOFFMANN Hälene Sure 30.3.1885
+925,28,OZECZOWICKA,Rudolf ler,1875-12-12,OZECZOWICKA,,number_misread:923,923. OZECZOWICKA Rudolf ler. 12.12.1875
+926,28,CAEOZOWICKA,Rosa Bars,1887-05-17,CAEOZOWICKA,,number_misread:924,924. CAEOZOWICKA Rosa Bars 17. 5.1887
+927,28,ENGEL,üugenie Sara,1870-08-17,ENGEL,,number_misread:925,925. ENGEL üugenie Sara 17. 8.1870
+928,28,BIS,Wlisaneth Sara,1862-10-06,BIS,,number_misread:926,926. BIS Wlisaneth Sara 6.10.1862
+929,28,NnIS$,Nermine Sara,1868-05-16,NnIS$,,number_misread:927,927. NnIS$ Nermine Sara 16. 5.1868
+930,28,KIBEL,Thereue Jara,1876-08-16,KIBEL,,number_misread:928,928. KIBEL Thereue Jara 16. 8.1876
+931,28,KIBEL,"Robert Ior, il. 8,1878",,KIBEL,,number_misread:929;date_missing,"929, KIBEL Robert Ior, il. 8,1878"
+932,28,RIEGEL,Ruchla Sara,1884-08-16,RIEGEL,,number_misread:939,939. RIEGEL Ruchla Sara 16. 8.1884
+933,28,BISS,Karguarete Sara,1894-08-19,BISS,,number_misread:931,931. BISS Karguarete Sara 19.8.1894
+934,28,RIRNOBL,"Sische Iur,",1882-10-28,RIRNOBL,,number_misread:932,"932. RIRNOBL Sische Iur, 28.10.1882"
+935,28,RINGSL,Regina Sara,1885-03-17,RINGSL,,number_misread:9533,9533. RINGSL Regina Sara 17. 3.1885
+936,28,II,ERMANHN Olga Sara,1889-01-05,II,,number_misread:934,934. II ERMANHN Olga Sara 5.1.1889
+937,28,KONN,Marie Sara,1887-04-14,KONN,,number_misread:935,935. KONN Marie Sara 14.4.1887
+938,28,REISS,BRezina ara,1865-11-18,REISS,,number_misread:957,957. REISS BRezina ara 18.11.1865
+939,28,FELDMANN,Pauline Sera,1869-12-10,FELDMANN,,number_misread:958,958. FELDMANN Pauline Sera 10.12.1869
+940,28,PRIN?,Tonovlin Vara,1879-01-07,PRIN?,,number_misread:939,939. PRIN? Tonovlin Vara 7.1.1879
+941,28,LONRAHT,Leopoldire Sara,1872-08-25,LONRAHT,,number_misread:940,940. LONRAHT Leopoldire Sara 25.8.1872
+942,29,LEIENER,Rosa Sarn,1893-05-28,LEIENER,,number_misread:1,dl. LEIENER Rosa Sarn 28.5.1893
+943,29,942.,IOPTUMANN llermineg Sara :,1893-08-08,942.,,number_inferred,"° 942. IOPTUMANN llermineg Sara :. 8,8,.1893"
+944,29,BEPTEOCH,"Guntav Iar,",1901-08-18,BEPTEOCH,,number_misread:943,"""943. BEPTEOCH Guntav Iar, 18.8.1901"
+945,29,BRITESOH,"Siegmund Ier, 53.2.1872",1901-08-18,BRITESOH,,number_misread:944;date_missing;date_recovered,"944, BRITESOH Siegmund Ier, 53.2.1872"
+946,29,9454:,BAUMFELD Isaak Tı8.1876,1885-09-25,9454:,,number_inferred;date_missing;date_recovered,9454: BAUMFELD Isaak Tı8.1876
+947,29,KOHR,Gisela Sara,1883-09-25,KOHR,,number_misread:946,"946, KOHR Gisela Sara 25.9.1883"
+948,29,BRUNNER,?THärense Tara,1889-01-21,BRUNNER,,number_misread:947,947. BRUNNER ?THärense Tara 21.1.1889
+949,29,APPENKRAUT,Rose Sara 50.5.1876,1890-01-21,APPENKRAUT,,number_misread:938;date_missing;date_recovered,"938, APPENKRAUT Rose Sara 50.5.1876"
+950,29,FLEISCHMANN,Kamilla Sara,1890-01-21,FLEISCHMANN,,number_misread:949,949. FLEISCHMANN Kamilla Sara 21.1.1890
+951,29,NEUSPIBL,Anna Sara,1865-02-05,NEUSPIBL,,number_misread:950,950. NEUSPIBL Anna Sara 5.2.1865
+952,29,PZLBERBAUM,Bine Sara,1871-06-03,PZLBERBAUM,,number_misread:951;surname_suggestion:PELBERBAUM,951. PZLBERBAUM Bine Sara 3.6.1871
+953,29,PELBERBAUM,Abraham Ipr,1901-02-20,PELBERBAUM,,number_misread:952,952. PELBERBAUM Abraham Ipr. 20.2.1901
+954,29,FBLBENBAUM,"Bigmund Isar,",1909-09-23,FBLBENBAUM,,number_misread:53,"053. FBLBENBAUM Bigmund Isar, 23.9.1909"
+955,29,BAUMGARTEN,Ludwig Ior,1882-09-11,BAUMGARTEN,,number_misread:954,954. BAUMGARTEN Ludwig Ior. 11.9.1882
+956,29,3ESSLER,Franziska Sara,1890-11-01,3ESSLER,,number_misread:955,955. 3ESSLER Franziska Sara 1.11.1890
+957,29,FRÄNKEL,Narjem 25. 5.1385,1878-05-06,FRÄNKEL,,number_misread:956;date_missing;date_recovered,956. FRÄNKEL Narjem 25. 5.1385
+958,29,GESEINER,Therese Sara,1878-05-06,GESEINER,,number_misread:957,957. GESEINER Therese Sara 6.5.1878
+959,29,TOUCH,Malwine Sara,1887-05-18,TOUCH,,number_misread:958,958. TOUCH Malwine Sara 18.5.1887
+960,29,BPIFZER,Arnold lsr,1898-03-25,BPIFZER,,number_misread:959,959. BPIFZER Arnold lsr. 25.3.1898
+961,29,SBPIZZER,Pauline Sara,1896-07-25,SBPIZZER,,number_misread:960,960. SBPIZZER Pauline Sara 25.7.1896
+962,29,EHDRB,"Walter Ier. 8,12,1027",,EHDRB,,number_misread:961;date_missing,"961. EHDRB Walter Ier. 8,12,1027"
+963,29,BLUMENKRANZ,Chulie 13.11.1066,,BLUMENKRANZ,,number_misread:962;date_missing,962. BLUMENKRANZ Chulie 13.11.1066
+964,29,»,WILHRLM Bertha Sara Zul 1292,1926-02-02,»,,number_inferred;date_missing;date_recovered,96% » WILHRLM Bertha Sara Zul 1292
+965,29,WINNBLM,KArianne Sara,1926-02-02,WINNBLM,,number_misread:964,"964. WINNBLM KArianne Sara 2,2.1926"
+966,29,BERAN,Heinr. ler,1882-03-15,BERAN,,number_misread:965,965. BERAN Heinr. ler. 15.3.1882
+967,29,FUCHS,"Slogfr. Ior,",1868-03-22,FUCHS,,number_misread:966,"966, FUCHS Slogfr. Ior, 22.3.1868"
+968,29,FUCHS,Hildegard Sara,1895-06-21,FUCHS,,number_misread:967,967. FUCHS Hildegard Sara 21.6.1895
+969,29,FLESN,Jetty Sara,1883-02-10,FLESN,,number_misread:968,968. FLESN Jetty Sara 10.2.1883
+970,29,FLUSCH,Ritta Bara,1928-10-29,FLUSCH,,number_misread:969,"969. FLUSCH Ritta Bara 29,10s1928"
+971,29,970%,WEISS Bella Sara,1867-08-11,970%,,number_inferred,970% WEISS Bella Sara 11.8.1867
+972,29,PRISRER,Hedwig Sara,1894-06-01,PRISRER,,number_misread:971;surname_suggestion:PRISNER,971. PRISRER Hedwig Sara 1.6.1894
+973,29,PRISNER,Gertrude Jera,1932-10-03,PRISNER,,number_misread:972,972. PRISNER Gertrude Jera 3.10.1932
+974,29,BEER,Zuil Iar,1866-10-27,BEER,,number_misread:973,973. BEER Zuil Iar. 27.10.1866
+975,29,YI)GEL,"Adolf Inr,",1874-12-24,YI)GEL,,number_misread:3774,"3774. YI)GEL Adolf Inr, 24.12.1874"
+976,29,VOUZL,iiermine Sara 23. 8.1373,,VOUZL,,number_misread:975;date_missing,975. VOUZL iiermine Sara 23. 8.1373
+977,29,VOGEL,Irene Sara,1900-07-03,VOGEL,,number_misread:976,976. VOGEL Irene Sara 3.7.1900
+978,29,SCHECHTER,Netty Sara,1896-11-10,SCHECHTER,,number_misread:977,977. SCHECHTER Netty Sara 10.11.1896
+979,29,«„,BRETHAUER Dora Sara,1884-07-22,«„,,number_inferred,978 «„ BRETHAUER Dora Sara 22.7.1884
+980,29,BETTHAUER,Fanny Tara,1872-08-24,BETTHAUER,,number_misread:979,979. BETTHAUER Fanny Tara 24.8.1872
+981,29,BETTHAUER,Henriette Sara AiLl.6.1878,1872-12-18,BETTHAUER,,number_misread:80;date_missing;date_recovered,080. BETTHAUER Henriette Sara AiLl.6.1878
+982,29,STERN,"Saul Ior,",1872-12-18,STERN,,number_misread:981,"981. STERN Saul Ior, 18.12.1872"
+983,29,ROBINSON,Vertrude Fara,1903-10-16,ROBINSON,,number_misread:9082,9082. ROBINSON Vertrude Fara 16.10.1903
+984,29,PLRISUCHNANN,Olga Sara,1883-09-12,PLRISUCHNANN,,number_misread:983,983. PLRISUCHNANN Olga Sara 12.9.1883
+985,29,BRAUN,Laura Sara Led. 1565,,BRAUN,,number_misread:984;date_missing,984. BRAUN Laura Sara Led. 1565
+986,30,DEE,PRyzn OT TE TE EEE ET ET EEE TER DET ET ET ET SETBETTETTE,,DEE,,number_inferred;date_missing,- = DEE PRyzn OT TE TE EEE ET ET EEE TER DET ET ET ET SETBETTETTE
+987,30,GRANIZRER,Klara Sara 5231899,1883-09-12,GRANIZRER,,number_misread:985;date_missing;date_recovered,985. GRANIZRER Klara Sara 5231899
+988,30,RIBENINGER,Hilde Sara,1907-04-26,RIBENINGER,,number_misread:986,986. RIBENINGER Hilde Sara 26.4.1907
+989,30,KERBEB,Rosa Sara,1893-02-24,KERBEB,,number_misread:987;surname_suggestion:KERBES,987. KERBEB Rosa Sara 24.2.1893
+990,30,KERBES,"Blanka Sara 2045,.1924",,KERBES,,number_misread:988;date_missing,"988. KERBES Blanka Sara  2045,.1924"
+991,30,FRIEDIOFER,"Günla Sara 28, 129.895",,FRIEDIOFER,,number_misread:989;date_missing,"989. FRIEDIOFER Günla Sara 28, 129.895"
+992,30,EINHORN,Halke Sarı 2541.1895,,EINHORN,,number_misread:990;date_missing,990. EINHORN Halke Sarı 2541.1895
+993,30,NAHLER,"Harkus Iar, 541875",,NAHLER,,number_misread:991;date_missing,"991. NAHLER Harkus Iar, 541875"
+994,30,KANLER,Eva Sara,1885-02-16,KANLER,,number_misread:992,992. KANLER Eva Sara 16.2.1885
+995,30,BOHAFIRA,Isidor,1902-01-10,BOHAFIRA,,number_misread:993,"993. BOHAFIRA Isidor 10,1,.1902"
+996,30,MEISEL,"Yrladr, *er,",1907-11-06,MEISEL,,number_misread:994,"994, MEISEL Yrladr, *er, 6.11.1907"
+997,30,BSOHRELIER,Nobes j 23.2.1088,,BSOHRELIER,,number_misread:995;date_missing,"995, BSOHRELIER Nobes j 23.2.1088"
+998,30,SCHREIER,Debora Sara,1890-04-03,SCHREIER,,number_misread:996,996. SCHREIER Debora Sara 3.4.1890
+999,30,PIRRPERBAUM,"Milke 244,192",,PIRRPERBAUM,,number_misread:997;date_missing,"997. PIRRPERBAUM Milke 244,192"
+1000,30,LADEBER,altr. Ier«,1919-10-05,LADEBER,,number_misread:998,998. LADEBER altr. Ier« 5.10.1919
+1001,30,LEDERER,ANALIA Sara,1915-11-21,LEDERER,,number_misread:999,"999, LEDERER ANALIA Sara 21.11.1915"
+1002,30,LEDERER,Salomon,1940-05-11,LEDEREN,LEDEREN->LEDERER,number_misread:1000,"1000, LEDEREN Salomon 11.5.1940"
+1003,30,V——,"[4 ubrrgegeten B,Mm : GEIGE ehr! — & “Luliao Or ar Nas . : R dälspo;: u SDollzaf",,V——,,number_inferred;date_missing,"‚ V—— [4
+ubrrgegeten B,Mm : GEIGE
+ehr! —
+& “Luliao Or
+ar Nas . :
+R dälspo;: u SDollzaf"

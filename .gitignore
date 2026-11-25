@@ -6,6 +6,14 @@
 /pipeline/progress*/
 /pipeline/*.jsonl
 /pipeline/*.log
+# Arolsen transport list scans: local research copies only.
+# Arolsen Terms of Use sec. 7 bars passing digital copies to third
+# parties / integrating them into another archive without consent,
+# and the originals sit with the Austrian State Archive (see
+# transports/README.md). Manifests and READMEs stay versioned.
+/transports/**/*.jpg
+/transports/**/*.png
+
 # OS
 .DS_Store
 
