@@ -1,0 +1,19 @@
+{
+  "_about": "Reviewed links from directory records to deportation lists. Keys are <year>:<lineid> as in corrections.json. Only links the maintainer has confirmed belong here; candidates are not added automatically. t = transport id, n = list number, b = birth date on the list, doc = Arolsen document number of the list page (cited, not copied).",
+  "transports": {
+    "1": {
+      "label": "Transport 1",
+      "label_de": "Transport 1",
+      "from": "Vienna",
+      "from_de": "Wien",
+      "to": "Opole",
+      "date": "1941-02-15",
+      "arolsen_ref": "12114001",
+      "citation": "Transport 1: Deportation from Vienna to Opole, 1941/02/15, 1.2.1.1/<doc>/ ITS Digital Archive, Arolsen Archives (originals: Austrian State Archive)"
+    }
+  },
+  "links": {
+    "1938:23953": {"t": "1", "n": 30, "b": "1897-01-15", "doc": "130500826"},
+    "1939:23409": {"t": "1", "n": 30, "b": "1897-01-15", "doc": "130500826"}
+  }
+}
