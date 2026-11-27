@@ -139,6 +139,9 @@ header>*{pointer-events:auto;}
 .pp-name{font-weight:700;font-size:15px;margin:0 0 2px;}
 .pp-occ{color:#4b5563;font-style:italic;margin:0 0 4px;}
 .pp-rescue{font-size:11px;color:#9f1239;font-style:italic;margin:2px 0 0;}
+.pp-deport{font-size:12px;color:#374151;margin:4px 0 0;padding-left:6px;border-left:2px solid #6b7280;}
+.pp-deport a{color:inherit;font-size:11px;margin-left:4px;}
+.fw-deport:empty{display:none;}
 .pp-addr{margin:0 0 2px;padding-bottom:8px;border-bottom:1px solid #eef0f2;font-size:16px;}
 .pp-img{margin:6px 0;}
 .pp-img img{width:100%;border-radius:8px;display:block;}
@@ -505,6 +508,7 @@ header>*{pointer-events:auto;}
   </div>
   <div class="fw-status"></div>
   <div class="fw-years"></div>
+  <div class="fw-deport"></div>
   <div class="fw-alts" style="display:none"></div>
 </div>
 <div id="infoSheet" style="display:none" aria-hidden="true">
@@ -762,6 +766,8 @@ en: {
   recLoadFail: "Couldn't load the records for this pin.",
   retry: "Try again",
   rescueLine: "Listed as {old} in the {year} directory.",
+  deportLine: "Deported on {date} on {transport}, {from} to {to} (list no. {n}).",
+  deportSource: "Source",
   followPerson: "Follow this person →",
   moreInPreview: "{n} more in preview",
   moreHidden1: "1 more resident hidden by filter",
@@ -923,6 +929,8 @@ de: {
   recLoadFail: "Die Einträge für diese Markierung konnten nicht geladen werden.",
   retry: "Erneut versuchen",
   rescueLine: "Im Adressbuch {year} als {old} verzeichnet.",
+  deportLine: "Am {date} mit {transport} von {from} nach {to} deportiert (Listennr. {n}).",
+  deportSource: "Quelle",
   followPerson: "Dieser Person folgen →",
   moreInPreview: "{n} weitere in der Vorschau",
   moreHidden1: "1 weiterer Bewohner durch Filter ausgeblendet",
@@ -1008,6 +1016,53 @@ const YEARS = {
   '1941': {kind: 'layer', dir: 'data41', shard: 1000, geojson: 'data41/points.geojson', label: '1941'},
   '1942': {kind: 'layer', dir: 'data42', shard: 1000, geojson: 'data42/points.geojson', label: '1942'},
 };
+// ---- deportation transport links -------------------------------------------
+// transports/links.json holds the transport metadata and the reviewed
+// links from a directory record ("<year>:<lineid>") to its row on a
+// deportation list. Only links the maintainer confirmed are in the file;
+// the draft transcriptions are never matched automatically. No scan
+// images are published: the line cites the Arolsen document page.
+let TRANSPORTS = {transports: {}, links: {}};
+const transportsReady = fetch('transports/links.json').then(r => r.ok ? r.json() : null).catch(() => null)
+  .then(j => { if (j && j.links) TRANSPORTS = j; });
+function deportOf(year, id){
+  if (id == null || year == null) return null;
+  const l = TRANSPORTS.links[year + ':' + id];
+  if (!l) return null;
+  const tr = TRANSPORTS.transports[l.t];
+  return tr ? {link: l, tr} : null;
+}
+function fmtDeportDate(iso){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+  if (!m) return iso || '';
+  const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+  try {
+    return d.toLocaleDateString(LANG === 'de' ? 'de-AT' : 'en-GB', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'});
+  } catch (e) { return iso; }
+}
+function deportHTML(dep){
+  if (!dep) return '';
+  const tr = dep.tr, l = dep.link;
+  const de = LANG === 'de';
+  const src = l.doc ? ' <a href="https://collections.arolsen-archives.org/en/document/' + encodeURIComponent(l.doc) +
+    '" target="_blank" rel="noopener">' + esc(t('deportSource')) + '</a>' : '';
+  return '<div class="pp-deport">' + t('deportLine', {date: esc(fmtDeportDate(tr.date)), transport: esc(de ? (tr.label_de || tr.label) : tr.label),
+    from: esc(de ? (tr.from_de || tr.from) : tr.from), to: esc(tr.to), n: esc(String(l.n))}) + src + '</div>';
+}
+function deportLine(r){
+  if (!r || r._id == null || isAddId(r._id)) return '';
+  return deportHTML(deportOf(r._yr || CUR_YEAR, r._id));
+}
+// Follow views: the first linked stop's deportation, shown under the
+// year boxes so the timeline ends with it.
+function followDeportHTML(stops){
+  for (const st of stops || []){
+    if (st.id == null) continue;
+    const dep = deportOf(st.year, st.id);
+    if (dep) return deportHTML(dep);
+  }
+  return '';
+}
 // ---- corrections overlay --------------------------------------------------
 // corrections.json maps "<year>:<lineid>" -> {s,g,o,u,st,hn}. It is merged
 // into records at shard-load time so popups, search rows and follow-this-person
@@ -1985,7 +2040,7 @@ function popupHTML(r){
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += rescueLine(r);
+  h += rescueLine(r) + deportLine(r);
   const flw = followBtn(r);
   if (flw) h += '<div class="pp-followrow">' + flw + '</div>';
   h += '<div class="pp-act">' + ppInfoBtn(r) + '</div>' + ppInfoBody(r) + '</div>';
@@ -2151,7 +2206,7 @@ function sheetDetailHTML(r){
     '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>';
   if (r.o) h += '<div class="pp-occ">' + esc(r.o) + '</div>';
   h += '<div class="pp-addr">' + esc(r.st || '') + ' ' + esc(r.hn || '') + ' ' + bezPill(r) + '</div>';
-  h += rescueLine(r);
+  h += rescueLine(r) + deportLine(r);
   const excerpt = (r.pg != null && r._id != null)
     ? '<div class="rowsnip-wrap"><div class="rowsnip" data-pg="' + r.pg + '" data-rid="' + r._id + '"></div>' +
       '<a class="rowsnip-expand" href="https://www.digital.wienbibliothek.at/image/view/' + r.pg +
@@ -2196,6 +2251,9 @@ async function renderInlineFollow(src, tok, slot){
   const yearsBox = document.createElement('div');
   yearsBox.className = 'fw-years';
   slot.appendChild(yearsBox);
+  const deportBox = document.createElement('div');
+  deportBox.className = 'fw-deport';
+  slot.appendChild(deportBox);
   const altsBox = document.createElement('div');
   altsBox.className = 'fw-alts';
   altsBox.style.display = 'none';
@@ -2243,6 +2301,7 @@ async function renderInlineFollow(src, tok, slot){
       });
       yearsBox.appendChild(b);
     }
+    deportBox.innerHTML = followDeportHTML(stops);
   };
   slot._renderFwCells = renderCells;
   // Play button for the year-by-year animation. The floating follow
@@ -2349,7 +2408,7 @@ async function groupPopupHTML(f, highlightId){
       : '<span class="pp-nav" aria-hidden="true"></span>';
     h += '<div class="pp-row' + hl + tp + '" data-idx="' + ri + '">' + tuerPill(r) +
       '<div class="pp-name">' + esc(r.s || '') + (r.g ? ', ' + esc(r.g) : '') + ezPill(r) + corrPill(r) + addedPill(r) + '</div>' +
-      (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) + rowBtns + '</div>';
+      (r.o ? '<div class="pp-occ">' + esc(r.o) + '</div>' : '') + rescueLine(r) + deportLine(r) + rowBtns + '</div>';
   }
   h += '</div>';
   if (hidden > 0) h += '<div class="pp-more">' + t(hidden === 1 ? 'moreHidden1' : 'moreHiddenN', {n: hidden}) + '</div>';
@@ -3660,6 +3719,8 @@ function renderFwCells(){
     b.innerHTML = fwCellHTML(st);
     box.appendChild(b);
   }
+  const dep = document.querySelector('#followPanel .fw-deport');
+  if (dep) dep.innerHTML = followDeportHTML(fwStops);
   // A pushed detail open behind the panel keeps its own year boxes in
   // step (its renderer highlights the travelling year via fwActiveYear).
   document.querySelectorAll('.is-detail-follow').forEach(s => { if (s._renderFwCells) s._renderFwCells(); });
