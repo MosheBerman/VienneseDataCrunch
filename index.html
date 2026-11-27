@@ -723,6 +723,7 @@ en: {
   qRange: "registry match · number range",
   qAlpha: "alphabetical fallback",
   qFuzzy: "fuzzy street match",
+  qXyear: "registry match · house placed from another year",
   qAdded: "researcher-added",
   viewInScan: "View in scan",
   showScanRow: "Show Scan Excerpt",
@@ -883,6 +884,7 @@ de: {
   qRange: "Registertreffer · Nummernbereich",
   qAlpha: "alphabetische Zuordnung",
   qFuzzy: "ungefähre Straßenübereinstimmung",
+  qXyear: "Registertreffer · Hausnummer aus anderem Jahrgang",
   qAdded: "nachgetragen",
   viewInScan: "Im Scan ansehen",
   showScanRow: "Scanausschnitt anzeigen",
@@ -1277,6 +1279,7 @@ const qLabel = m => {
   if (m.indexOf('district_fb') === 0) return t('qDistrict');
   if (m.indexOf('range_in') === 0 || m.indexOf('wl_range') === 0) return t('qRange');
   if (m === 'alpha_fallback') return t('qAlpha');
+  if (m === 'xyear_house') return t('qXyear');
   return t('qFuzzy');
 };
 
